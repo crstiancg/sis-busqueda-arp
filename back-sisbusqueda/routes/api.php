@@ -1,13 +1,21 @@
 <?php
 
+use App\Http\Controllers\Anterior2Controller;
+use App\Http\Controllers\AnteriorController;
+use App\Http\Controllers\ArbolitoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FolioController;
+use App\Http\Controllers\NuevoController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\SiaController;
+use App\Http\Controllers\Sis20182Controller;
+use App\Http\Controllers\Sis2018Controller;
 use App\Http\Controllers\UbigeoController;
+use App\Models\Sis2018;
 
 /*
 |--------------------------------------------------------------------------
@@ -53,3 +61,10 @@ Route::apiResource('/usuarios', UserController::class)->middleware([HandlePrecog
 Route::apiResource('/roles', RoleController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/permisos', PermisoController::class)->middleware([HandlePrecognitiveRequests::class]);
 
+Route::apiResource('/anteriores', AnteriorController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/anteriores2', Anterior2Controller::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/sis2018', Sis2018Controller::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/sis2018_2', Sis20182Controller::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/nuevos', NuevoController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/arbolitos', ArbolitoController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitiveRequests::class]);
