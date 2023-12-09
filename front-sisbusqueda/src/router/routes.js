@@ -38,6 +38,11 @@ const routes = [
         name: "Usuarios",
         component: () => import("pages/Admin/Usuarios/UsuariosList.vue"),
       },
+      {
+        path: "anteriores",
+        name: "Anteriores",
+        component: () => import("pages/Arp_v1/Anteriores/AnterioresList.vue"),
+      },
     ],
   },
 

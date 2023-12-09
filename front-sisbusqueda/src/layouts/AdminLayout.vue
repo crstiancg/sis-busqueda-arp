@@ -87,6 +87,24 @@
           </q-item>
 
           <q-separator />
+    <!-- ruta de prueba -->
+          <q-item
+              :to="{ name: 'Anteriores' }"
+              :active="link === 'Anteriores'"
+              @click="link = 'Anteriores'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Anteriores </q-item-section>
+          </q-item>
+    <!--  -->
+          <q-separator />
 
           <q-item clickable v-ripple>
             <q-item-section avatar>

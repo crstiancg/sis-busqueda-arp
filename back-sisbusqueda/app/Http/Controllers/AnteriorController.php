@@ -10,9 +10,15 @@ class AnteriorController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Anterior::take(10)->get();
+        return  $this->generateViewSetList(
+            $request,
+            Anterior::query(),
+            [],
+            [],
+            []
+        );
     }
 
     /**
