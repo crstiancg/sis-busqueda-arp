@@ -13,7 +13,7 @@
           v-model="form.name"
           :loading="form.validating"
           label="Nombre *"
-          @change="form.validate('name')"
+          @update:model-value="form.validate('name')"
           :error="form.invalid('name')"
           :class="form.invalid('name') ? 'q-mb-sm' : ''"
           ><template v-slot:prepend>
@@ -70,6 +70,12 @@
             </div>
           </template>
         </q-input>
+        <SelectArea
+          class="q-mb-md"
+          label="Area de Trabajo"
+          :id="form.area_id||idSelectArea"
+          @selectedItem="updateArea($event)"
+        ></SelectArea>
         <div class="q-gutter-y-sm column">
           <q-list bordered separator>
             <template v-for="(p, i) in roles" :key="i">
@@ -89,7 +95,6 @@
             </template>
           </q-list>
         </div>
-
       </q-card-section>
       <q-separator />
 
@@ -109,10 +114,13 @@
 <script setup>
 import { useForm } from "laravel-precognition-vue";
 import { onMounted, ref } from "vue";
-import RoleService from "src/services/RoleService"
+import RoleService from "src/services/RoleService";
+
 const isPwd = ref(true);
 const roles = ref([]);
 const emits = defineEmits(["save"]);
+
+
 const props = defineProps({
   title: String,
   id: Number,
@@ -132,7 +140,7 @@ if (props.edit) {
     rolesSelected: [],
   });
 } else {
-  form = useForm("post", "api/usuarios/", {
+  form = useForm("post", "api/usuarios", {
     id: "",
     name: "",
     email: "",
@@ -147,6 +155,7 @@ async function cargar() {
   roles.value = data;
   console.log(roles.value);
 }
+
 
 
 const submit = () => {
@@ -171,6 +180,7 @@ onMounted(() => {
   // setData();
   console.log(props.edit);
   cargar();
+  // console.log(form);
   // console.log(form);
 });
 
