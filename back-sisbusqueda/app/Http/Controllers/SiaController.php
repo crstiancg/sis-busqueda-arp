@@ -10,9 +10,15 @@ class SiaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Sia::take(10)->get();
+        return  $this->generateViewSetList(
+            $request,
+            Sia::query(),
+            [], //para el filtrado
+            ['id','notario',],  //para la busqueda
+            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
+        );
     }
 
     /**

@@ -8,6 +8,8 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\DB;
+use PhpParser\Node\Expr\Cast\String_;
 
 class Controller extends BaseController
 {
@@ -49,7 +51,9 @@ class Controller extends BaseController
         if ($request->filled('search')) {
             $querySet->where(function ($q) use ($searchBy, $request, $tableBaseName) {
                 foreach ($searchBy as $searchByCol) {
-                    $q->orwhere(addOrSkipBaseTable($searchByCol, $tableBaseName), 'like', '%' . $request->input('search') . '%');
+                    $q->orwhere(DB::raw('REPLACE(' . addOrSkipBaseTable($searchByCol,$tableBaseName) . ', " ", "")'),
+                    'like',
+                    '%' . str_replace(' ', '', $request->input('search')) . '%');
                 }
                 return $q;
             });
@@ -62,11 +66,21 @@ class Controller extends BaseController
                 $orderDirection = substr($searchOrderParam, 0, 1) === '-' ? 'desc' : 'asc';
 
                 if (in_array($searchOrderParamWithoutSign, $orderBy, true)) {
-                    $querySet->orderBy(addOrSkipBaseTable($searchOrderParamWithoutSign, $tableBaseName), $orderDirection);
+                    $querySet->orderBy($searchOrderParamWithoutSign, $orderDirection);
                 }
             }
         }
 
         return $this->getPageSize()?$querySet->paginate($this->getPageSize()):response()->json(['data'=>$querySet->get()]);
+    }
+
+    public function generateSelectList(Builder $querySet,String $column){
+
+        $temp = $querySet->tosql();
+
+        return DB::table(DB::raw("($temp) as TempTable"))
+            ->distinct()->whereNotNull("($column)")
+            ->orderBy("$column",'asc')
+            ->get();
     }
 }

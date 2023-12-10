@@ -10,9 +10,15 @@ class Sis2018Controller extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Sis2018::take(10)->get();
+        return  $this->generateViewSetList(
+            $request,
+            Sis2018::query(),
+            [], //para el filtrado
+            ['id','notario',],  //para la busqueda
+            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
+        );
     }
 
     /**

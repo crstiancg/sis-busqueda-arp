@@ -13,7 +13,7 @@
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" />
 
-        <q-breadcrumbs-el label="Data Anterior" icon="mdi-account-key" />
+        <q-breadcrumbs-el label="Data Sia" icon="mdi-account-key" />
       </q-breadcrumbs>
     </div>
     <q-separator />
@@ -103,26 +103,30 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import RoleService from "src/services/arp_v1/AnteriorService";
+import SiaService from "src/services/arp_v1/SiaService";
 import { useQuasar } from "quasar";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
 const $q = useQuasar();
-const columns = [
-  {
-    name: "id",
-    label: "Id",
-    aling: "center",
-    field: (row) => row.id,
-    sortable: true,
-  },
 
-  {
-    name: "name",
-    label: "Nombre",
-    aling: "center",
-    field: (row) => row.notario,
-    sortable: true,
-  },
+async function verDat(){
+  const dato = await SiaService.getData({
+    params: { rowsPerPage: 100, page:1, search: 'Manuel', order_by:'id' },
+  })
+  console.log(dato);
+}
+
+// verDat();
+
+const columns = [
+  { field: (row) => row.id, name: "id", label: "Id", aling: "center", sortable: true, },
+  { field: (row) => row.notario, name: "notario", label: "Notario", aling: "center", sortable: true,},
+  { field: (row) => row.otorgante, name: "otorgante", label: "otorgante", aling: "center", sortable: true,},
+  { field: (row) => row.favorecido, name: "favorecido", label: "favorecido", aling: "center", sortable: true,},
+  { field: (row) => row.fecha, name: "fecha", label: "fecha", aling: "center", sortable: true,},
+  { field: (row) => row.serie, name: "serie", label: "serie", aling: "center", sortable: true,},
+  { field: (row) => row.folio, name: "folio", label: "folio", aling: "center", sortable: true,},
+  { field: (row) => row.escritura, name: "escritura", label: "escritura", aling: "center", sortable: true,},
+  { field: (row) => row.bien, name: "bien", label: "bien", aling: "center", sortable: true,},
 ];
 
 const tableRef = ref();
@@ -148,11 +152,11 @@ async function onRequest(props) {
   loading.value = true;
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
-  const order_by = descending ? "-" + sortBy : sortBy;
-  const { data, total = 0 } = await RoleService.getData({
+  const order_by = filter? '': descending ? "-" + sortBy : sortBy;
+  const { data, total = 0 } = await SiaService.getData({
     params: { rowsPerPage: fetchCount, page, search: filter, order_by },
-  });
-  console.log(data);
+  });;
+  // console.log(data);
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
   // don't forget to update local pagination object
@@ -187,7 +191,7 @@ async function editar(id) {
   formRole.value = true;
   edit.value = true;
   editId.value = id;
-  const row = await RoleService.get(id);
+  const row = await SiaService.get(id);
   console.log(row);
 
   rolesformRef.value.form.setData({
@@ -204,7 +208,7 @@ async function eliminar(id) {
     cancel: true,
     persistent: true,
   }).onOk(async () => {
-    await RoleService.delete(id);
+    await SiaService.delete(id);
     tableRef.value.requestServerInteraction();
     $q.notify({
       type: "positive",

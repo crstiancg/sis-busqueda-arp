@@ -3,7 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anterior;
+use App\Models\Anterior2;
+use App\Models\Nuevo;
+use App\Models\Sis2018;
+use App\Models\Sis2018_2;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class AnteriorController extends Controller
 {
@@ -12,13 +17,28 @@ class AnteriorController extends Controller
      */
     public function index(Request $request)
     {
-        return  $this->generateViewSetList(
-            $request,
-            Anterior::query(),
-            [],
-            [],
-            []
-        );
+        // $tempTable = Anterior::query();
+
+        $tempTable = Anterior::select('notario')
+                ->unionAll(Anterior2::select('notario'))
+                ->unionAll(Sis2018::select('notario'))
+                ->unionAll(Sis2018_2::select('notario'))
+                ->unionAll(Nuevo::select('notario'));
+
+        $temp = $tempTable->tosql();
+
+        return DB::table(DB::raw("($temp) as TempTable"))
+            ->distinct()->whereNotNull('notario')
+            ->orderBy('notario','asc')
+            ->get();
+
+        // return  $this->generateViewSetList(
+        //     $request,
+        //     $tempTable,
+        //     [], //para el filtrado
+        //     ['notario',],  //para la busqueda
+        //     ['notario','lugar'] //para el odenamiento
+        // );
     }
 
     /**

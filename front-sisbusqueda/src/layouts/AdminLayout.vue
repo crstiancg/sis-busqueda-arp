@@ -87,7 +87,7 @@
           </q-item>
 
           <q-separator />
-    <!-- ruta de prueba -->
+    <!-- ruta de prueba  **************************************************** -->
           <q-item
               :to="{ name: 'Anteriores' }"
               :active="link === 'Anteriores'"
@@ -103,7 +103,98 @@
 
             <q-item-section> Anteriores </q-item-section>
           </q-item>
-    <!--  -->
+          <q-item
+              :to="{ name: 'Anteriores2' }"
+              :active="link === 'Anteriores2'"
+              @click="link = 'Anteriores2'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Anteriores2 </q-item-section>
+          </q-item>
+          <q-item
+              :to="{ name: 'Sis2018' }"
+              :active="link === 'Sis2018'"
+              @click="link = 'Sis2018'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Sis2018 </q-item-section>
+          </q-item>
+          <q-item
+              :to="{ name: 'Sis2018_2' }"
+              :active="link === 'Sis2018_2'"
+              @click="link = 'Sis2018_2'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Sis2018 2 </q-item-section>
+          </q-item>
+          <q-item
+              :to="{ name: 'Nuevo' }"
+              :active="link === 'Nuevo'"
+              @click="link = 'Nuevo'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Nuevo </q-item-section>
+          </q-item>
+
+          <q-item
+              :to="{ name: 'Sia' }"
+              :active="link === 'Sia'"
+              @click="link = 'Sia'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Sia </q-item-section>
+          </q-item>
+          <q-item
+              :to="{ name: 'Arbolito' }"
+              :active="link === 'Arbolito'"
+              @click="link = 'Arbolito'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Arbolito </q-item-section>
+          </q-item>
+    <!-- ********************************************************************* -->
           <q-separator />
 
           <q-item clickable v-ripple>
