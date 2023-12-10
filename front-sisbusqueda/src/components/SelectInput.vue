@@ -40,12 +40,28 @@ let stringOptions = null;
 const model = ref('');
 const loading = ref(false);
 
+function limpiarEspaciosRepetidos(array) {
+      // Limpiar espacios en cada notario
+      array.forEach((item) => {
+        item[props.OptionLabel] = item[props.OptionLabel].replace(/\s+/g, ' ').trim();
+      });
+
+      // Eliminar elementos duplicados
+      const array_ = array.filter(
+        (item, index, self) =>
+          index ===
+          self.findIndex((t) => t[props.OptionLabel] === item[props.OptionLabel])
+      );
+      return array_;
+    }
 function emitir(_model){
   emit('update:modelValue', _model && typeof _model === 'object'?_model[props.optionValue]:_model)
 }
 onMounted(async () => {
   loading.value=true;
   stringOptions = props.options.hasOwnProperty('getData') ? props.PropidadData? (await props.options.getData({params: {rowsPerPage: 0,order_by:props.OptionLabel}})).data: (await props.options.getData({params: {rowsPerPage: 0,order_by:props.OptionLabel}})) :props.options;
+  stringOptions = limpiarEspaciosRepetidos(stringOptions)
+  // console.log(stringOptions);
   if (props.modelValue) {
     if (typeof stringOptions[0] === 'object' && typeof props.modelValue !== 'object')
       model.value = stringOptions.find(v => v[props.optionValue] === props.modelValue);
