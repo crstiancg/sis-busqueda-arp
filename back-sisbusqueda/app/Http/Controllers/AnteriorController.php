@@ -19,18 +19,17 @@ class AnteriorController extends Controller
     {
         // $tempTable = Anterior::query();
 
-        $tempTable = Anterior::select('notario')
-                ->unionAll(Anterior2::select('notario'))
-                ->unionAll(Sis2018::select('notario'))
-                ->unionAll(Sis2018_2::select('notario'))
-                ->unionAll(Nuevo::select('notario'));
-
-        $temp = $tempTable->tosql();
-
-        return DB::table(DB::raw("($temp) as TempTable"))
-            ->distinct()->whereNotNull('notario')
-            ->orderBy('notario','asc')
-            ->get();
+        $tempTable = Anterior::select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', notario, ' '), '[[:space:]]+', ' ')) as notario"))
+        ->unionAll(Anterior2::select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', notario, ' '), '[[:space:]]+', ' ')) as notario")))
+        ->unionAll(Nuevo::select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', notario, ' '), '[[:space:]]+', ' ')) as notario")));
+    
+    $subquery = $tempTable->toSql();
+    
+    return DB::table(DB::raw("({$subquery}) as TempTable"))
+        ->distinct()
+        ->whereNotNull('notario')
+        ->orderBy('notario', 'asc')
+        ->get();
 
         // return  $this->generateViewSetList(
         //     $request,
