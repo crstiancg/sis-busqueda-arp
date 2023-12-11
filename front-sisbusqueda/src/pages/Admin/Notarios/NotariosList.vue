@@ -213,6 +213,7 @@
       fecha_final: row.fecha_final,
       ubigeo_cod: row.ubigeo_cod,
     });
+    notariosformRef.value.setValue(row);
   }
   
   async function eliminar(id) {

@@ -115,9 +115,10 @@
               </div>
             </template>
           </q-input> -->
-          <SelectUbigeo>
-
-          </SelectUbigeo>
+          <div class="row justify-between">
+            <SelectUbigeo ref="ubigeoSelectRef" :ubigeo_cod="form.ubigeo_cod" @selectedItem="updateUbigeo($event)">
+            </SelectUbigeo>
+        </div>
         </q-card-section>
         <q-separator />
   
@@ -161,7 +162,7 @@
       fecha_inicial: "",
       fecha_final: "",
       nombre_completo: "",
-      ubigeo_cod: "010502",
+      ubigeo_cod: null,
   
     });
   } else {
@@ -173,9 +174,22 @@
       fecha_inicial: "",
       fecha_final: "",
       nombre_completo: "",
-      ubigeo_cod: "010502",
+      ubigeo_cod: null,
     });
   }
+  const ubigeoSelectRef = ref("");
+
+  function setValue(values) {
+      form.value = values;
+      ubigeoSelectRef.value.getUbigeo(form.value.ubigeo_cod);
+  }
+
+  function updateUbigeo(event) {
+      form.ubigeo_cod = event;
+
+      console.log(event);
+    }
+
   // async function cargar() {
   //   const { data } = await RoleService.getData({
   //     params: { rowsPerPage: 0, order_by: "id" },
@@ -213,6 +227,7 @@
   defineExpose({
     // setData,
     form,
+    setValue
   });
   </script>
   <style scoped>

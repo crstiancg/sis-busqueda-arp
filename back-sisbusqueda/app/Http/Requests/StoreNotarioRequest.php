@@ -27,7 +27,6 @@ class StoreNotarioRequest extends FormRequest
             'apellido_materno' => 'required',
             'fecha_inicial' => 'required',
             'fecha_final' => 'required',
-            'ubigeo_cod' => 'required',
         ];
     }
 }
