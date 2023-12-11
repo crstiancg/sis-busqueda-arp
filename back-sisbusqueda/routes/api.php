@@ -6,6 +6,8 @@ use App\Http\Controllers\ArbolitoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FolioController;
+use App\Http\Controllers\GenerateListController;
+use App\Http\Controllers\Nuevo2Controller;
 use App\Http\Controllers\NuevoController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use App\Http\Controllers\UserController;
@@ -66,5 +68,8 @@ Route::apiResource('/anteriores2', Anterior2Controller::class)->middleware([Hand
 Route::apiResource('/sis2018', Sis2018Controller::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/sis2018_2', Sis20182Controller::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/nuevos', NuevoController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/nuevos2', Nuevo2Controller::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/arbolitos', ArbolitoController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::get('/generatelist',[GenerateListController::class,'index']);

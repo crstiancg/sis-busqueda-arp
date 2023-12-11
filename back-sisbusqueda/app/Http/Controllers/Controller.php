@@ -9,7 +9,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
-use PhpParser\Node\Expr\Cast\String_;
 
 class Controller extends BaseController
 {
@@ -38,22 +37,23 @@ class Controller extends BaseController
             }
             return $colName;
         }
-
         $tableBaseName = $querySet->getModel()->getTable();
-        // return $tableBaseName;
         if ($request->hasAny($filterBy)) {
             foreach ($filterBy as $filter) {
                 if ($request->filled($filter)) {
-                    $querySet->where(addOrSkipBaseTable($filter, $tableBaseName), $request->input($filter));
+                    $querySet->where(
+                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($filter, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                            $request->input($filter));
                 }
             }
         }
         if ($request->filled('search')) {
             $querySet->where(function ($q) use ($searchBy, $request, $tableBaseName) {
                 foreach ($searchBy as $searchByCol) {
-                    $q->orwhere(DB::raw('REPLACE(' . addOrSkipBaseTable($searchByCol,$tableBaseName) . ', " ", "")'),
-                    'like',
-                    '%' . str_replace(' ', '', $request->input('search')) . '%');
+                    $q->orwhere(
+                        DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($searchByCol, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                        'like',
+                        '%' . $request->input('search') . '%');
                 }
                 return $q;
             });
@@ -62,9 +62,7 @@ class Controller extends BaseController
             $searchOrderList = explode(',', $request->input('order_by'));
             foreach ($searchOrderList as $searchOrderParam) {
                 $searchOrderParamWithoutSign = preg_replace('/-/', '', $searchOrderParam, 1);
-
                 $orderDirection = substr($searchOrderParam, 0, 1) === '-' ? 'desc' : 'asc';
-
                 if (in_array($searchOrderParamWithoutSign, $orderBy, true)) {
                     $querySet->orderBy($searchOrderParamWithoutSign, $orderDirection);
                 }
@@ -75,11 +73,10 @@ class Controller extends BaseController
     }
 
     public function generateSelectList(Builder $querySet,String $column){
-
-        $temp = $querySet->tosql();
-
-        return DB::table(DB::raw("($temp) as TempTable"))
-            ->distinct()->whereNotNull("($column)")
+        $querySetSql = $querySet->toSql();
+        return DB::table(DB::raw("($querySetSql) as TempTable"))
+            ->select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".$column.", ' '), '[[:space:]]+', ' ')) as ".$column))
+            ->distinct()->whereNotNull($column)
             ->orderBy("$column",'asc')
             ->get();
     }

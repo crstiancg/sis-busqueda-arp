@@ -3,12 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Anterior;
-use App\Models\Anterior2;
-use App\Models\Nuevo;
-use App\Models\Sis2018;
-use App\Models\Sis2018_2;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
 class AnteriorController extends Controller
 {
@@ -19,25 +14,15 @@ class AnteriorController extends Controller
     {
         // $tempTable = Anterior::query();
 
-        $tempTable = Anterior::select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', notario, ' '), '[[:space:]]+', ' ')) as notario"))
-        ->unionAll(Anterior2::select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', notario, ' '), '[[:space:]]+', ' ')) as notario")))
-        ->unionAll(Nuevo::select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', notario, ' '), '[[:space:]]+', ' ')) as notario")));
-    
-    $subquery = $tempTable->toSql();
-    
-    return DB::table(DB::raw("({$subquery}) as TempTable"))
-        ->distinct()
-        ->whereNotNull('notario')
-        ->orderBy('notario', 'asc')
-        ->get();
+        $tempTable = Anterior::query();
 
-        // return  $this->generateViewSetList(
-        //     $request,
-        //     $tempTable,
-        //     [], //para el filtrado
-        //     ['notario',],  //para la busqueda
-        //     ['notario','lugar'] //para el odenamiento
-        // );
+        return  $this->generateViewSetList(
+            $request,
+            $tempTable,
+            ['notario','lugar'], //para el filtrado
+            ['id','notario',],  //para la busqueda
+            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
+        );
     }
 
     /**

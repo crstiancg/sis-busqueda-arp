@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Arbolito;
+use App\Models\Nuevo2;
 use Illuminate\Http\Request;
 
-class ArbolitoController extends Controller
+class Nuevo2Controller extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +14,10 @@ class ArbolitoController extends Controller
     {
         return  $this->generateViewSetList(
             $request,
-            Arbolito::query(),
-            ['otorgante'], //para el filtrado
-            ['id','otorgante','favorecido','fecha'],  //para la busqueda
-            ['id','otorgante','favorecido','fecha','protocolo','escritura','folio','bien','tmp'] //para el odenamiento
+            Nuevo2::query(),
+            ['notario','lugar'], //para el filtrado
+            ['id','notario',],  //para la busqueda
+            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         );
     }
 
@@ -40,7 +40,7 @@ class ArbolitoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Arbolito $arbolito)
+    public function show(Nuevo2 $nuevo2)
     {
         //
     }
@@ -48,7 +48,7 @@ class ArbolitoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Arbolito $arbolito)
+    public function edit(Nuevo2 $nuevo2)
     {
         //
     }
@@ -56,7 +56,7 @@ class ArbolitoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Arbolito $arbolito)
+    public function update(Request $request, Nuevo2 $nuevo2)
     {
         //
     }
@@ -64,7 +64,7 @@ class ArbolitoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Arbolito $arbolito)
+    public function destroy(Nuevo2 $nuevo2)
     {
         //
     }
