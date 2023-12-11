@@ -32,8 +32,9 @@
         "
       />
       <div class="row">
-        <SelectInput class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario" :options="GenerateListService" :GenerateList="{column:'notario',table:'all'}"/>
-        <SelectInput class="col-4 q-px-xs" label="Lugar" v-model="nombreLugar" :options="GenerateListService" :GenerateList="{column:'lugar',table:'all'}"/>
+        <SelectInput class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario" :options="GenerateListService" :GenerateList="{column:'notario',table:'anterior'}"/>
+        <SelectInput class="col-4 q-px-xs" label="Lugar" v-model="nombreLugar" :options="GenerateListService" :GenerateList="{column:'lugar',table:'anterior'}"/>
+        <SelectInput class="col-4 q-px-xs" label="Subserie" v-model="nombreSubserie" :options="GenerateListService" :GenerateList="{column:'subserie',table:'anterior'}"/>
       </div>
     </div>
 
@@ -114,21 +115,23 @@ import { useQuasar } from "quasar";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
 const $q = useQuasar();
 
-const listaNotario = ref();
 async function verDat(){
-  const dato = await GenerateListService.getData({column: 'notario',table:'all'});
+  const dato = await GenerateListService.getDataTable({ rowsPerPage: 10, page:1, search: '', order_by:'', notario: 'JULIO GARNICA ROSADO',lugar:'PUNO',subserie:'ACLARACION',otorgantes:''});
   console.log(dato);
 }
 // verDat(); //
 
 const columns = [
-  { field: (row) => row.id, name: "id", label: "Id", aling: "center", sortable: true, },
   { field: (row) => row.notario, name: "notario", label: "Notario", aling: "center", sortable: true,},
   { field: (row) => row.lugar, name: "lugar", label: "Lugar", aling: "center", sortable: true,},
   { field: (row) => row.subserie, name: "subserie", label: "Subserie", aling: "center", sortable: true,},
   { field: (row) => row.fecha, name: "fecha", label: "Fecha", aling: "center", sortable: true,},
   { field: (row) => row.bien, name: "bien", label: "Bien", aling: "center", sortable: true,},
   { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", aling: "center", sortable: true,},
+  { field: (row) => row.nescritura, name: "nescritura", label: "Escritura", aling: "center", sortable: true,},
+  { field: (row) => row.folio, name: "folio", label: "Folio", aling: "center", sortable: true,},
+  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", aling: "center", sortable: true,},
+  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", aling: "center", sortable: true,},
 ];
 
 const tableRef = ref();
@@ -156,7 +159,7 @@ async function onRequest(props) {
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter? '': descending ? "-" + sortBy : sortBy;
   const { data, total = 0 } = await AnteriorService.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by, notario: nombreNotario.value,lugar:nombreLugar.value},
+    params: { rowsPerPage: fetchCount, page, search: filter, order_by, notario: nombreNotario.value,lugar:nombreLugar.value,subserie:nombreSubserie.value},
   });;
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
@@ -173,16 +176,16 @@ async function onRequest(props) {
 }
 const nombreNotario = ref();
 const nombreLugar = ref();
+const nombreSubserie = ref();
 
 watch(nombreNotario, (newValue, oldValue) => {
-  if(newValue){
     tableRef.value.requestServerInteraction();
-  }
 });
 watch(nombreLugar, (newValue, oldValue) => {
-  if(newValue){
     tableRef.value.requestServerInteraction();
-  }
+});
+watch(nombreSubserie, (newValue, oldValue) => {
+    tableRef.value.requestServerInteraction();
 });
 
 onMounted(() => {

@@ -73,3 +73,4 @@ Route::apiResource('/arbolitos', ArbolitoController::class)->middleware([HandleP
 Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/generatelist',[GenerateListController::class,'index']);
+Route::get('/generatetableall',[GenerateListController::class,'generateTableAll']);

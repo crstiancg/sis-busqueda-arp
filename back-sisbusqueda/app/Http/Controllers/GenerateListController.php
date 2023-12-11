@@ -92,23 +92,18 @@ class GenerateListController extends Controller
 
         return $this->generateSelectList($tempTable,$column);
     }
-    private function generateTableAll(Request $request)
+    public function generateTableAll(Request $request)
     {
-        // $tempTable = Anterior::query();
+        // return $request;
 
-        $tempTable = Anterior::select("*")
-        ->unionAll(Anterior2::select("*"))
-        ->unionAll(Sis2018::select("*"))
-        ->unionAll(Sis2018_2::select("*"))
-        ->unionAll(Nuevo::select("*"))
-        ->unionAll(Nuevo2::select("*"));
+        $tempTable = Anterior::select("*");
 
         return  $this->generateViewSetList(
             $request,
             $tempTable,
-            [], //para el filtrado
-            ['notario',],  //para la busqueda
-            ['notario','lugar'] //para el odenamiento
+            ['notario','lugar','subserie','otorgantes'], //para el filtrado
+            ['id','notario',],  //para la busqueda
+            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         );
     }
 
