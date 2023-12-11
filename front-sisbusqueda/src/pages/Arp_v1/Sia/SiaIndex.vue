@@ -36,7 +36,7 @@
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
-      title="Roles"
+      title="Tabla Sia"
       ref="tableRef"
       :rows="rows"
       :columns="columns"

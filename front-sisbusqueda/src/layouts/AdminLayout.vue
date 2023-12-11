@@ -163,6 +163,21 @@
 
             <q-item-section> Nuevo </q-item-section>
           </q-item>
+          <q-item
+              :to="{ name: 'Nuevo2' }"
+              :active="link === 'Nuevo2'"
+              @click="link = 'Nuevo2'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Nuevo 2 </q-item-section>
+          </q-item>
 
           <q-item
               :to="{ name: 'Sia' }"

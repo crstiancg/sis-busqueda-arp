@@ -59,6 +59,11 @@ const routes = [
         component: () => import("pages/Arp_v1/Nuevo/NuevoIndex.vue"),
       },
       {
+        path: "nuevo2",
+        name: "Nuevo2",
+        component: () => import("pages/Arp_v1/Nuevo2/Nuevo2Index.vue"),
+      },
+      {
         path: "sia",
         name: "Sia",
         component: () => import("pages/Arp_v1/Sia/SiaIndex.vue"),

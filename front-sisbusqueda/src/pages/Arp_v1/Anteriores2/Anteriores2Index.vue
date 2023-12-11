@@ -31,12 +31,16 @@
           }
         "
       />
+      <div class="row">
+        <SelectInput class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario" :options="GenerateListService" :GenerateList="{column:'notario',table:'anterior2'}"/>
+        <SelectInput class="col-4 q-px-xs" label="Lugar" v-model="nombreLugar" :options="GenerateListService" :GenerateList="{column:'lugar',table:'anterior2'}"/>
+      </div>
     </div>
 
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
-      title="Roles"
+      title="Anteriores 2"
       ref="tableRef"
       :rows="rows"
       :columns="columns"
@@ -102,8 +106,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Anterior2Service from "src/services/arp_v1/Anterior2Service";
+import GenerateListService from "src/services/arp_v1/GenerateListService";
+import SelectInput from "src/components/SelectInput.vue";
 import { useQuasar } from "quasar";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
 const $q = useQuasar();
@@ -152,7 +158,7 @@ async function onRequest(props) {
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter? '': descending ? "-" + sortBy : sortBy;
   const { data, total = 0 } = await Anterior2Service.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by },
+    params: { rowsPerPage: fetchCount, page, search: filter, order_by, notario: nombreNotario.value,lugar:nombreLugar.value },
   });;
   // console.log(data);
   // clear out existing data and add new
@@ -168,6 +174,20 @@ async function onRequest(props) {
   // ...and turn of loading indicator
   loading.value = false;
 }
+
+const nombreNotario = ref();
+const nombreLugar = ref();
+
+watch(nombreNotario, (newValue, oldValue) => {
+  if(newValue){
+    tableRef.value.requestServerInteraction();
+  }
+});
+watch(nombreLugar, (newValue, oldValue) => {
+  if(newValue){
+    tableRef.value.requestServerInteraction();
+  }
+});
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();

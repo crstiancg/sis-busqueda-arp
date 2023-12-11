@@ -13,7 +13,7 @@
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" />
 
-        <q-breadcrumbs-el label="Data Sis2018" icon="mdi-account-key" />
+        <q-breadcrumbs-el label="Data Nuevos 2" icon="mdi-account-key" />
       </q-breadcrumbs>
     </div>
     <q-separator />
@@ -36,7 +36,7 @@
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
-      title="Sis 2018"
+      title="Nuevos 2"
       ref="tableRef"
       :rows="rows"
       :columns="columns"
@@ -103,13 +103,13 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import Sis2018Service from "src/services/arp_v1/Sis2018Service";
+import Nuevo2Service from "src/services/arp_v1/Nuevo2Service";
 import { useQuasar } from "quasar";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
 const $q = useQuasar();
 
 async function verDat(){
-  const dato = await Sis2018Service.getData({
+  const dato = await Nuevo2Service.getData({
     params: { rowsPerPage: 100, page:1, search: 'Manuel', order_by:'id' },
   })
   console.log(dato);
@@ -151,7 +151,7 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter? '': descending ? "-" + sortBy : sortBy;
-  const { data, total = 0 } = await Sis2018Service.getData({
+  const { data, total = 0 } = await Nuevo2Service.getData({
     params: { rowsPerPage: fetchCount, page, search: filter, order_by },
   });;
   // console.log(data);
@@ -189,7 +189,7 @@ async function editar(id) {
   formRole.value = true;
   edit.value = true;
   editId.value = id;
-  const row = await Sis2018Service.get(id);
+  const row = await Nuevo2Service.get(id);
   console.log(row);
 
   rolesformRef.value.form.setData({
@@ -206,7 +206,7 @@ async function eliminar(id) {
     cancel: true,
     persistent: true,
   }).onOk(async () => {
-    await Sis2018Service.delete(id);
+    await Nuevo2Service.delete(id);
     tableRef.value.requestServerInteraction();
     $q.notify({
       type: "positive",

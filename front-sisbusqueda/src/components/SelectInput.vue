@@ -8,8 +8,8 @@
       @update:model-value="emitir(model)"
       @filter="filter"
       :options="filterOptions"
-      :option-value="optionValue"
-      :option-label="OptionLabel"
+      :option-value="op_value"
+      :option-label="op_label"
       :loading="loading"
       :disable="loading"
       >
@@ -32,39 +32,49 @@ const props = defineProps({
   label:{default:'Select'},
   modelValue: {default:null},
   options: {default:null},
-  optionValue:{default:'id'},
+  OptionValue:{default:'id'},
   OptionLabel:{default:'nombre'},
-  PropidadData :{default:true}
+  GenerateList :{default:null},
+  LimpEspaRepe :{default:false}
 });
 let stringOptions = null;
 const model = ref('');
 const loading = ref(false);
+const op_label = ref('');
+const op_value = ref('');
 
-function limpiarEspaciosRepetidos(array) {
-      // Limpiar espacios en cada notario
-      array.forEach((item) => {
-        item[props.OptionLabel] = item[props.OptionLabel].replace(/\s+/g, ' ').trim();
-      });
-
-      // Eliminar elementos duplicados
-      const array_ = array.filter(
-        (item, index, self) =>
-          index ===
-          self.findIndex((t) => t[props.OptionLabel] === item[props.OptionLabel])
-      );
-      return array_;
-    }
+function limpiarEspaciosRepetidos(array,val) {
+  // Limpiar espacios en cada notario
+  array.forEach((item) => {
+    item[val] = item[val].replace(/\s+/g, ' ').trim();
+  });
+  // Eliminar elementos duplicados
+  const array_ = array.filter(
+    (item, index, self) =>
+      index ===
+      self.findIndex((t) => t[val] === item[val])
+  );
+  return array_;
+}
 function emitir(_model){
-  emit('update:modelValue', _model && typeof _model === 'object'?_model[props.optionValue]:_model)
+  emit('update:modelValue', _model && typeof _model === 'object'?_model[op_value.value]:_model)
 }
 onMounted(async () => {
   loading.value=true;
-  stringOptions = props.options.hasOwnProperty('getData') ? props.PropidadData? (await props.options.getData({params: {rowsPerPage: 0,order_by:props.OptionLabel}})).data: (await props.options.getData({params: {rowsPerPage: 0,order_by:props.OptionLabel}})) :props.options;
-  stringOptions = limpiarEspaciosRepetidos(stringOptions)
-  // console.log(stringOptions);
+  op_label.value = props.GenerateList ? props.GenerateList.column : props.OptionLabel;
+  op_value.value = props.GenerateList ? props.GenerateList.column : props.OptionValue;
+  stringOptions = props.options.hasOwnProperty('getData') ?
+        props.GenerateList?
+          (await props.options.getData(props.GenerateList))
+          :(await props.options.getData({params: {rowsPerPage: 0,order_by:op_label.value}})).data
+      :props.options;
+
+  if (props.LimpEspaRepe)
+    stringOptions = limpiarEspaciosRepetidos(stringOptions,op_value.value)
+
   if (props.modelValue) {
     if (typeof stringOptions[0] === 'object' && typeof props.modelValue !== 'object')
-      model.value = stringOptions.find(v => v[props.optionValue] === props.modelValue);
+      model.value = stringOptions.find(v => v[op_value.value] === props.modelValue);
     else
       model.value = props.modelValue;
     emitir(model.value);
@@ -80,7 +90,7 @@ function filter(val, update) {
           const needle = val.toLowerCase();
           filterOptions.value = stringOptions.filter(v => {
               if(typeof v === 'object'){
-                return v[props.OptionLabel].toString().toLowerCase().includes(needle);
+                return v[op_label.value].toString().toLowerCase().includes(needle);
               }else
                 return v.toString().toLowerCase().includes(needle)
             }
