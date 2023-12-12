@@ -3,6 +3,7 @@
 use App\Http\Controllers\Anterior2Controller;
 use App\Http\Controllers\AnteriorController;
 use App\Http\Controllers\ArbolitoController;
+use App\Http\Controllers\AreaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FolioController;
@@ -79,3 +80,4 @@ Route::get('/generatetableall',[GenerateListController::class,'generateTableAll'
 
 Route::apiResource('/notarios', NotarioController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/subseries', SubSerieController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/areas', AreaController::class)->middleware([HandlePrecognitiveRequests::class]);

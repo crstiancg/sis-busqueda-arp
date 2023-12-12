@@ -88,6 +88,11 @@ const routes = [
         name: "SubSeries",
         component: () => import("pages/Admin/SubSeries/SubSeriesList.vue"),
       },
+      {
+        path: "areas",
+        name: "Areas",
+        component: () => import("pages/Admin/Areas/AreasList.vue"),
+      },
 
     ],
   },
