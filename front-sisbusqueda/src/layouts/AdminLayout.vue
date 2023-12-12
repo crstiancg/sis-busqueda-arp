@@ -86,6 +86,51 @@
             <q-item-section> Usuarios </q-item-section>
           </q-item>
 
+          <q-item
+            :to="{ name: 'Notarios' }"
+            :active="link === 'Notarios'"
+            @click="link = 'Notarios'"
+            clickable
+            v-ripple
+            class="q-ma-xs rounded-borders"
+            active-class="my-menu-link"
+          >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Notarios </q-item-section>
+          </q-item>
+          <q-item
+            :to="{ name: 'SubSeries' }"
+            :active="link === 'SubSeries'"
+            @click="link = 'SubSeries'"
+            clickable
+            v-ripple
+            class="q-ma-xs rounded-borders"
+            active-class="my-menu-link"
+          >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> SubSeries </q-item-section>
+          </q-item>
+          <q-item
+            :to="{ name: 'Areas' }"
+            :active="link === 'Areas'"
+            @click="link = 'Areas'"
+            clickable
+            v-ripple
+            class="q-ma-xs rounded-borders"
+            active-class="my-menu-link"
+          >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Areas </q-item-section>
+          </q-item>
           <q-separator />
     <!-- ruta de prueba  **************************************************** -->
           <q-item

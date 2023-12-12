@@ -78,6 +78,21 @@ const routes = [
         name: "Sis2018_2",
         component: () => import("pages/Arp_v1/Sis2018_2/Sis2018_2Index.vue"),
       },
+      {
+        path: "notarios",
+        name: "Notarios",
+        component: () => import("pages/Admin/Notarios/NotariosList.vue"),
+      },
+      {
+        path: "subseries",
+        name: "SubSeries",
+        component: () => import("pages/Admin/SubSeries/SubSeriesList.vue"),
+      },
+      {
+        path: "areas",
+        name: "Areas",
+        component: () => import("pages/Admin/Areas/AreasList.vue"),
+      },
 
     ],
   },

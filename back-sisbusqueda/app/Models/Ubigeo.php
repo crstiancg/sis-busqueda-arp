@@ -18,4 +18,9 @@ class Ubigeo extends Model
     ];
 
     protected $primaryKey = 'codigo';
+
+    public function notarios()
+    {
+        return $this->hasMany(Notario::class, 'ubigeo_cod');
+    }
 }

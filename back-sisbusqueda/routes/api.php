@@ -3,10 +3,12 @@
 use App\Http\Controllers\Anterior2Controller;
 use App\Http\Controllers\AnteriorController;
 use App\Http\Controllers\ArbolitoController;
+use App\Http\Controllers\AreaController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FolioController;
 use App\Http\Controllers\GenerateListController;
+use App\Http\Controllers\NotarioController;
 use App\Http\Controllers\Nuevo2Controller;
 use App\Http\Controllers\NuevoController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
@@ -16,6 +18,7 @@ use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\SiaController;
 use App\Http\Controllers\Sis20182Controller;
 use App\Http\Controllers\Sis2018Controller;
+use App\Http\Controllers\SubSerieController;
 use App\Http\Controllers\UbigeoController;
 use App\Models\Sis2018;
 
@@ -74,3 +77,7 @@ Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitive
 Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/generatelist',[GenerateListController::class,'index']);
 Route::get('/generatetableall',[GenerateListController::class,'generateTableAll']);
+
+Route::apiResource('/notarios', NotarioController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/subseries', SubSerieController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/areas', AreaController::class)->middleware([HandlePrecognitiveRequests::class]);
