@@ -39,7 +39,7 @@
     </div>
 
     <q-table
-      :rows-per-page-options="[7, 10, 15]"
+      :rows-per-page-options="[5, 10, 15,20]"
       class="my-sticky-header-table htable q-ma-sm"
       title="Anteriores"
       ref="tableRef"
@@ -51,9 +51,12 @@
       :filter="filter"
       binary-state-sort
       @request="onRequest"
+      virtual-scroll
     >
       <template v-slot:top-right>
+        {{ busColum }}
         <q-input
+          clearable
           active-class="text-white"
           standout="bg-primary"
           color="white"
@@ -69,9 +72,21 @@
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
-          <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
-          </q-th>
+          <template v-for="col in props.cols" :key="col.name" >
+            <q-th :props="props">
+              <span v-if="col.sortable_" class="span-icono" @click="props.sort(col.name)"><q-icon class="q-table__sort-icon icon-sort" style="" name="arrow_downward" />{{ col.label }}</span>
+              <span v-else>{{ col.label }}</span>
+              <q-icon v-if="col.search" class="q-pa-xs q-mx-xs cursor-pointer" :class="$q.dark.isActive?'btn-buscar-dark':'btn-buscar'" name="search" size="xs">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-input clearable class="q-px-sm" dense debounce="500" v-model="busColum[col.name]" placeholder="Buscar">
+                    <template v-slot:append>
+                      <q-icon name="search" />
+                    </template>
+                  </q-input>
+                </q-popup-proxy>
+              </q-icon>
+            </q-th>
+          </template>
           <q-th auto-width> Acciones </q-th>
         </q-tr>
       </template>
@@ -102,6 +117,15 @@
           </q-td>
         </q-tr>
       </template>
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
+      <template v-slot:no-data="{ icon, message, filter }">
+        <div class="full-width row flex-center q-gutter-sm text-subtitle1">
+          <span>{{ message }}</span>
+          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+        </div>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -122,16 +146,18 @@ async function verDat(){
 // verDat(); //
 
 const columns = [
-  { field: (row) => row.notario, name: "notario", label: "Notario", aling: "center", sortable: true,},
-  { field: (row) => row.lugar, name: "lugar", label: "Lugar", aling: "center", sortable: true,},
-  { field: (row) => row.subserie, name: "subserie", label: "Subserie", aling: "center", sortable: true,},
-  { field: (row) => row.fecha, name: "fecha", label: "Fecha", aling: "center", sortable: true,},
-  { field: (row) => row.bien, name: "bien", label: "Bien", aling: "center", sortable: true,},
-  { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", aling: "center", sortable: true,},
-  { field: (row) => row.nescritura, name: "nescritura", label: "Escritura", aling: "center", sortable: true,},
-  { field: (row) => row.folio, name: "folio", label: "Folio", aling: "center", sortable: true,},
-  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", aling: "center", sortable: true,},
-  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", aling: "center", sortable: true,},
+  { name: 'index',label: '#',field: 'index'},
+  { field: (row) => row.notario, name: "notario", label: "Notario", align: "left", sortable_: true, search:true},
+  { field: (row) => row.lugar, name: "lugar", label: "Lugar", align: "left", sortable_: true, search:true},
+  { field: (row) => row.subserie, name: "subserie", label: "Subserie", align: "center", sortable_: true, search:true},
+  { field: (row) => row.fecha, name: "fecha", label: "Fecha", align: "center", sortable_: true, search:true},
+  { field: (row) => row.bien, name: "bien", label: "Bien", align: "center", sortable_: true,},
+  { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", align: "center", sortable_: true,},
+  { field: (row) => row.nescritura, name: "nescritura", label: "Escritura", align: "center", sortable_: true,},
+  { field: (row) => row.folio, name: "folio", label: "Folio", align: "center", sortable_: true,},
+  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", align: "center", sortable_: true,},
+  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", align: "center", sortable_: true,},
+
 ];
 
 const tableRef = ref();
@@ -142,12 +168,13 @@ const edit = ref(false);
 const editId = ref();
 const rows = ref([]);
 const filter = ref("");
+const busColum = ref({});
 const loading = ref(false);
 const pagination = ref({
   sortBy: "id",
   descending: false,
   page: 1,
-  rowsPerPage: 7,
+  rowsPerPage: 10,
   rowsNumber: 10,
 });
 
@@ -163,6 +190,16 @@ async function onRequest(props) {
   });;
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
+  for (const key in columns) {
+    if(columns[key].name === 'index'){
+      let cantidad = (page-1)*fetchCount
+      rows.value.forEach((row, index) => {
+        row.index = index+1 + cantidad;
+      });
+      break;
+    }
+  };
+
   // don't forget to update local pagination object
   !total
     ? (pagination.value.rowsNumber = data.length)
@@ -241,8 +278,8 @@ async function eliminar(id) {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  height: 80vh
-
+  max-height: 70vh
+  min-height: 40vh
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
@@ -269,4 +306,18 @@ async function eliminar(id) {
 
 .htable
   #height: calc(100vh - 157px)
+.span-icono
+  cursor: pointer
+  &:hover .icon-sort
+    opacity: .64 !important
+
+.btn-buscar:hover
+  color: $grey-9
+  border-radius: 8px
+  background-color: $grey-2
+
+.btn-buscar-dark:hover
+  // border: 1px solid $grey-10
+  border-radius: 8px
+  background-color: $grey-9
 </style>
