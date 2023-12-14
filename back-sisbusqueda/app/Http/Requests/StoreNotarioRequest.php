@@ -25,8 +25,8 @@ class StoreNotarioRequest extends FormRequest
             'nombres' => 'required',
             'apellido_paterno' => 'required',
             'apellido_materno' => 'required',
-            'fecha_inicial' => 'required',
-            'fecha_final' => 'required',
+            'año_inicio' => 'required',
+            'año_final' => 'required',
         ];
     }
 }
