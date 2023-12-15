@@ -64,36 +64,36 @@
           <q-input
             dense
             outlined
-            v-model="form.fecha_inicial"
+            v-model="form.año_inicio"
             :loading="form.validating"
             label="Fecha Inicial *"
-            @change="form.validate('fecha_inicial')"
-            :error="form.invalid('fecha_inicial')"
-            :class="form.invalid('fecha_inicial') ? 'q-mb-sm' : ''"
+            @change="form.validate('año_inicio')"
+            :error="form.invalid('año_inicio')"
+            :class="form.invalid('año_inicio') ? 'q-mb-sm' : ''"
             ><template v-slot:prepend>
               <q-icon name="mdi-key" />
             </template>
             <template v-slot:error>
               <div>
-                {{ form.errors.fecha_inicial }}
+                {{ form.errors.año_inicio }}
               </div>
             </template>
           </q-input>
           <q-input
             dense
             outlined
-            v-model="form.fecha_final"
+            v-model="form.año_final"
             :loading="form.validating"
             label="Fecha Final *"
-            @change="form.validate('fecha_final')"
-            :error="form.invalid('fecha_final')"
-            :class="form.invalid('fecha_final') ? 'q-mb-sm' : ''"
+            @change="form.validate('año_final')"
+            :error="form.invalid('año_final')"
+            :class="form.invalid('año_final') ? 'q-mb-sm' : ''"
             ><template v-slot:prepend>
               <q-icon name="mdi-key" />
             </template>
             <template v-slot:error>
               <div>
-                {{ form.errors.fecha_final }}
+                {{ form.errors.año_final }}
               </div>
             </template>
           </q-input>
@@ -159,8 +159,8 @@
       nombres: "",
       apellido_paterno: "",
       apellido_materno: "",
-      fecha_inicial: "",
-      fecha_final: "",
+      año_inicio: "",
+      año_final: "",
       nombre_completo: "",
       ubigeo_cod: null,
   
@@ -171,8 +171,8 @@
       nombres: "",
       apellido_paterno: "",
       apellido_materno: "",
-      fecha_inicial: "",
-      fecha_final: "",
+      año_inicio: "",
+      año_final: "",
       nombre_completo: "",
       ubigeo_cod: null,
     });

@@ -123,17 +123,17 @@
       sortable: true,
     },
     {
-      name: "fecha_inicial",
-      label: "Fecha Inicial",
+      name: "año_inicio",
+      label: "Año Inicio",
       aling: "center",
-      field: (row) => row.fecha_inicial,
+      field: (row) => row.año_inicio,
       sortable: true,
     },
     {
-      name: "fecha_final",
-      label: "Fecha Final",
+      name: "año_final",
+      label: "Año Final",
       aling: "center",
-      field: (row) => row.fecha_final,
+      field: (row) => row.año_final,
       sortable: true,
     },
 
@@ -209,8 +209,8 @@
       nombres: row.nombres,
       apellido_paterno: row.apellido_paterno,
       apellido_materno: row.apellido_materno,
-      fecha_inicial: row.fecha_inicial,
-      fecha_final: row.fecha_final,
+      año_inicio: row.año_inicio,
+      año_final: row.año_final,
       ubigeo_cod: row.ubigeo_cod,
     });
     notariosformRef.value.setValue(row);

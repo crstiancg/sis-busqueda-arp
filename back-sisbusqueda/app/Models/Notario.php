@@ -14,8 +14,8 @@ class Notario extends Model
         'apellido_paterno',
         'apellido_materno',
         'nombre_completo',
-        'fecha_inicial',
-        'fecha_final',
+        'año_inicio',
+        'año_final',
         'ubigeo_cod',
     ];
 

@@ -115,11 +115,18 @@
 import { useForm } from "laravel-precognition-vue";
 import { onMounted, ref } from "vue";
 import RoleService from "src/services/RoleService";
-
+import AreaService from "src/services/AreaService";
 const isPwd = ref(true);
 const roles = ref([]);
 const emits = defineEmits(["save"]);
+const Area = ref();
 
+async function data(){
+  const data1 = await AreaService.getData()
+  console.log(data1);
+};
+
+data();
 
 const props = defineProps({
   title: String,

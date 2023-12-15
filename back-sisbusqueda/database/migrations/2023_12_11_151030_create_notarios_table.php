@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('apellido_paterno');
             $table->string('apellido_materno');
             $table->string('nombre_completo');
-            $table->date('fecha_inicial');
-            $table->date('fecha_final');
+            $table->year('año_inicio');
+            $table->year('año_final');
             $table->char('ubigeo_cod', 6)->nullable();
             $table->foreign('ubigeo_cod')->references('codigo')->on('ubigeos')->nullOnDelete();
             // $table->foreignId('ubigeo_id')->constrained('ubigeos')->onDelete('cascade');
