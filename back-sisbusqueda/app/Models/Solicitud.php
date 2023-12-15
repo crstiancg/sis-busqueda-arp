@@ -27,4 +27,8 @@ class Solicitud extends Model
     {
         return $this->belongsTo(Solicitante::class, 'solicitante_id');
     }
+    public function registroSolicitud()
+    {
+        return $this->hasOne(RegistroSolicitud::class, 'solicitud_id');
+    }
 }
