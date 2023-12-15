@@ -96,7 +96,12 @@ class GenerateListController extends Controller
     {
         // return $request;
 
-        $tempTable = Anterior::select("*");
+        $tempTable = Anterior::select("*")
+            ->unionAll(Anterior2::select("*"))
+            ->unionAll(Sis2018::select("*"))
+            ->unionAll(Sis2018_2::select("*"))
+            ->unionAll(Nuevo::select("*"))
+            ->unionAll(Nuevo2::select("*"));
 
         return  $this->generateViewSetList(
             $request,
