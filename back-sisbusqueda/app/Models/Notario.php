@@ -23,4 +23,12 @@ class Notario extends Model
     {
         return $this->belongsTo(Ubigeo::class, 'ubigeo_cod','codigo');
     }
+    public function solicitud()
+    {
+        return $this->hasMany(Solicitud::class, 'notario_id');
+    }
+    public function libros()
+    {
+        return $this->hasMany(Libro::class, 'notario_id');
+    }
 }
