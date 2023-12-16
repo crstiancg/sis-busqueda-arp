@@ -13,6 +13,13 @@ class Solicitud extends Model
         'notario_id',
         'subserie_id',
         'solicitante_id',
+        'otorgantes',
+        'favorecidos',
+        'fecha',
+        'bien',
+        'mas_datos',
+        'tipo_copia',
+        'ubigeo_cod',
         'estado',
     ];
     public function notario()
@@ -30,5 +37,10 @@ class Solicitud extends Model
     public function registroSolicitud()
     {
         return $this->hasOne(RegistroSolicitud::class, 'solicitud_id');
+    }
+
+    public function ubigeo()
+    {
+        return $this->belongsTo(Ubigeo::class, 'ubigeo_cod','codigo');
     }
 }

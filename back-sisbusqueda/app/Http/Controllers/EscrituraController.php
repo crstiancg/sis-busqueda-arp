@@ -12,7 +12,13 @@ class EscrituraController extends Controller
      */
     public function index()
     {
-        //
+        $datos = Escritura::with(
+            'subSerie',
+            'libro',
+                'libro.notario',
+            'favorecidos',
+            'otorgantes')->get();
+        return $datos;
     }
 
     /**

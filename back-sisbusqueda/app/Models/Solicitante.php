@@ -10,12 +10,23 @@ class Solicitante extends Model
     use HasFactory;
     protected $table = 'solicitantes';
     protected $fillable = [
+        'nombres',
+        'apellido_paterno',
+        'apellido_materno',
         'nombre_completo',
+        'tipo_documento',
+        'num_documento',
+        'direccion',
         'correo',
         'celular',
+        'ubigeo_cod',
     ];
     public function solicitudes()
     {
         return $this->hasMany(Solicitud::class, 'solicitante_id');
+    }
+    public function ubigeo()
+    {
+        return $this->belongsTo(Ubigeo::class, 'ubigeo_cod','codigo');
     }
 }

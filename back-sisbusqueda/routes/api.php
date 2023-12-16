@@ -4,20 +4,29 @@ use App\Http\Controllers\Anterior2Controller;
 use App\Http\Controllers\AnteriorController;
 use App\Http\Controllers\ArbolitoController;
 use App\Http\Controllers\AreaController;
+use App\Http\Controllers\EscrituraController;
+use App\Http\Controllers\FavorecidoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FolioController;
 use App\Http\Controllers\GenerateListController;
+use App\Http\Controllers\LibroController;
 use App\Http\Controllers\NotarioController;
 use App\Http\Controllers\Nuevo2Controller;
 use App\Http\Controllers\NuevoController;
+use App\Http\Controllers\OtorganteController;
 use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\RegistroBusquedaController;
+use App\Http\Controllers\RegistroSolicitudController;
+use App\Http\Controllers\RegistroVerificacionController;
 use App\Http\Controllers\SiaController;
 use App\Http\Controllers\Sis20182Controller;
 use App\Http\Controllers\Sis2018Controller;
+use App\Http\Controllers\SolicitanteController;
+use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SubSerieController;
 use App\Http\Controllers\UbigeoController;
 use App\Models\Sis2018;
@@ -74,10 +83,21 @@ Route::apiResource('/nuevos', NuevoController::class)->middleware([HandlePrecogn
 Route::apiResource('/nuevos2', Nuevo2Controller::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/arbolitos', ArbolitoController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitiveRequests::class]);
-Route::apiResource('/sia', SiaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/generatelist',[GenerateListController::class,'index']);
 Route::get('/generatetableall',[GenerateListController::class,'generateTableAll']);
 
 Route::apiResource('/notarios', NotarioController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/subseries', SubSerieController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/areas', AreaController::class)->middleware([HandlePrecognitiveRequests::class]);
+
+Route::apiResource('/libros', LibroController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/escrituras', EscrituraController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/otorgantes', OtorganteController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/favorecidos', FavorecidoController::class)->middleware([HandlePrecognitiveRequests::class]);
+
+Route::apiResource('/solicitantes', SolicitanteController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/solicitudes', SolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
+
+Route::apiResource('/registro_solicitudes', RegistroSolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/registro_busquedas', RegistroBusquedaController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/registro_verificaciones', RegistroVerificacionController::class)->middleware([HandlePrecognitiveRequests::class]);

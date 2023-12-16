@@ -12,7 +12,10 @@ class SolicitudController extends Controller
      */
     public function index()
     {
-        //
+        $datos = Solicitud::with(
+            'subSerie',
+            'notario',)->get();
+        return $datos;
     }
 
     /**
