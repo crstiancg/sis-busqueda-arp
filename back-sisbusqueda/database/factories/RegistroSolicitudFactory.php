@@ -14,10 +14,14 @@ class RegistroSolicitudFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    private $v = 0;
     public function definition(): array
     {
         return [
-            //
+            'user_id' => 1,
+            'solicitud_id' => ++$this->v,
+            'estado' => fake()->boolean(),
+            'observaciones' => fake()->text(),
         ];
     }
 }

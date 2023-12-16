@@ -18,7 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
             $table->boolean('estado');
-            $table->string('observaciones');
+            $table->text('observaciones')->nullable();
 
             // pendiente los datos de cantidad de copias, costos, etc
             $table->timestamps();

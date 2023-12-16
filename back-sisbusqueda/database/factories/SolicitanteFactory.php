@@ -17,7 +17,9 @@ class SolicitanteFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nombre_completo' => fake()->name().' '.fake()->lastName(),
+            'correo' => fake()->email(),
+            'celular' => fake()->phoneNumber(),
         ];
     }
 }

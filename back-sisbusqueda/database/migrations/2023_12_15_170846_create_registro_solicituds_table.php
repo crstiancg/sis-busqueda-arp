@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('solicitud_id')->nullable();
             $table->foreign('solicitud_id')->references('id')->on('solicituds')->nullOnDelete();
             $table->boolean('estado');
+            $table->text('observaciones')->nullable();
             $table->timestamps();
         });
     }

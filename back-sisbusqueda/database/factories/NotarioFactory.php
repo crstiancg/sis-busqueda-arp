@@ -17,7 +17,13 @@ class NotarioFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'nombres' => fake()->name(),
+            'apellido_paterno' => fake()->lastName(),
+            'apellido_materno' => fake()->lastName(),
+            'nombre_completo' => fake()->name().' '.fake()->lastName(),
+            'fecha_inicial' => fake()->date(),
+            'fecha_final' => fake()->date(),
+            'ubigeo_cod' => fake()->randomElement(array('010101','010102','010103','010104','010105','010106')),
         ];
     }
 }

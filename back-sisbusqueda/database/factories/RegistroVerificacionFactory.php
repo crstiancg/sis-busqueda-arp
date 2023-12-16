@@ -14,10 +14,14 @@ class RegistroVerificacionFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    private $i=0;
     public function definition(): array
     {
         return [
-            //
+            'user_id' => 1,
+            'RB_id_derivado' => ++$this->i,
+            'estado' => fake()->boolean(),
+            'observaciones' => fake()->text(),
         ];
     }
 }

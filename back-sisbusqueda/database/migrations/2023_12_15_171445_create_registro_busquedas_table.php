@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('cod_escritura');
             $table->string('cod_folioInicial');
             $table->string('cod_folioFinal');
-            $table->string('observaciones');
+            $table->text('observaciones')->nullable();
             $table->timestamps();
         });
     }

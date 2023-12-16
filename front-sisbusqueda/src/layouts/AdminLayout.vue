@@ -15,10 +15,10 @@
       :mini="miniState"
       @mouseover="miniState = false"
       @mouseout="miniState = true"
-      :width="200"
+      :width="230"
       :breakpoint="500"
       bordered
-      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-3'"
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-4'"
     >
       <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
         <q-list  padding>
@@ -28,7 +28,6 @@
             @click="link = 'Dash'"
             clickable
             v-ripple
-
             class="q-ma-xs rounded-borders"
             active-class="my-menu-link"
           >
@@ -133,127 +132,53 @@
           </q-item>
           <q-separator />
     <!-- ruta de prueba  **************************************************** -->
-          <q-item
-              :to="{ name: 'Anteriores' }"
-              :active="link === 'Anteriores'"
-              @click="link = 'Anteriores'"
-              clickable
-              v-ripple
-              class="q-ma-xs rounded-borders"
-              active-class="my-menu-link"
-            >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
+          <q-expansion-item expand-separator icon="list" label="SA" default-opened header-class="bg-blue-6 text-white" expand-icon-class="text-white" >
+            <div class="q-pl-md">
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Anteriores' }" :active="link === 'Anteriores'" @click="link = 'Anteriores'" >
+                  <!-- <q-item-section avatar> <q-icon name="mdi-account" /> </q-item-section> -->
+                  <q-item-section> Anteriores </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Anteriores2' }" :active="link === 'Anteriores2'" @click="link = 'Anteriores2'" >
+                  <q-item-section> Anteriores2 </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Sis2018' }" :active="link === 'Sis2018'" @click="link = 'Sis2018'" >
+                  <q-item-section> Sis2018 </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Sis2018_2' }" :active="link === 'Sis2018_2'" @click="link = 'Sis2018_2'">
+                  <q-item-section> Sis2018 2 </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Nuevo' }" :active="link === 'Nuevo'" @click="link = 'Nuevo'" >
+                  <q-item-section> Nuevo </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Nuevo2' }" :active="link === 'Nuevo2'" @click="link = 'Nuevo2'" >
+                  <q-item-section> Nuevo 2 </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Sia' }" :active="link === 'Sia'" @click="link = 'Sia'" >
+                  <q-item-section> Sia </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Arbolito' }" :active="link === 'Arbolito'" @click="link = 'Arbolito'" >
+                  <q-item-section> Arbolito </q-item-section>
+              </q-item>
+            </div>
+          </q-expansion-item>
 
-            <q-item-section> Anteriores </q-item-section>
-          </q-item>
-          <q-item
-              :to="{ name: 'Anteriores2' }"
-              :active="link === 'Anteriores2'"
-              @click="link = 'Anteriores2'"
-              clickable
-              v-ripple
-              class="q-ma-xs rounded-borders"
-              active-class="my-menu-link"
-            >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> Anteriores2 </q-item-section>
-          </q-item>
-          <q-item
-              :to="{ name: 'Sis2018' }"
-              :active="link === 'Sis2018'"
-              @click="link = 'Sis2018'"
-              clickable
-              v-ripple
-              class="q-ma-xs rounded-borders"
-              active-class="my-menu-link"
-            >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> Sis2018 </q-item-section>
-          </q-item>
-          <q-item
-              :to="{ name: 'Sis2018_2' }"
-              :active="link === 'Sis2018_2'"
-              @click="link = 'Sis2018_2'"
-              clickable
-              v-ripple
-              class="q-ma-xs rounded-borders"
-              active-class="my-menu-link"
-            >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> Sis2018 2 </q-item-section>
-          </q-item>
-          <q-item
-              :to="{ name: 'Nuevo' }"
-              :active="link === 'Nuevo'"
-              @click="link = 'Nuevo'"
-              clickable
-              v-ripple
-              class="q-ma-xs rounded-borders"
-              active-class="my-menu-link"
-            >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> Nuevo </q-item-section>
-          </q-item>
-          <q-item
-              :to="{ name: 'Nuevo2' }"
-              :active="link === 'Nuevo2'"
-              @click="link = 'Nuevo2'"
-              clickable
-              v-ripple
-              class="q-ma-xs rounded-borders"
-              active-class="my-menu-link"
-            >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> Nuevo 2 </q-item-section>
-          </q-item>
-
-          <q-item
-              :to="{ name: 'Sia' }"
-              :active="link === 'Sia'"
-              @click="link = 'Sia'"
-              clickable
-              v-ripple
-              class="q-ma-xs rounded-borders"
-              active-class="my-menu-link"
-            >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> Sia </q-item-section>
-          </q-item>
-          <q-item
-              :to="{ name: 'Arbolito' }"
-              :active="link === 'Arbolito'"
-              @click="link = 'Arbolito'"
-              clickable
-              v-ripple
-              class="q-ma-xs rounded-borders"
-              active-class="my-menu-link"
-            >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> Arbolito </q-item-section>
-          </q-item>
+          <q-expansion-item expand-separator icon="list" label="Panel de escrituras" default-opened header-class="bg-blue-6 text-white" expand-icon-class="text-white" >
+            <div class="q-pl-md">
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Anteriores' }" :active="link === 'Anteriores'" @click="link = 'Anteriores'" >
+                  <!-- <q-item-section avatar> <q-icon name="mdi-account" /> </q-item-section> -->
+                  <q-item-section> Anteriores </q-item-section>
+              </q-item>
+            </div>
+          </q-expansion-item>
     <!-- ********************************************************************* -->
           <q-separator />
 

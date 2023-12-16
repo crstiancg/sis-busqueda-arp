@@ -13,6 +13,7 @@ class RegistroSolicitud extends Model
         'solicitud_id',
         'user_id',
         'estado',
+        'observaciones',
     ];
     public function solicitud()
     {
