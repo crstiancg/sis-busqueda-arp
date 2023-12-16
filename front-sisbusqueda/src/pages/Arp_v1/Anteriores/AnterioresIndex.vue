@@ -38,7 +38,6 @@
       ref="tableRef" :rows="rows" :columns="columns" row-key="id" v-model:pagination="pagination" :loading="loading"
       :filter="filter" binary-state-sort @request="onRequest" virtual-scroll>
       <template v-slot:top-right>
-        {{ busColum }}
         <q-input clearable active-class="text-white" standout="bg-primary" color="white" dense debounce="500"
           v-model="filter" placeholder="Buscar">
           <template v-slot:append>
@@ -48,24 +47,20 @@
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
-          <template v-for="col in props.cols" :key="col.name">
-            <q-th :props="props">
-              <span v-if="col.sortable_" class="span-icono" @click="props.sort(col.name)"><q-icon
-                  class="q-table__sort-icon icon-sort" style="" name="arrow_downward" />{{ col.label }}</span>
+            <q-th v-for="col in props.cols" :key="col.name" :props="props">
+              <span v-if="col.sortable_" class="span-icono" @click="props.sort(col.name)">
+                <q-icon class="q-table__sort-icon icon-sort" style="" name="arrow_downward" />
+                {{ col.label }}
+              </span>
               <span v-else>{{ col.label }}</span>
-              <q-icon v-if="col.search" class="q-pa-xs q-mx-xs cursor-pointer"
-                :class="$q.dark.isActive ? 'btn-buscar-dark' : 'btn-buscar'" name="search" size="xs">
+              <q-icon v-if="col.search" class="q-pa-xs q-mx-xs cursor-pointer" :class="$q.dark.isActive ? 'btn-buscar-dark' : 'btn-buscar'" name="search" size="xs">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-input clearable class="q-px-sm" dense debounce="500" v-model="busColum[col.name]"
-                    placeholder="Buscar">
-                    <template v-slot:append>
-                      <q-icon name="search" />
-                    </template>
+                  <q-input clearable class="q-px-sm" dense debounce="500" v-model="busColum[col.name]" placeholder="Buscar">
+                    <template v-slot:append> <q-icon name="search" /> </template>
                   </q-input>
                 </q-popup-proxy>
               </q-icon>
             </q-th>
-          </template>
           <q-th auto-width> Acciones </q-th>
         </q-tr>
       </template>
@@ -105,7 +100,10 @@ import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
 const $q = useQuasar();
 
 async function verDat() {
-  const dato = await GenerateListService.getDataTable({ rowsPerPage: 10, page: 1, search: '', order_by: '', notario: 'JULIO GARNICA ROSADO', lugar: 'PUNO', subserie: 'ACLARACION', otorgantes: '' });
+  const filtros = {lugar:'col1',col2:'col2',notario:'col1',col4:'col2'};
+  const dato = await AnteriorService.getData({
+    params: { rowsPerPage: 10, page:1, search: 'roger', order_by:'',search_by:busColum.value},
+  })
   console.log(dato);
 }
 // verDat(); //
@@ -116,7 +114,7 @@ const columns = [
   { field: (row) => row.lugar, name: "lugar", label: "Lugar", align: "left", sortable_: true, search: true },
   { field: (row) => row.subserie, name: "subserie", label: "Subserie", align: "center", sortable_: true, search: true },
   { field: (row) => row.fecha, name: "fecha", label: "Fecha", align: "center", sortable_: true, search: true },
-  { field: (row) => row.bien, name: "bien", label: "Bien", align: "center", sortable_: true, },
+  { field: (row) => row.bien, name: "bien", label: "Bien", align: "left", sortable_: true, },
   { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", align: "center", sortable_: true, },
   { field: (row) => row.nescritura, name: "nescritura", label: "Escritura", align: "center", sortable_: true, },
   { field: (row) => row.folio, name: "folio", label: "Folio", align: "center", sortable_: true, },
@@ -150,8 +148,10 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter ? '' : descending ? "-" + sortBy : sortBy;
+
+  const filtros = {notario: nombreNotario.value, lugar: nombreLugar.value, subserie: nombreSubserie.value};
   const { data, total = 0 } = await AnteriorService.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by, notario: nombreNotario.value, lugar: nombreLugar.value, subserie: nombreSubserie.value },
+    params: { rowsPerPage: fetchCount, page, search: filter, order_by, search_by:busColum.value, filter_by:filtros,},
   });;
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
@@ -187,6 +187,10 @@ watch(nombreLugar, (newValue, oldValue) => {
   tableRef.value.requestServerInteraction();
 });
 watch(nombreSubserie, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(busColum.value, (newValue, oldValue) => {
+// verDat();
   tableRef.value.requestServerInteraction();
 });
 
@@ -270,6 +274,7 @@ async function eliminar(id) {
 
 .htable
   #height: calc(100vh - 157px)
+
 .span-icono
   cursor: pointer
   &:hover .icon-sort

@@ -19,7 +19,7 @@ class AnteriorController extends Controller
         return  $this->generateViewSetList(
             $request,
             $tempTable,
-            ['notario','lugar','subserie','otorgantes'], //para el filtrado
+            $tempTable->getModel()->getFillable(), //para el filtrado
             ['notario','subserie','otorgantes'],  //para la busqueda
             ['id','notario','lugar','subserie','fecha','bien','protocolo','nescritura','folio','cfolio','trabajador'.'otorgantes'] //para el odenamiento
         );

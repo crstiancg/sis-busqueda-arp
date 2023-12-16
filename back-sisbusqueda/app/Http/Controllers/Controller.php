@@ -38,15 +38,31 @@ class Controller extends BaseController
             return $colName;
         }
         $tableBaseName = $querySet->getModel()->getTable();
-        if ($request->hasAny($filterBy)) {
-            foreach ($filterBy as $filter) {
-                if ($request->filled($filter)) {
+        // $fillableArray = $querySet->getModel()->getFillable();
+        if ($request->filled('filter_by')) {
+            foreach ($request->filter_by as $index_col => $val_filter) {
+                if ($val_filter and in_array($index_col, $filterBy, true)) {
                     $querySet->where(
-                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($filter, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
-                            $request->input($filter));
+                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($index_col, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                            $val_filter);
                 }
             }
         }
+
+        if ($request->filled('search_by') and $request->search_by) {
+            $querySet->where(function ($q) use ($searchBy, $request, $tableBaseName) {
+                foreach ($request->search_by as $index_col => $val_search) {
+                    if ($val_search and in_array($index_col, $searchBy, true)) {
+                        $q->orwhere(
+                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($index_col, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                            'like',
+                            '%' . $val_search . '%');
+                    }
+                }
+                return $q;
+            });
+        }
+
         if ($request->filled('search')) {
             $querySet->where(function ($q) use ($searchBy, $request, $tableBaseName) {
                 foreach ($searchBy as $searchByCol) {

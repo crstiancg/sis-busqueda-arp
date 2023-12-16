@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Ubigeo extends Model
 {
     use HasFactory;
+    protected $table = 'ubigeos';
     protected $fillable = [
         'codigo',
         'tipo',
@@ -22,5 +23,13 @@ class Ubigeo extends Model
     public function notarios()
     {
         return $this->hasMany(Notario::class, 'ubigeo_cod');
+    }
+    public function solicitud()
+    {
+        return $this->hasMany(Solicitud::class, 'ubigeo_cod');
+    }
+    public function solicitante()
+    {
+        return $this->hasMany(Solicitante::class, 'ubigeo_cod');
     }
 }
