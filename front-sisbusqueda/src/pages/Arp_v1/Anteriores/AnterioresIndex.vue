@@ -16,6 +16,8 @@
       </q-breadcrumbs>
     </div>
     <q-separator />
+    <GenerarPDFSolicitud :datosBusqueda="{nombre_completo:'jorge gonsales',num_doc:'59844546',direccion:'Av. Ramon Gutierres',ubigeo:'Puno',celular:'936151311',correo:'jorge@gmail.com'}"/>
+
     <div class="q-gutter-xs q-pa-sm">
       <q-btn color="primary" :disable="loading" :label="$q.screen.lt.sm ? '' : 'Agregar'" icon-right="add"
           @click=" { formRole = true; edit = false; title = 'Añadir Rol'; } " />
@@ -97,6 +99,9 @@ import SelectInput from "src/components/SelectInput.vue";
 import { useQuasar } from "quasar";
 import InputTextSelect from "src/components/InputTextSelect.vue";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
+
+import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue"
+
 const $q = useQuasar();
 
 async function verDat() {
@@ -131,7 +136,6 @@ const edit = ref(false);
 const editId = ref();
 const rows = ref([]);
 const filter = ref("");
-const busColum = ref({});
 const loading = ref(false);
 const pagination = ref({
   sortBy: "id",
@@ -140,6 +144,26 @@ const pagination = ref({
   rowsPerPage: 10,
   rowsNumber: 10,
 });
+/******** datos de filtros y busqueada por columna******************************************************************* */
+const nombreNotario = ref();
+const nombreLugar = ref();
+const nombreSubserie = ref();
+
+const busColum = ref({});
+
+watch(nombreNotario, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(nombreLugar, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(nombreSubserie, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(busColum.value, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+/********************************************************************************** */
 
 async function onRequest(props) {
   const { page, rowsPerPage, sortBy, descending } = props.pagination;
@@ -148,7 +172,6 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter ? '' : descending ? "-" + sortBy : sortBy;
-
   const filtros = {notario: nombreNotario.value, lugar: nombreLugar.value, subserie: nombreSubserie.value};
   const { data, total = 0 } = await AnteriorService.getData({
     params: { rowsPerPage: fetchCount, page, search: filter, order_by, search_by:busColum.value, filter_by:filtros,},
@@ -176,23 +199,7 @@ async function onRequest(props) {
   // ...and turn of loading indicator
   loading.value = false;
 }
-const nombreNotario = ref();
-const nombreLugar = ref();
-const nombreSubserie = ref();
 
-watch(nombreNotario, (newValue, oldValue) => {
-  tableRef.value.requestServerInteraction();
-});
-watch(nombreLugar, (newValue, oldValue) => {
-  tableRef.value.requestServerInteraction();
-});
-watch(nombreSubserie, (newValue, oldValue) => {
-  tableRef.value.requestServerInteraction();
-});
-watch(busColum.value, (newValue, oldValue) => {
-// verDat();
-  tableRef.value.requestServerInteraction();
-});
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();
