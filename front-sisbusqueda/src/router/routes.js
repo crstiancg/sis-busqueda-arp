@@ -21,7 +21,7 @@ const routes = [
       {
         path: "admin",
         name: "Dash",
-        component: () => import("pages/Tramites/TramitesForm.vue"),
+        component: () => import("pages/Solicitudes/SolicitudesList.vue"),
       },
       {
         path: "permisos",
@@ -92,6 +92,12 @@ const routes = [
         path: "areas",
         name: "Areas",
         component: () => import("pages/Admin/Areas/AreasList.vue"),
+      },
+
+      {
+        path: "test",
+        name: "Test",
+        component: () => import("pages/Test/TestDni.vue"),
       },
 
     ],

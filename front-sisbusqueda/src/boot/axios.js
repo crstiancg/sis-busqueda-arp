@@ -10,6 +10,16 @@ import { Cookies } from 'quasar'
 // "export default () => {}" function below (which runs individually
 // for each client)
 const api = axios.create({ baseURL: import.meta.env.VITE_APP_API_URL })
+
+const dni = axios.create({
+  baseURL: import.meta.env.VITE_APP_DNI_URL,
+  mode: "cors",
+  headers: {
+    Authorization: "apis-token-6807.Z1QDuGGlyyYJEtNrFCo1TmgDHOx54FNE",
+    "Access-Control-Allow-Origin": "*",
+  },
+});
+
 api.interceptors.request.use(
   (config) => {
     const token = Cookies.get("token"); // Reemplaza con el token de autenticación que desees enviar
@@ -33,10 +43,12 @@ export default boot(({ app }) => {
   // ^ ^ ^ this will allow you to use this.$axios (for Vue Options API form)
   //       so you won't necessarily have to import axios in each vue file
 
-  app.config.globalProperties.$api = api
+  app.config.globalProperties.$api = api;
+  app.config.globalProperties.$dni = dni;
+
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
   // app.config.globalProperties.$client = client;
 })
 
-export { api }
+export { api, dni }

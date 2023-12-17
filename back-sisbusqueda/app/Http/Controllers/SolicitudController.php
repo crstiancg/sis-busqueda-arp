@@ -10,12 +10,15 @@ class SolicitudController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $datos = Solicitud::with(
-            'subSerie',
-            'notario',)->get();
-        return $datos;
+        return $this->generateViewSetList(
+            $request,
+            Solicitud::query(),
+            [],
+            ['id'],
+            ['id']
+        );
     }
 
     /**

@@ -2,64 +2,78 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreSolicitanteRequest;
 use App\Models\Solicitante;
 use Illuminate\Http\Request;
+use GuzzleHttp\Client;
 
 class SolicitanteController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+   
+    public function index(Request $request)
     {
-        //
+        return $this->generateViewSetList(
+            $request,
+            Solicitante::query(),
+            [],
+            ['id', 'nombre'],
+            ['id', 'nombre']
+        );
+    }
+    
+    public function store(StoreSolicitanteRequest $request)
+    {
+        return response(Solicitante::create($request->all()), 201);
+
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+   
+    public function show(Solicitante $solicitude)
     {
-        //
+        return response()->json($solicitude);
+
+    }
+   
+    public function update(Request $request, Solicitante $solicitude)
+    {
+        $solicitude->update($request->all());
+        // Permission::find($id)->update($request->all());
+        return response()->json([$request, $solicitude]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+   
+    public function destroy(Solicitante $solicitude)
     {
-        //
+        return response()->json($solicitude->delete());
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Solicitante $solicitante)
+    public function getSolicitanteDni(string $dni)
     {
-        //
-    }
+        // Persona::where('dni',$dni);
+        $persona = Solicitante::where('num_documento', $dni)->first();
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Solicitante $solicitante)
-    {
-        //
-    }
+        if ($persona) {
+            return response()->json($persona);
+        } else {
+            $token = 'apis-token-6807.Z1QDuGGlyyYJEtNrFCo1TmgDHOx54FNE';
+            // $numero = '46027897';
+            $client = new Client(['base_uri' => 'https://api.apis.net.pe', 'verify' => false]);
+            $parameters = [
+                'http_errors' => false,
+                'connect_timeout' => 5,
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'Referer' => 'https://apis.net.pe/dnisolicitante',
+                    'User-Agent' => 'laravel/guzzle',
+                    'Accept' => 'application/json',
+                ],
+                'query' => ['numero' => $dni]
+            ];
+            // Para usar la versión 1 de la api, cambiar a /v1/dni
+            $res = $client->request('GET', '/v2/reniec/dni', $parameters);
+            $response = json_decode($res->getBody()->getContents(), true);
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Solicitante $solicitante)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Solicitante $solicitante)
-    {
-        //
+            return response()->json($response);
+        }
     }
 }

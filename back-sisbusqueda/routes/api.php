@@ -96,6 +96,8 @@ Route::apiResource('/otorgantes', OtorganteController::class)->middleware([Handl
 Route::apiResource('/favorecidos', FavorecidoController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 Route::apiResource('/solicitantes', SolicitanteController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::get('/solicitantes/dni/{dni}', [SolicitanteController::class, 'getSolicitanteDni']);
+
 Route::apiResource('/solicitudes', SolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 Route::apiResource('/registro_solicitudes', RegistroSolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
