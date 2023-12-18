@@ -1,5 +1,5 @@
 <template>
-    <q-btn color="primary" :label="$q.screen.lt.sm ? '' : 'Generar PDF'" icon-right="picture_as_pdf" @click="generarPDF"/>
+    <q-btn color="negative" :label="$q.screen.lt.sm ? '' : 'Generar PDF'" icon-right="picture_as_pdf" @click="generarPDF"/>
     <!-- <img src="src/assets/img/logo_ARP.png" alt=""> -->
 </template>
 
@@ -39,12 +39,12 @@ function generarPDF() {
 
 
   doc.text("N° Solicitud: {id_solicitud}", 120, 30);
-  const parrafo1 = `      Yo, ${ props.datosBusqueda.nombre_completo } natural de ${ props.datosBusqueda.ubigeo } identificado con D.N.I. ${ props.datosBusqueda.num_doc } y con domicilio en ${ props.datosBusqueda.direccion } del distrito ${ props.datosBusqueda.ubigeo }, ante Usted con el debido respeto me presento y expongo:`;
+  const parrafo1 = `      Yo, ${ props.datosSolicitud.nombre_completo } natural de ${ props.datosSolicitud.ubigeo_cod } identificado con D.N.I. ${ props.datosSolicitud.num_documento } y con domicilio en ${ props.datosSolicitud.direccion } del distrito ${ props.datosSolicitud.ubigeo_cod }, ante Usted con el debido respeto me presento y expongo:`;
   const lineas = doc.splitTextToSize(parrafo1, maxWidth);
   doc.text(lineas, 20, 40, { align: "justify" , maxWidth: maxWidth});
 
-  doc.text("Celular: {cel}", 20, 60);
-  doc.text("Correo: {email}", 70, 60);
+  doc.text("Celular: "+props.datosSolicitud.celular, 20, 60);
+  doc.text("Correo: "+props.datosSolicitud.correo, 70, 60);
 
   const parrafo2 = `      Que amparado en los Dispositivos Legales Vigentes, Solicito se me expida el documento de acuerdo al los siguientes detalles: ` ;
   doc.text(doc.splitTextToSize(parrafo2, maxWidth), 20, 70,{ align: "justify" , maxWidth: maxWidth});
@@ -59,13 +59,13 @@ function generarPDF() {
   doc.text("DATOS DEL DOCUMENTO:", 20, 95);
   doc.line(20, 97, 70, 97);
 
-  doc.text("Escritura Pública", 30, 105); doc.text(": {escr}", 65, 105);
-  doc.text("Otorgado por", 30, 112);      doc.text(": {otor}", 65, 112);
-  doc.text("A Favor de", 30, 119);        doc.text(": {favo}", 65, 119);
-  doc.text("Notario Público", 30, 126);   doc.text(": {nota}", 65, 126);
-  doc.text("Lugar y Fecha", 30, 133);     doc.text(": {lugar fecha}", 65, 133);
-  doc.text("Nombre del Bien", 30, 140);   doc.text(": {bien}", 65, 140);
-  doc.text("Otros", 30, 147);             doc.text(": {otros}", 65, 147);
+  doc.text("Escritura Pública", 30, 105); doc.text(": "+props.datosSolicitud.subserie, 65, 105);
+  doc.text("Otorgado por", 30, 112);      doc.text(": "+props.datosSolicitud.otorgantes, 65, 112);
+  doc.text("A Favor de", 30, 119);        doc.text(": "+props.datosSolicitud.favorecidos, 65, 119);
+  doc.text("Notario Público", 30, 126);   doc.text(": "+props.datosSolicitud.notario, 65, 126);
+  doc.text("Lugar y Fecha", 30, 133);     doc.text(": {lugar fecha}"+props.datosSolicitud.ubigeo_cod_soli, 65, 133);
+  doc.text("Nombre del Bien", 30, 140);   doc.text(": "+props.datosSolicitud.bien, 65, 140);
+  doc.text("Otros", 30, 147);             doc.text(": "+props.datosSolicitud.masdatos, 65, 147);
   doc.text("POR LO TANTO: Ruego a Usted acceder a mi solicitud por ser justa y legal.", 20, 155);
   doc.text('Puno, '+formatDate(), 120, 162);
 

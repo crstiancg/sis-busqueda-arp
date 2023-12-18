@@ -1,5 +1,5 @@
 <template>
-    <div class="col-12 col-sm-4 q-my-md">
+    <div :class="Class">
         <q-select @update:model-value="updateProvincia($event)" v-model="modelProvincia" borderless dense debounce="300"
             outlined use-input hide-selected fill-input input-debounce="0" label="Provincia" :options="optionsProvincias"
             option-label="nombre" option-value="id" @filter="filterProvincias" :disable="disabled">
@@ -12,7 +12,7 @@
             </template>
         </q-select>
     </div>
-    <div class="col-12 col-sm-4 q-my-md">
+    <div :class="Class">
         <q-select @update:model-value="updateDistrito($event)" v-model="modelDistrito" borderless dense debounce="300"
             outlined use-input hide-selected fill-input input-debounce="0" label="Distrito" :options="optionsDistritos"
             option-label="nombre" option-value="id" @filter="filterDistritos" :disable="disabled">
@@ -39,9 +39,10 @@ const props = defineProps({
     ubigeo_cod: { type: String, default: null },
     disabled: { type: Boolean, default: false },
     obra: { default: null },
+    Class: { default: 'col-12 col-sm-4 q-my-md'}
 });
 
-//Estados reactivos12<
+//Estados reactivos
 const stringDepartamentos = ref([]);
 const optionsDepartamentos = ref([]);
 

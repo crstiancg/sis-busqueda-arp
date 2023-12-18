@@ -30,31 +30,28 @@
                     <div class="text-h6">Persona</div>
                     <div class="q-gutter-md q-mb-md">
                       <q-input outlined lazy-rules dense v-model="solicitudForm.num_documento" class="q-pa-sm"
-                        :label="  solicitudForm.tipo_documento === 'EMPRESA' ? 'RUC' : 'DNI' "
+                        :label="  solicitudForm.tipo_documento === 'EMPRESA' ? 'RUC' : 'DNI' " mask="########"
                         :rules="[
-                          (val) =>
-                            (val && val.length > 0) || 'Please type something',
+                          (val) => (val && val.length > 0) || 'Por favor ingrese el DNI',
                         ]"
                       >
                         <template v-slot:after>
-                          <q-btn
-                            :label="$q.screen.lt.sm ? '' : 'Buscar'"
-                            @click="getSolicitante"
-                            color="primary"
-                            icon-right="search"
+                          <q-btn :label="$q.screen.lt.sm ? '' : 'Buscar'" @click="getSolicitante"
+                            color="primary" icon-right="search"
                           />
                         </template>
                       </q-input>
-                      <!-- <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod" > </SelectUbigeoPuno> -->
+                      <div v-if="encontroDatosPersona"> No se encontraron datos</div>
                       <div class="row">
                         <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Paterno" dense outlined
-                          v-model="solicitudForm.apellido_paterno" :loading="loading" />
+                        v-model="solicitudForm.apellido_paterno" :loading="loading" />
                         <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Materno" dense outlined
-                          v-model="solicitudForm.apellido_materno" :loading="loading" />
+                        v-model="solicitudForm.apellido_materno" :loading="loading" />
                         <q-input class="col-12 col-md-6 q-pa-sm" label="Nombres" dense outlined
-                          v-model="solicitudForm.nombres" :loading="loading" />
+                        v-model="solicitudForm.nombres" :loading="loading" />
                         <q-input class="col-12 col-md-6 q-pa-sm" label="Celular" dense outlined
-                          v-model="solicitudForm.celular" />
+                        v-model="solicitudForm.celular" />
+                        <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod" @selectedItem="updateUbigeo($event)" Class="col-12 col-md-6 q-pa-sm"/>
                       </div>
                     </div>
                   </q-tab-panel>
@@ -62,14 +59,11 @@
 
                 <div v-if="okSolicitante"  class="q-gutter-md">
                   <div class="row">
-                    <q-input class="col-12 col-md-6 q-pa-sm" label="orreo Electronico" dense outlined
+                    <q-input class="col-12 col-md-6 q-pa-sm" label="Correo Electronico" dense outlined
                         v-model="solicitudForm.correo" />
                     <q-input class="col-12 col-md-6 q-pa-sm" label="Direccion - Domicilio" dense outlined
                         v-model="solicitudForm.direccion" />
                   </div>
-                 <ul>
-                  <li>Ubigeo (delimitarlo a solo region de Puno)</li>
-                 </ul>
                 </div>
 
               </q-step>
@@ -77,19 +71,21 @@
               <q-step :name="2" title="Registrar Solicitud" caption="Opcional" icon="create_new_folder"
                 :done="step > 2" :header-nav="step > 2" >
                 <div class="q-gutter-md q-mb-md">
-                  <li>Ubigeo (delimitarlo a Puno)</li>
-                  <li>Select Notario</li>
-                  <li>Select Subserie (lista de escrituras públicas)</li>
                   <div class="row">
+                    <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod_soli" @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/>
+                    <SelectInput class="col-12 col-md-6 q-pa-sm" label="Notarios" v-model="solicitudForm.notario" :options="GenerateListService"
+                        :GenerateList="{ column: 'notario', table: 'all' }" />
+                    <SelectInput class="col-12 col-md-6 q-pa-sm" label="Subserie" v-model="solicitudForm.subserie" :options="GenerateListService"
+                        :GenerateList="{ column: 'subserie', table: 'all' }" />
                     <q-input
-                      class="col q-mr-sm"
+                      class="col-12 col-md-6 q-pa-sm"
                       dense
                       v-model="solicitudForm.otorgantes"
                       label="Otorgante"
                       outlined
                     />
                     <q-input
-                      class="col"
+                      class="col-12 col-md-6 q-pa-sm"
                       dense
                       v-model="solicitudForm.favorecidos"
                       label="Favorecido"
@@ -97,7 +93,7 @@
                     />
                   </div>
                   <q-input
-                    class="col q-mr-sm"
+                    class="col q-px-sm"
                     dense
                     v-model="solicitudForm.bien"
                     label="Nombre del Bien"
@@ -107,6 +103,7 @@
                     clearable
                     dense
                     type="textarea"
+                    class="q-pa-sm"
                     v-model="solicitudForm.masdatos"
                     label="Mas datos: Escritura -  Protocolo -  Folio"
                     filled
@@ -148,6 +145,13 @@
 
               <template v-slot:navigation>
                 <q-stepper-navigation>
+                  <!-- <q-btn
+                    v-if="step !== 2"
+                    @click="step !== 1 ? $refs.stepper.next(): okSolicitante ? SiguienteStepper($refs.stepper):regla_DNI=true"
+                    color="primary"
+                    label="Siguiente"
+                    type="button"
+                  /> -->
                   <q-btn
                     v-if="step !== 2"
                     @click="$refs.stepper.next()"
@@ -163,13 +167,15 @@
                     label="Enviar"
                   />
                   <q-btn
-                    v-if="step > 1"
+                  v-if="step > 1"
                     flat
                     color="primary"
                     @click="$refs.stepper.previous()"
-                    label="Back"
+                    label="Regresar"
                     class="q-ml-sm"
-                  />
+                    />
+                  <GenerarPDFSolicitud v-if="step === 2" :datosSolicitud="solicitudForm" class="q-ml-sm"/>
+                  <span v-if="regla_DNI" class="text-red-5 q-mx-sm">Ingrese DNI</span>
                 </q-stepper-navigation>
               </template>
             </q-stepper>
@@ -180,14 +186,17 @@
     </q-card>
   </template>
 
-
-  <script setup>
+<script setup>
   import { ref, computed } from "vue";
   import DniService from "src/services/DniService";
   import SolicitudService from "src/services/SolicitudService";
   import NotarioService from "src/services/NotarioService";
   import SubSerieService from "src/services/SubSerieService";
   import SelectUbigeoPuno from "src/components/SelectUbigeoPuno.vue";
+  import SelectInput from "src/components/SelectInput.vue";
+  import GenerateListService from "src/services/arp_v1/GenerateListService"
+
+  import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
   import { useQuasar } from "quasar";
 
   const $q = useQuasar();
@@ -195,6 +204,7 @@
   const step = ref(1);
 
   const emit = defineEmits(["save"]);
+  const regla_DNI = ref(false);
 
   const solicitanteForm = ref({
 
@@ -211,7 +221,10 @@
     correo: "",
     celular: "",
     direccion: "",
-    ubigeo_cod:'',
+    ubigeo_cod: null,
+    ubigeo_cod_soli: null,
+    notario:null,
+    subserie:null,
     otorgantes: "",
     favorecidos: "",
     bien: "",
@@ -221,8 +234,17 @@
     copiaSimple: "",
   });
 
+function updateUbigeo(event) {
+  solicitudForm.value.ubigeo_cod = event;
+}
+function updateUbigeoSoli(event) {
+  solicitudForm.value.ubigeo_cod_soli = event;
+}
+function SiguienteStepper(val){
+  val.next();regla_DNI.value=false;
+}
 
-  const okSolicitante = computed(() => {
+const okSolicitante = computed(() => {
   if (
     solicitudForm.value.nombres !== "" &&
     solicitudForm.value.apellido_materno !== "" &&
@@ -235,24 +257,22 @@
   }
 });
 
-  const nombreCompleto = computed(() => {
-    return (
-      solicitudForm.value.nombres +
-      " " +
-      solicitudForm.value.apellido_paterno +
-      " " +
-      solicitudForm.value.apellido_materno
-    );
-  });
+const nombreCompleto = computed(() => {
+  return (
+    solicitudForm.value.nombres +
+    " " +
+    solicitudForm.value.apellido_paterno +
+    " " +
+    solicitudForm.value.apellido_materno
+  );
+});
 
-  async function getData(){
-    const res = await NotarioService.getData();
-    const res2 = await SubSerieService.getData();
-    console.log(res.data);
-    console.log(res2.data);
-  };
+async function getData(){
+  const res = await NotarioService.getData();
+  console.log(res.data);
+};
 
-  getData();
+  // getData();
 
   // async function subserie(){
   //   const res = await SubSerieService.getData();
@@ -262,8 +282,9 @@
   // subserie();
 
 const loading = ref(false);
+const encontroDatosPersona = ref(false);
 
-  async function getSolicitante() {
+async function getSolicitante() {
     loading.value = true;
     try {
       const res = await DniService.getSolicitanteDni(
@@ -272,22 +293,24 @@ const loading = ref(false);
       if (res.message) {
         console.log(res.message);
         // console.log("object");
+        encontroDatosPersona.value = true;
         onReset(false);
       } else {
+        encontroDatosPersona.value = false;
         console.log(res);
         solicitudForm.value.encontrado = true;
         solicitudForm.value.nombres = res.nombres;
         solicitudForm.value.apellido_paterno = res.apellidoPaterno;
         solicitudForm.value.apellido_materno = res.apellidoMaterno;
+        solicitudForm.value.nombre_completo = res.nombres+" "+res.apellidoPaterno+" "+res.apellidoMaterno;
       }
     } catch (error) {
       formDni.value.encontrado = false;
     }
     loading.value = false;
-  }
+}
 
-
-  function onReset(n_documento = true) {
+function onReset(n_documento = true) {
     solicitudForm.value.cargo = null;
     console.log(n_documento);
     if (n_documento) {
@@ -300,7 +323,7 @@ const loading = ref(false);
     solicitudForm.value.nombre_completo = null;
     solicitudForm.value.correo = null;
     solicitudForm.value.celular = null;
-  }
+}
 
   const onSubmit = async () => {
     solicitudForm.value.nombre_completo = nombreCompleto.value;
