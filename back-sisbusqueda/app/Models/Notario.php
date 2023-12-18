@@ -9,6 +9,7 @@ class Notario extends Model
 {
     use HasFactory;
 
+    protected $with = ['ubigeo'];
     protected $fillable = [
         'nombres',
         'apellido_paterno',
@@ -18,6 +19,7 @@ class Notario extends Model
         'año_final',
         'ubigeo_cod',
     ];
+
 
     public function ubigeo()
     {

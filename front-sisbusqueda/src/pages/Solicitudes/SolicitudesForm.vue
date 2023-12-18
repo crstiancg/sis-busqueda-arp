@@ -13,146 +13,89 @@
                 >Detalles de la Solicitud</span
               >
             </div>
-  
+
             {{ solicitudForm }}
           </div> -->
         <div class="col-xs-12 col-sm-8 q-pa-sm">
           <q-form @submit="onSubmit">
-            <q-stepper
-              v-model="step"
-              ref="stepper"
-              color="primary"
-              header-nav
-              animated
-              flat
-              bordered
-            >
-              <q-step
-                :name="1"
-                title="Datos Generales"
-                icon="settings"
-                :done="step > 1"
-              >
+            <q-stepper v-model="step" ref="stepper" color="primary" header-nav animated flat bordered>
+              <q-step :name="1" title="Datos Generales" icon="settings"
+                :done="step > 1" :header-nav="step > 1">
                 <q-option-group
-                  v-model="solicitudForm.tipo_tramite"
-                  inline
-                  @update:model-value="onReset"
-                  :options="[
-                    { label: 'PERSONA', value: 'PERSONA' },
-                    { label: 'EMPRESA', value: 'EMPRESA' },
-                  ]"
+                  v-model="solicitudForm.tipo_documento" inline @update:model-value="onReset"
+                  :options="[ { label: 'PERSONA', value: 'PERSONA' }, { label: 'EMPRESA', value: 'EMPRESA' },]"
                 />
-                <q-tab-panels v-model="solicitudForm.tipo_tramite">
+                <q-tab-panels v-model="solicitudForm.tipo_documento">
                   <q-tab-panel name="PERSONA" class="q-pa-none">
                     <div class="text-h6">Persona</div>
-                    <q-input
-                      outlined
-                      dense
-                      v-model="solicitudForm.num_documento"
-                      :label="
-                        solicitudForm.tipo_tramite === 'EMPRESA' ? 'RUC' : 'DNI'
-                      "
-                      lazy-rules
-                      :rules="[
-                        (val) =>
-                          (val && val.length > 0) || 'Please type something',
-                      ]"
-                    >
-                      <template v-slot:after>
-                        <q-btn
-                          :label="$q.screen.lt.sm ? '' : 'Buscar'"
-                          @click="getSolicitante"
-                          color="primary"
-                          icon-right="search"
-                        />
-                      </template>
-                    </q-input>
                     <div class="q-gutter-md q-mb-md">
+                      <q-input outlined lazy-rules dense v-model="solicitudForm.num_documento" class="q-pa-sm"
+                        :label="  solicitudForm.tipo_documento === 'EMPRESA' ? 'RUC' : 'DNI' "
+                        :rules="[
+                          (val) =>
+                            (val && val.length > 0) || 'Please type something',
+                        ]"
+                      >
+                        <template v-slot:after>
+                          <q-btn
+                            :label="$q.screen.lt.sm ? '' : 'Buscar'"
+                            @click="getSolicitante"
+                            color="primary"
+                            icon-right="search"
+                          />
+                        </template>
+                      </q-input>
+                      <!-- <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod" > </SelectUbigeoPuno> -->
                       <div class="row">
-                        <q-input
-                          class="col q-mr-sm"
-                          dense
-                          v-model="solicitudForm.apellido_paterno"
-                          label="Apellido Paterno"
-                          outlined
-                        />
-                        <q-input
-                          class="col"
-                          dense
-                          v-model="solicitudForm.apellido_materno"
-                          label="Apellido Materno"
-                          outlined
-                        />
+                        <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Paterno" dense outlined
+                          v-model="solicitudForm.apellido_paterno" :loading="loading" />
+                        <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Materno" dense outlined
+                          v-model="solicitudForm.apellido_materno" :loading="loading" />
+                        <q-input class="col-12 col-md-6 q-pa-sm" label="Nombres" dense outlined
+                          v-model="solicitudForm.nombres" :loading="loading" />
+                        <q-input class="col-12 col-md-6 q-pa-sm" label="Celular" dense outlined
+                          v-model="solicitudForm.celular" />
                       </div>
-                      <q-input
-                        class="col"
-                        dense
-                        v-model="solicitudForm.nombres"
-                        label="Nombres"
-                        outlined
-                      />
                     </div>
                   </q-tab-panel>
                 </q-tab-panels>
 
                 <div v-if="okSolicitante"  class="q-gutter-md">
                   <div class="row">
-                    <q-input
-                      class="col q-mr-sm"
-                      dense
-                      v-model="solicitudForm.correo"
-                      label="Correo Electronico"
-                      outlined
-                    />
-                    <q-input
-                      class="col"
-                      dense
-                      v-model="solicitudForm.celular"
-                      label="Celular"
-                      outlined
-                    />
+                    <q-input class="col-12 col-md-6 q-pa-sm" label="orreo Electronico" dense outlined
+                        v-model="solicitudForm.correo" />
+                    <q-input class="col-12 col-md-6 q-pa-sm" label="Direccion - Domicilio" dense outlined
+                        v-model="solicitudForm.direccion" />
                   </div>
-                  <q-input
-                      class="col"
-                      dense
-                      v-model="solicitudForm.direccion"
-                      label="Direccion - Domicilio"
-                      outlined
-                    />
                  <ul>
                   <li>Ubigeo (delimitarlo a solo region de Puno)</li>
                  </ul>
                 </div>
-                
+
               </q-step>
-  
-              <q-step
-                :name="2"
-                title="Registrar Solicitud"
-                caption="Opcional"
-                icon="create_new_folder"
-                :done="step > 2"
-              >
-              <div class="q-gutter-md q-mb-md">
-                <li>Ubigeo (delimitarlo a Puno)</li>
-                <li>Select Notario</li>
-                <li>Select Subserie (lista de escrituras públicas)</li>
-                <div class="row">
-                  <q-input
-                    class="col q-mr-sm"
-                    dense
-                    v-model="solicitudForm.otorgantes"
-                    label="Otorgante"
-                    outlined
-                  />
-                  <q-input
-                    class="col"
-                    dense
-                    v-model="solicitudForm.favorecidos"
-                    label="Favorecido"
-                    outlined
-                  />
-                </div>
+
+              <q-step :name="2" title="Registrar Solicitud" caption="Opcional" icon="create_new_folder"
+                :done="step > 2" :header-nav="step > 2" >
+                <div class="q-gutter-md q-mb-md">
+                  <li>Ubigeo (delimitarlo a Puno)</li>
+                  <li>Select Notario</li>
+                  <li>Select Subserie (lista de escrituras públicas)</li>
+                  <div class="row">
+                    <q-input
+                      class="col q-mr-sm"
+                      dense
+                      v-model="solicitudForm.otorgantes"
+                      label="Otorgante"
+                      outlined
+                    />
+                    <q-input
+                      class="col"
+                      dense
+                      v-model="solicitudForm.favorecidos"
+                      label="Favorecido"
+                      outlined
+                    />
+                  </div>
                   <q-input
                     class="col q-mr-sm"
                     dense
@@ -172,7 +115,7 @@
                     @keydown="processTextareaFill"
                     @focus="processTextareaFill"
                   />
-              
+
               </div>
               <p>Seleccione el titulo de documento</p>
               <div>
@@ -183,7 +126,7 @@
                 :label="`Model is number ${greenModel}`"
                 v-model="solicitudForm.testimonio"
               />
-          
+
               <q-toggle
                 :false-value="13"
                 :label="`Model is number ${greenModel}`"
@@ -191,7 +134,7 @@
                 color="green"
                 v-model="solicitudForm.copiaCertificada"
               />
-          
+
               <q-toggle
                 :false-value="true"
                 :label="`Model is ${redModel} (flipped boolean)`"
@@ -202,7 +145,7 @@
               </div>
                 <!-- CONTENIDO -->
               </q-step>
-  
+
               <template v-slot:navigation>
                 <q-stepper-navigation>
                   <q-btn
@@ -236,7 +179,7 @@
       </q-card-section>
     </q-card>
   </template>
-  
+
 
   <script setup>
   import { ref, computed } from "vue";
@@ -244,18 +187,22 @@
   import SolicitudService from "src/services/SolicitudService";
   import NotarioService from "src/services/NotarioService";
   import SubSerieService from "src/services/SubSerieService";
+  import SelectUbigeoPuno from "src/components/SelectUbigeoPuno.vue";
   import { useQuasar } from "quasar";
-  
+
   const $q = useQuasar();
 
   const step = ref(1);
-  
+
   const emit = defineEmits(["save"]);
 
-  
+  const solicitanteForm = ref({
+
+  });
+
   const solicitudForm = ref({
     num_documento: "",
-    tipo_tramite: null,
+    tipo_documento: 'PERSONA',
     encontrado: false,
     nombres: "",
     apellido_paterno: "",
@@ -264,6 +211,7 @@
     correo: "",
     celular: "",
     direccion: "",
+    ubigeo_cod:'',
     otorgantes: "",
     favorecidos: "",
     bien: "",
@@ -272,7 +220,7 @@
     copiaCertificada: "",
     copiaSimple: "",
   });
-  
+
 
   const okSolicitante = computed(() => {
   if (
@@ -305,16 +253,18 @@
   };
 
   getData();
-  
+
   // async function subserie(){
   //   const res = await SubSerieService.getData();
   //   console.log(res);
   // };
 
   // subserie();
-  
+
+const loading = ref(false);
 
   async function getSolicitante() {
+    loading.value = true;
     try {
       const res = await DniService.getSolicitanteDni(
         solicitudForm.value.num_documento
@@ -333,6 +283,7 @@
     } catch (error) {
       formDni.value.encontrado = false;
     }
+    loading.value = false;
   }
 
 
@@ -350,7 +301,7 @@
     solicitudForm.value.correo = null;
     solicitudForm.value.celular = null;
   }
-  
+
   const onSubmit = async () => {
     solicitudForm.value.nombre_completo = nombreCompleto.value;
     await SolicitudService.save(solicitudForm.value);

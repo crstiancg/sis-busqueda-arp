@@ -12,9 +12,14 @@ class SolicitudController extends Controller
      */
     public function index(Request $request)
     {
+        $solicitudesConUbigeos = Solicitud::join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
+            ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
+            ->with('solicitante','subserie','ubigeo'); // Incluir relaciones adicionales si es necesario
+
+        // return $solicitudesConUbigeos;//Solicitud::with('solicitante')->get();
         return $this->generateViewSetList(
             $request,
-            Solicitud::query(),
+            $solicitudesConUbigeos,
             [],
             ['id'],
             ['id']

@@ -19,9 +19,9 @@ class RegistroBusqueda extends Model
         'cod_folioFinal',
         'observaciones',
     ];
-    public function registroBusqueda()
+    public function registroSolicitud()
     {
-        return $this->belongsTo(RegistroBusqueda::class, 'RS_id_derivado');
+        return $this->belongsTo(RegistroSolicitud::class, 'RS_id_derivado');
     }
     public function user()
     {

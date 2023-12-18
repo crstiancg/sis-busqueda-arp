@@ -12,7 +12,7 @@
       <div class="q-pa-md q-gutter-sm">
         <q-breadcrumbs>
           <q-breadcrumbs-el icon="home" />
-  
+
           <q-breadcrumbs-el label="Permisos" icon="mdi-key" />
         </q-breadcrumbs>
       </div>
@@ -32,11 +32,11 @@
           "
         />
       </div>
-  
+
       <q-table
-        :rows-per-page-options="[7, 10, 15]"
+        :rows-per-page-options="[5, 10, 15,20]"
         class="my-sticky-header-table htable q-ma-sm"
-        title="Permisos"
+        title="Solicitudes"
         ref="tableRef"
         :rows="rows"
         :columns="columns"
@@ -70,7 +70,7 @@
             <q-th auto-width> Acciones </q-th>
           </q-tr>
         </template>
-  
+
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td v-for="col in props.cols" :key="col.name" :props="props">
@@ -100,30 +100,32 @@
       </q-table>
     </q-page>
   </template>
-  
+
   <script setup>
   import { ref, onMounted } from "vue";
   import SolicitudService from "src/services/SolicitudService";
   import { useQuasar } from "quasar";
   import SolicitudesForm from "src/pages/Solicitudes/SolicitudesForm.vue";
   const $q = useQuasar();
-  const columns = [
-    {
-      name: "id",
-      label: "Id",
-      aling: "center",
-      field: (row) => row.id,
-      sortable: true,
-    },
-    {
-      name: "nombre",
-      label: "Nombre",
-      aling: "center",
-      field: (row) => row.nombre,
-      sortable: true,
-    },
-  ];
-  
+
+async function verDat(){
+  const dato = await SolicitudService.getData({
+    params: { rowsPerPage: 100, page:1, search: '', order_by:'' },
+  })
+  console.log(dato);
+}
+
+// verDat();
+
+const columns = [
+  { name: 'index', label: '#', field: 'index' },
+  { field: (row) => row.id, name: "id", label: "ID", align: "left", sortable_: true, search: true },
+  { field: (row) => row.solicitante.nombre_completo, name: "solicitante.nombre_completo", label: "Solicitante", align: "left", sortable_: true, search: true },
+  { field: (row) => row.subserie.nombre, name: "subserie.nombre", label: "Subserie", align: "center", sortable_: true, search: true },
+  { field: (row) => row.estado, name: "estado", label: "Estado", align: "center", sortable_: true, },
+  { field: (row) => row.updated_at , name: "updated_at", label: "Fecha actualizacion", align: "center", sortable_: true, },
+];
+
   const tableRef = ref();
   const formPermisos = ref(false);
   const solicitudesformRef = ref();
@@ -137,15 +139,15 @@
     sortBy: "id",
     descending: false,
     page: 1,
-    rowsPerPage: 7,
+    rowsPerPage: 10,
     rowsNumber: 10,
   });
-  
+
   async function onRequest(props) {
     const { page, rowsPerPage, sortBy, descending } = props.pagination;
     const filter = props.filter;
     loading.value = true;
-  
+
     const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
     const order_by = descending ? "-" + sortBy : sortBy;
     const { data, total = 0 } = await SolicitudService.getData({
@@ -165,11 +167,11 @@
     // ...and turn of loading indicator
     loading.value = false;
   }
-  
+
   onMounted(() => {
     tableRef.value.requestServerInteraction();
   });
-  
+
   const save = () => {
     formPermisos.value = false;
     tableRef.value.requestServerInteraction();
@@ -188,14 +190,14 @@
     editId.value = id;
     const row = await SolicitudService.get(id);
     console.log(row);
-  
+
     solicitudesformRef.value.form.setData({
       id: row.id,
 
     });
     solicitudesformRef.value.setValue(row);
   }
-  
+
   async function eliminar(id) {
     $q.dialog({
       title: "¿Estas seguro de eliminar este registro?",

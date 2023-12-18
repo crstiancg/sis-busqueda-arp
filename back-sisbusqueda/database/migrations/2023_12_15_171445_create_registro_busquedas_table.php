@@ -17,11 +17,11 @@ return new class extends Migration
             $table->foreign('RS_id_derivado')->references('id')->on('registro_solicituds')->nullOnDelete();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
-            $table->boolean('estado');
-            $table->string('cod_protocolo');
-            $table->string('cod_escritura');
-            $table->string('cod_folioInicial');
-            $table->string('cod_folioFinal');
+            $table->boolean('estado')->nullable();
+            $table->string('cod_protocolo')->nullable();
+            $table->string('cod_escritura')->nullable();
+            $table->string('cod_folioInicial')->nullable();
+            $table->string('cod_folioFinal')->nullable();
             $table->text('observaciones')->nullable();
             $table->timestamps();
         });

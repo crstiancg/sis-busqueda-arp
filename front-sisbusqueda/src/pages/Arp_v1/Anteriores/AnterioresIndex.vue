@@ -125,7 +125,6 @@ const columns = [
   { field: (row) => row.folio, name: "folio", label: "Folio", align: "center", sortable_: true, },
   { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", align: "center", sortable_: true, },
   { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", align: "center", sortable_: true, },
-
 ];
 
 const tableRef = ref();

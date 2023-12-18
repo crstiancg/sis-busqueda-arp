@@ -12,7 +12,7 @@ class RegistroBusquedaController extends Controller
      */
     public function index()
     {
-        //
+        return RegistroBusqueda::with('registroSolicitud','registroSolicitud.solicitud')->get();
     }
 
     /**

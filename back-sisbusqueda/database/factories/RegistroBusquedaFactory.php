@@ -21,12 +21,12 @@ class RegistroBusquedaFactory extends Factory
         return [
             'user_id' => 1,
             'RS_id_derivado' => ++$this->i,
-            'estado' => fake()->boolean(),
-            'cod_protocolo' => 'P-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT),
-            'cod_escritura' => 'E-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT),
-            'cod_folioInicial' => 'FI-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT),
-            'cod_folioFinal' => 'FF-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT),
-            'observaciones' => fake()->text(),
+            'estado' => $this->i%2===0 ? 1 : 0,
+            'cod_protocolo' => $this->i%2===0 ? 'P-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT):null,
+            'cod_escritura' => $this->i%2===0 ?'E-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT):null,
+            'cod_folioInicial' => $this->i%2===0 ?'FI-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT):null,
+            'cod_folioFinal' => $this->i%2===0 ?'FF-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT):null,
+            'observaciones' => $this->i%2===0 ?fake()->text():null,
         ];
     }
 }
