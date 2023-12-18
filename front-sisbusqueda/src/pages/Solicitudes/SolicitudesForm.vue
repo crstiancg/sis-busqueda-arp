@@ -76,7 +76,7 @@
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Notarios" v-model="solicitudForm.notario" :options="GenerateListService"
                         :GenerateList="{ column: 'notario', table: 'all' }" />
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Subserie" v-model="solicitudForm.subserie" :options="GenerateListService"
-                        :GenerateList="{ column: 'subserie', table: 'all' }" />
+                        :GenerateList="{ column: 'subserie', table: 'anterior' }" />
                     <q-input
                       class="col-12 col-md-6 q-pa-sm"
                       dense
