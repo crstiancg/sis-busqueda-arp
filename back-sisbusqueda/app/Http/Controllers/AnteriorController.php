@@ -20,7 +20,7 @@ class AnteriorController extends Controller
             $request,
             $tempTable,
             $tempTable->getModel()->getFillable(), //para el filtrado
-            ['notario','subserie','otorgantes'],  //para la busqueda
+            ['notario','subserie','otorgantes','favorecidos'],  //para la busqueda
             ['id','notario','lugar','subserie','fecha','bien','protocolo','nescritura','folio','cfolio','trabajador'.'otorgantes'] //para el odenamiento
         );
     }

@@ -23,7 +23,7 @@ class NotarioFactory extends Factory
             'nombre_completo' => fake()->name().' '.fake()->lastName(),
             'año_inicio' => fake()->year(),
             'año_final' => fake()->year(),
-            'ubigeo_cod' => fake()->randomElement(array('010101','010102','010103','010104','010105','010106')),
+            'ubigeo_cod' => fake()->randomElement(array('210101','210102','210103','210104','210105','210106')),
         ];
     }
 }

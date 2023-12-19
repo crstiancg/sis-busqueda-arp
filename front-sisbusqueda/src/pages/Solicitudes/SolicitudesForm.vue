@@ -2,20 +2,9 @@
     <!-- content -->
     <q-card class="my-card" style="width: 1400px; max-width: 80vw">
       <q-card-section class="bg-primary text-white">
-        <div class="text-h6">Nueva Solicitud {{ step }}</div>
-        <!-- <div class="text-subtitle2">Usuario</div> -->
+        <div class="text-h6">Nueva Solicitud</div>
       </q-card-section>
       <q-card-section class="q-pa-none">
-        <!-- <div class="row">
-          <div class="col-xs-12 col-sm-4 q-pa-md">
-            <div class="text-center text-uppercase">
-              <span class="text-weight-bold text-overline" style="font-size: 15px"
-                >Detalles de la Solicitud</span
-              >
-            </div>
-
-            {{ solicitudForm }}
-          </div> -->
         <div class="col-xs-12 col-sm-8 q-pa-sm">
           <q-form @submit="onSubmit">
             <q-stepper v-model="step" ref="stepper" color="primary" header-nav animated flat bordered>
@@ -41,17 +30,18 @@
                           />
                         </template>
                       </q-input>
-                      <div v-if="encontroDatosPersona"> No se encontraron datos</div>
+                      <div v-if="NoEncontroDatosPersona"> No se encontraron datos</div>
                       <div class="row">
-                        <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Paterno" dense outlined
-                        v-model="solicitudForm.apellido_paterno" :loading="loading" />
-                        <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Materno" dense outlined
-                        v-model="solicitudForm.apellido_materno" :loading="loading" />
-                        <q-input class="col-12 col-md-6 q-pa-sm" label="Nombres" dense outlined
-                        v-model="solicitudForm.nombres" :loading="loading" />
-                        <q-input class="col-12 col-md-6 q-pa-sm" label="Celular" dense outlined
-                        v-model="solicitudForm.celular" />
-                        <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod" @selectedItem="updateUbigeo($event)" Class="col-12 col-md-6 q-pa-sm"/>
+                        <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Paterno" dense outlined clearable
+                          v-model="solicitudForm.apellido_paterno" :loading="loading" />
+                        <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Materno" dense outlined clearable
+                          v-model="solicitudForm.apellido_materno" :loading="loading" />
+                        <q-input class="col-12 col-md-6 q-pa-sm" label="Nombres" dense outlined clearable
+                          v-model="solicitudForm.nombres" :loading="loading" />
+                        <q-input class="col-12 col-md-6 q-pa-sm" label="Celular" dense outlined clearable
+                          v-model="solicitudForm.celular" />
+                        <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod"
+                          @selectedItem="updateUbigeo($event)" Class="col-12 col-md-6 q-pa-sm"/>
                       </div>
                     </div>
                   </q-tab-panel>
@@ -59,9 +49,9 @@
 
                 <div v-if="okSolicitante"  class="q-gutter-md">
                   <div class="row">
-                    <q-input class="col-12 col-md-6 q-pa-sm" label="Correo Electronico" dense outlined
+                    <q-input class="col-12 col-md-6 q-pa-sm" label="Correo Electronico" dense outlined clearable
                         v-model="solicitudForm.correo" />
-                    <q-input class="col-12 col-md-6 q-pa-sm" label="Direccion - Domicilio" dense outlined
+                    <q-input class="col-12 col-md-6 q-pa-sm" label="Direccion - Domicilio" dense outlined clearable
                         v-model="solicitudForm.direccion" />
                   </div>
                 </div>
@@ -72,46 +62,35 @@
                 :done="step > 2" :header-nav="step > 2" >
                 <div class="q-gutter-md q-mb-md">
                   <div class="row">
-                    <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod_soli" @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/>
+                    <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod_soli"
+                        @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/>
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Notarios" v-model="solicitudForm.notario" :options="GenerateListService"
                         :GenerateList="{ column: 'notario', table: 'all' }" />
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Subserie" v-model="solicitudForm.subserie" :options="GenerateListService"
                         :GenerateList="{ column: 'subserie', table: 'all' }" />
-                    <q-input
-                      class="col-12 col-md-6 q-pa-sm"
-                      dense
-                      v-model="solicitudForm.otorgantes"
-                      label="Otorgante"
-                      outlined
-                    />
-                    <q-input
-                      class="col-12 col-md-6 q-pa-sm"
-                      dense
-                      v-model="solicitudForm.favorecidos"
-                      label="Favorecido"
-                      outlined
-                    />
+                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
+                        v-model="solicitudForm.otorgantes" label="Otorgante"/>
+                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
+                        v-model="solicitudForm.favorecidos" label="Favorecido"/>
+                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
+                        v-model="solicitudForm.bien" label="Nombre del Bien"/>
+                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
+                        v-model="solicitudForm.fecha" label="Fecha" mask="date" :rules="['date']">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="solicitudForm.fecha">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup label="Close" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
                   </div>
-                  <q-input
-                    class="col q-px-sm"
-                    dense
-                    v-model="solicitudForm.bien"
-                    label="Nombre del Bien"
-                    outlined
-                  />
-                  <q-input
-                    clearable
-                    dense
-                    type="textarea"
-                    class="q-pa-sm"
-                    v-model="solicitudForm.masdatos"
-                    label="Mas datos: Escritura -  Protocolo -  Folio"
-                    filled
-                    color="blue-12"
-                    :shadow-text="textareaShadowText"
-                    @keydown="processTextareaFill"
-                    @focus="processTextareaFill"
-                  />
+                  <q-input dense outlined clearable type="textarea" class="q-pa-sm"
+                      v-model="solicitudForm.mas_datos" label="Mas datos: Escritura -  Protocolo -  Folio" />
 
               </div>
               <p>Seleccione el titulo de documento</p>
@@ -120,13 +99,13 @@
                 color="pink"
                 false-value="Disagreed"
                 true-value="Agreed"
-                :label="`Model is number ${greenModel}`"
+                :label="`Model is number ${solicitudForm.testimonio}`"
                 v-model="solicitudForm.testimonio"
               />
 
               <q-toggle
                 :false-value="13"
-                :label="`Model is number ${greenModel}`"
+                :label="`Model is number ${solicitudForm.copiaCertificada}`"
                 :true-value="42"
                 color="green"
                 v-model="solicitudForm.copiaCertificada"
@@ -134,7 +113,7 @@
 
               <q-toggle
                 :false-value="true"
-                :label="`Model is ${redModel} (flipped boolean)`"
+                :label="`Model is ${solicitudForm.copiaSimple} (flipped boolean)`"
                 :true-value="false"
                 color="red"
                 v-model="solicitudForm.copiaSimple"
@@ -187,7 +166,7 @@
   </template>
 
 <script setup>
-  import { ref, computed } from "vue";
+  import { ref, computed, watch } from "vue";
   import DniService from "src/services/DniService";
   import SolicitudService from "src/services/SolicitudService";
   import NotarioService from "src/services/NotarioService";
@@ -206,39 +185,47 @@
   const emit = defineEmits(["save"]);
   const regla_DNI = ref(false);
 
-  const solicitanteForm = ref({
-
-  });
-
   const solicitudForm = ref({
-    num_documento: "",
-    tipo_documento: 'PERSONA',
-    encontrado: false,
+    //parte de solicitante ************
+    id:null,
     nombres: "",
     apellido_paterno: "",
     apellido_materno: "",
     nombre_completo: null,
+    tipo_documento: 'PERSONA',
+    num_documento: "",
+    direccion: "",
     correo: "",
     celular: "",
-    direccion: "",
     ubigeo_cod: null,
-    ubigeo_cod_soli: null,
-    notario:null,
-    subserie:null,
+    //parte de solicitud **************
+    //notario_id:'',
+    //subserie_id:'null',
     otorgantes: "",
     favorecidos: "",
+    fecha:'',
     bien: "",
-    masdatos: "",
+    mas_datos: "",
+    tipo_copia:'',
+    ubigeo_cod_soli: null,
+    estado:'En Proceso de Busqueda...',
+    //datos para generar PDF **********
     testimonio: "",
     copiaCertificada: "",
     copiaSimple: "",
+    notario:null,
+    subserie:null,
+    ubigeo_soli:'',
+    ubigeo_pers:'',
   });
 
 function updateUbigeo(event) {
-  solicitudForm.value.ubigeo_cod = event;
+  solicitudForm.value.ubigeo_cod = event.ubigeo_cod;
+  solicitudForm.value.ubigeo_pers = event.nombre;
 }
 function updateUbigeoSoli(event) {
-  solicitudForm.value.ubigeo_cod_soli = event;
+  solicitudForm.value.ubigeo_cod_soli = event.ubigeo_cod;
+  solicitudForm.value.ubigeo_soli = event.nombre;
 }
 function SiguienteStepper(val){
   val.next();regla_DNI.value=false;
@@ -282,7 +269,7 @@ async function getData(){
   // subserie();
 
 const loading = ref(false);
-const encontroDatosPersona = ref(false);
+const NoEncontroDatosPersona = ref(false);
 
 async function getSolicitante() {
     loading.value = true;
@@ -293,19 +280,17 @@ async function getSolicitante() {
       if (res.message) {
         console.log(res.message);
         // console.log("object");
-        encontroDatosPersona.value = true;
+        NoEncontroDatosPersona.value = true;
         onReset(false);
       } else {
-        encontroDatosPersona.value = false;
+        NoEncontroDatosPersona.value = false;
         console.log(res);
-        solicitudForm.value.encontrado = true;
         solicitudForm.value.nombres = res.nombres;
         solicitudForm.value.apellido_paterno = res.apellidoPaterno;
         solicitudForm.value.apellido_materno = res.apellidoMaterno;
-        solicitudForm.value.nombre_completo = res.nombres+" "+res.apellidoPaterno+" "+res.apellidoMaterno;
       }
     } catch (error) {
-      formDni.value.encontrado = false;
+      NoEncontroDatosPersona.value = false;
     }
     loading.value = false;
 }
@@ -316,7 +301,6 @@ function onReset(n_documento = true) {
     if (n_documento) {
       solicitudForm.value.num_documento = "";
     }
-    solicitudForm.value.encontrado = false;
     solicitudForm.value.nombres = "";
     solicitudForm.value.apellido_paterno = "";
     solicitudForm.value.apellido_materno = "";
@@ -325,13 +309,13 @@ function onReset(n_documento = true) {
     solicitudForm.value.celular = null;
 }
 
-  const onSubmit = async () => {
+const onSubmit = async () => {
     solicitudForm.value.nombre_completo = nombreCompleto.value;
-    await SolicitudService.save(solicitudForm.value);
-    console.log("enviado!");
+    const request = await SolicitudService.save(solicitudForm.value);
+    console.log("enviado!",request);
     emit("save");
-  };
-  const save = () => {
+};
+const save = () => {
     formTrabajadores.value = false;
     // tableRef.value.requestServerInteraction();
     $q.notify({
@@ -341,6 +325,6 @@ function onReset(n_documento = true) {
       progress: true,
       timeout: 1000,
     });
-  };
-  </script>
-  <style></style>
+};
+</script>
+<style></style>

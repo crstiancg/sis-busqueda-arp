@@ -19,9 +19,9 @@ class RegistroBusquedaFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => 1,
-            'RS_id_derivado' => ++$this->i,
+            'solicitud_id' => ++$this->i,
             'estado' => $this->i%2===0 ? 1 : 0,
+            'user_id' => $this->i%2===0 ? 1 : null,
             'cod_protocolo' => $this->i%2===0 ? 'P-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT):null,
             'cod_escritura' => $this->i%2===0 ?'E-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT):null,
             'cod_folioInicial' => $this->i%2===0 ?'FI-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT):null,

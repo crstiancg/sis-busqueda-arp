@@ -32,7 +32,16 @@
         "
       />
     </div>
-
+    <div class="row">
+      <SelectInput class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario" :options="GenerateListService"
+        :GenerateList="{ column: 'notario', table: 'anterior2' }" />
+      <SelectInput class="col-4 q-px-xs" label="Lugar" v-model="nombreLugar" :options="GenerateListService"
+        :GenerateList="{ column: 'lugar', table: 'anterior2' }" />
+      <!-- <InputTextSelect class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario_" :options="GenerateListService"
+        :GenerateList="{ column: 'otorgantes', table: 'anterior' }"></InputTextSelect> -->
+      <SelectInput class="col-4 q-px-xs" label="Subserie" v-model="nombreSubserie" :options="GenerateListService"
+        :GenerateList="{ column: 'subserie', table: 'anterior2' }" />
+    </div>
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
@@ -65,7 +74,18 @@
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
+            <span v-if="col.sortable_" class="span-icono" @click="props.sort(col.name)">
+              <q-icon class="q-table__sort-icon icon-sort" style="" name="arrow_downward" />
+              {{ col.label }}
+            </span>
+            <span v-else>{{ col.label }}</span>
+            <q-icon v-if="col.search" class="q-pa-xs q-mx-xs cursor-pointer" :class="$q.dark.isActive ? 'btn-buscar-dark' : 'btn-buscar'" name="search" size="xs">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-input clearable class="q-px-sm" dense debounce="500" v-model="busColum[col.name]" placeholder="Buscar">
+                  <template v-slot:append> <q-icon name="search" /> </template>
+                </q-input>
+              </q-popup-proxy>
+            </q-icon>
           </q-th>
           <q-th auto-width> Acciones </q-th>
         </q-tr>
@@ -105,7 +125,10 @@
 import { ref, onMounted, watch } from "vue";
 import Anterior2Service from "src/services/arp_v1/Anterior2Service";
 import { useQuasar } from "quasar";
+import GenerateListService from "src/services/arp_v1/GenerateListService";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
+import SelectInput from "src/components/SelectInput.vue";
+
 const $q = useQuasar();
 
 async function verDat(){
@@ -120,13 +143,34 @@ async function verDat(){
 
 const columns = [
   { field: (row) => row.id, name: "id", label: "Id", aling: "center", sortable: true, },
-  { field: (row) => row.notario, name: "notario", label: "Notario", aling: "center", sortable: true,},
-  { field: (row) => row.lugar, name: "lugar", label: "Lugar", aling: "center", sortable: true,},
+  { field: (row) => row.notario, name: "notario", label: "Notario", aling: "center", sortable: true, search: true},
+  { field: (row) => row.lugar, name: "lugar", label: "Lugar", aling: "center", sortable: true, search: true},
   { field: (row) => row.subserie, name: "subserie", label: "Subserie", aling: "center", sortable: true,},
   { field: (row) => row.fecha, name: "fecha", label: "Fecha", aling: "center", sortable: true,},
   { field: (row) => row.bien, name: "bien", label: "Bien", aling: "center", sortable: true,},
   { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", aling: "center", sortable: true,},
+  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", aling: "center", sortable: true, search: true},
+  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", aling: "center", sortable: true, search: true},
 ];
+
+const nombreNotario = ref();
+const nombreLugar = ref();
+const nombreSubserie = ref();
+
+const busColum = ref({});
+
+watch(nombreNotario, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(nombreLugar, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(nombreSubserie, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(busColum.value, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
 
 const tableRef = ref();
 const formRole = ref(false);
@@ -152,8 +196,9 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter? '': descending ? "-" + sortBy : sortBy;
+  const filtros = {notario: nombreNotario.value, lugar: nombreLugar.value, subserie: nombreSubserie.value};
   const { data, total = 0 } = await Anterior2Service.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by},
+    params: { rowsPerPage: fetchCount, page, search: filter, order_by, search_by:busColum.value, filter_by:filtros,},
   });;
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);

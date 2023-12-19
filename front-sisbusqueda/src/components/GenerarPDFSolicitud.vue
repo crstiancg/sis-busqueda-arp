@@ -1,21 +1,24 @@
 <template>
-    <q-btn color="negative" :label="$q.screen.lt.sm ? '' : 'Generar PDF'" icon-right="picture_as_pdf" @click="generarPDF"/>
+    <q-btn color="negative" :label="$q.screen.lt.sm || vericon? '' : label" :icon-right="vericon?'':'picture_as_pdf'" @click="VerificaDatos"/>
     <!-- <img src="src/assets/img/logo_ARP.png" alt=""> -->
 </template>
 
 <script setup>
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { convertDate } from "src/utils/ConvertDate";
 import { ref } from "vue";
 
 const props = defineProps({
-  datosSolicitud:{default:{}},
-  datosBusqueda:{default:{}},
-  datosVerificacion:{default:{}},
-  label:{default:'Generar PDF'}
+  datosSolicitud:{default:null},
+  datosSolicitudRow:{default:null},
+  datosBusqueda:{default:null},
+  datosVerificacion:{default:null},
+  label:{default:'Generar PDF'},
+  vericon:{default:false},
 });
 
-function generarPDF() {
+function generarPDF(datos) {
   const nombrePDF = "mi_pdf_nombre.pdf";
   // Crear un nuevo documento PDF
   const doc = new jsPDF("p", "mm", "a4");
@@ -39,12 +42,12 @@ function generarPDF() {
 
 
   doc.text("N° Solicitud: {id_solicitud}", 120, 30);
-  const parrafo1 = `      Yo, ${ props.datosSolicitud.nombre_completo } natural de ${ props.datosSolicitud.ubigeo_cod } identificado con D.N.I. ${ props.datosSolicitud.num_documento } y con domicilio en ${ props.datosSolicitud.direccion } del distrito ${ props.datosSolicitud.ubigeo_cod }, ante Usted con el debido respeto me presento y expongo:`;
+  const parrafo1 = `      Yo, ${ datos.nombres } ${ datos.apellido_paterno } ${ datos.apellido_paterno } natural de ${ datos.ubigeo_pers } identificado con D.N.I. ${ datos.num_documento } y con domicilio en ${ datos.direccion } del distrito ${ datos.ubigeo_pers }, ante Usted con el debido respeto me presento y expongo:`;
   const lineas = doc.splitTextToSize(parrafo1, maxWidth);
   doc.text(lineas, 20, 40, { align: "justify" , maxWidth: maxWidth});
 
-  doc.text("Celular: "+props.datosSolicitud.celular, 20, 60);
-  doc.text("Correo: "+props.datosSolicitud.correo, 70, 60);
+  doc.text("Celular: "+datos.celular, 20, 60);
+  doc.text("Correo: "+datos.correo, 70, 60);
 
   const parrafo2 = `      Que amparado en los Dispositivos Legales Vigentes, Solicito se me expida el documento de acuerdo al los siguientes detalles: ` ;
   doc.text(doc.splitTextToSize(parrafo2, maxWidth), 20, 70,{ align: "justify" , maxWidth: maxWidth});
@@ -59,13 +62,13 @@ function generarPDF() {
   doc.text("DATOS DEL DOCUMENTO:", 20, 95);
   doc.line(20, 97, 70, 97);
 
-  doc.text("Escritura Pública", 30, 105); doc.text(": "+props.datosSolicitud.subserie, 65, 105);
-  doc.text("Otorgado por", 30, 112);      doc.text(": "+props.datosSolicitud.otorgantes, 65, 112);
-  doc.text("A Favor de", 30, 119);        doc.text(": "+props.datosSolicitud.favorecidos, 65, 119);
-  doc.text("Notario Público", 30, 126);   doc.text(": "+props.datosSolicitud.notario, 65, 126);
-  doc.text("Lugar y Fecha", 30, 133);     doc.text(": {lugar fecha}"+props.datosSolicitud.ubigeo_cod_soli, 65, 133);
-  doc.text("Nombre del Bien", 30, 140);   doc.text(": "+props.datosSolicitud.bien, 65, 140);
-  doc.text("Otros", 30, 147);             doc.text(": "+props.datosSolicitud.masdatos, 65, 147);
+  doc.text("Escritura Pública", 30, 105); doc.text(": "+datos.subserie, 65, 105);
+  doc.text("Otorgado por", 30, 112);      doc.text(": "+datos.otorgantes, 65, 112);
+  doc.text("A Favor de", 30, 119);        doc.text(": "+datos.favorecidos, 65, 119);
+  doc.text("Notario Público", 30, 126);   doc.text(": "+datos.notario, 65, 126);
+  doc.text("Lugar y Fecha", 30, 133);     doc.text(": "+datos.ubigeo_soli+", "+ convertDate(datos.fecha,"d 'de' MMMM, yyyy"), 65, 133);
+  doc.text("Nombre del Bien", 30, 140);   doc.text(": "+datos.bien, 65, 140);
+  doc.text("Otros", 30, 147);             doc.text(": "+datos.mas_datos, 65, 147);
   doc.text("POR LO TANTO: Ruego a Usted acceder a mi solicitud por ser justa y legal.", 20, 155);
   doc.text('Puno, '+formatDate(), 120, 162);
 
@@ -124,6 +127,37 @@ NO de Fojas S/-
 //   doc.text(linea, leftMargin, yPos,{ align: "justify" });
 //   yPos += 5; // Ajustar el espaciado entre líneas según sea necesario
 // });
+
+function VerificaDatos(){
+  if(props.datosSolicitud){
+    generarPDF(props.datosBusqueda)
+  }else if(props.datosSolicitudRow){
+    // console.log(props.datosSolicitudRow);
+    const datosSolici = {
+      nombres: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.nombres:'',
+      apellido_paterno: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.apellido_paterno:'',
+      apellido_materno: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.apellido_materno:'',
+      num_documento: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.num_documento:'',
+      direccion: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.direccion:'',
+      correo: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.correo:'',
+      celular: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.celular:'',
+      ubigeo_pers:props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.ubigeo?props.datosSolicitudRow.solicitante.ubigeo.nombre:'':'',
+
+      otorgantes: props.datosSolicitudRow.otorgantes,
+      favorecidos: props.datosSolicitudRow.favorecidos,
+      fecha:props.datosSolicitudRow.fecha,
+      bien: props.datosSolicitudRow.bien,
+      mas_datos: props.datosSolicitudRow.mas_datos,
+      notario:props.datosSolicitudRow.notario?props.datosSolicitudRow.notario.nombre_completo:'',
+      subserie:props.datosSolicitudRow.subserie?props.datosSolicitudRow.subserie.nombre:'',
+      ubigeo_soli:props.datosSolicitudRow.ubigeo_nombre,
+      testimonio: "",
+      copiaCertificada: "",
+      copiaSimple: "",
+    };
+    generarPDF(datosSolici);
+  }
+}
 
 function obtenerFechaHoraActual() {
   const fecha = new Date();
