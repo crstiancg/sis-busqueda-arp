@@ -6,6 +6,7 @@
 <script setup>
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import { convertDate } from "src/utils/ConvertDate";
 import { ref } from "vue";
 
 const props = defineProps({
@@ -39,7 +40,7 @@ function generarPDF() {
 
 
   doc.text("N° Solicitud: {id_solicitud}", 120, 30);
-  const parrafo1 = `      Yo, ${ props.datosSolicitud.nombre_completo } natural de ${ props.datosSolicitud.ubigeo_cod } identificado con D.N.I. ${ props.datosSolicitud.num_documento } y con domicilio en ${ props.datosSolicitud.direccion } del distrito ${ props.datosSolicitud.ubigeo_cod }, ante Usted con el debido respeto me presento y expongo:`;
+  const parrafo1 = `      Yo, ${ props.datosSolicitud.nombres } ${ props.datosSolicitud.apellido_paterno } ${ props.datosSolicitud.apellido_paterno } natural de ${ props.datosSolicitud.ubigeo_pers } identificado con D.N.I. ${ props.datosSolicitud.num_documento } y con domicilio en ${ props.datosSolicitud.direccion } del distrito ${ props.datosSolicitud.ubigeo_pers }, ante Usted con el debido respeto me presento y expongo:`;
   const lineas = doc.splitTextToSize(parrafo1, maxWidth);
   doc.text(lineas, 20, 40, { align: "justify" , maxWidth: maxWidth});
 
@@ -63,9 +64,9 @@ function generarPDF() {
   doc.text("Otorgado por", 30, 112);      doc.text(": "+props.datosSolicitud.otorgantes, 65, 112);
   doc.text("A Favor de", 30, 119);        doc.text(": "+props.datosSolicitud.favorecidos, 65, 119);
   doc.text("Notario Público", 30, 126);   doc.text(": "+props.datosSolicitud.notario, 65, 126);
-  doc.text("Lugar y Fecha", 30, 133);     doc.text(": {lugar fecha}"+props.datosSolicitud.ubigeo_cod_soli, 65, 133);
+  doc.text("Lugar y Fecha", 30, 133);     doc.text(": "+props.datosSolicitud.ubigeo_soli+", "+ convertDate(props.datosSolicitud.fecha,"d 'de' MMMM, yyyy"), 65, 133);
   doc.text("Nombre del Bien", 30, 140);   doc.text(": "+props.datosSolicitud.bien, 65, 140);
-  doc.text("Otros", 30, 147);             doc.text(": "+props.datosSolicitud.masdatos, 65, 147);
+  doc.text("Otros", 30, 147);             doc.text(": "+props.datosSolicitud.mas_datos, 65, 147);
   doc.text("POR LO TANTO: Ruego a Usted acceder a mi solicitud por ser justa y legal.", 20, 155);
   doc.text('Puno, '+formatDate(), 120, 162);
 

@@ -165,7 +165,7 @@ async function filterDistritos(val, update) {
 function updateUbigeo() {
     if (modelDepartamento.value != null && modelProvincia.value != null && modelDistrito.value != null) {
         const ubigeo_cod = modelDepartamento.value.cod_dep + modelProvincia.value.cod_prov + modelDistrito.value.cod_dist;
-        emits("selectedItem", ubigeo_cod);
+        emits("selectedItem", {ubigeo_cod:ubigeo_cod,nombre:modelDistrito.value.nombre});
     };
 }
 
