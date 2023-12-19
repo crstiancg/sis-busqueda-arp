@@ -77,6 +77,8 @@
               {{ col.value }}
             </q-td>
             <q-td auto-width>
+              <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
+                :datosSolicitudRow="props.row"/>
               <q-btn
                 size="sm"
                 outline
@@ -106,6 +108,7 @@
   import SolicitudService from "src/services/SolicitudService";
   import { useQuasar } from "quasar";
   import SolicitudesForm from "src/pages/Solicitudes/SolicitudesForm.vue";
+  import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
   const $q = useQuasar();
 
 async function verDat(){
