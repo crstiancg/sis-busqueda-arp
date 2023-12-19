@@ -99,7 +99,16 @@ const routes = [
         name: "Test",
         component: () => import("pages/Test/TestDni.vue"),
       },
-
+      {
+        path: "busqueda",
+        name: "Busqueda",
+        component: () => import("pages/Solicitudes/Registros/BusquedasList.vue"),
+      },
+      {
+        path: "verificacion",
+        name: "Verificacion",
+        component: () => import("pages/Solicitudes/Registros/VerificacionesList.vue"),
+      },
     ],
   },
 
