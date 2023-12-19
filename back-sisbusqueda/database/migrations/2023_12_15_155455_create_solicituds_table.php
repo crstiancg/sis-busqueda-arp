@@ -28,6 +28,8 @@ return new class extends Migration
             $table->char('ubigeo_cod', 6)->nullable();
             $table->foreign('ubigeo_cod')->references('codigo')->on('ubigeos')->nullOnDelete();
             $table->string('estado');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
             $table->timestamps();
         });
     }

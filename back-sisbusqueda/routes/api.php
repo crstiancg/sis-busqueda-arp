@@ -20,7 +20,6 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermisoController;
 use App\Http\Controllers\RegistroBusquedaController;
-use App\Http\Controllers\RegistroSolicitudController;
 use App\Http\Controllers\RegistroVerificacionController;
 use App\Http\Controllers\SiaController;
 use App\Http\Controllers\Sis20182Controller;
@@ -29,7 +28,6 @@ use App\Http\Controllers\SolicitanteController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SubSerieController;
 use App\Http\Controllers\UbigeoController;
-use App\Models\Sis2018;
 
 /*
 |--------------------------------------------------------------------------
@@ -100,6 +98,5 @@ Route::get('/solicitantes/dni/{dni}', [SolicitanteController::class, 'getSolicit
 
 Route::apiResource('/solicitudes', SolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
 
-Route::apiResource('/registro_solicitudes', RegistroSolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/registro_busquedas', RegistroBusquedaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/registro_verificaciones', RegistroVerificacionController::class)->middleware([HandlePrecognitiveRequests::class]);

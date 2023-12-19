@@ -8,12 +8,10 @@ use App\Models\Libro;
 use App\Models\Notario;
 use App\Models\Otorgante;
 use App\Models\RegistroBusqueda;
-use App\Models\RegistroSolicitud;
 use App\Models\RegistroVerificacion;
 use App\Models\Solicitante;
 use App\Models\Solicitud;
 use App\Models\SubSerie;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class A_de_factoriesSeeder extends Seeder
@@ -32,7 +30,6 @@ class A_de_factoriesSeeder extends Seeder
 
         Solicitante::factory(100)->create();
         Solicitud::factory(50)->create();
-        RegistroSolicitud::factory(50)->create();
         RegistroBusqueda::factory(50)->create();
         RegistroVerificacion::factory(50)->create();
     }
