@@ -80,26 +80,20 @@
                         :GenerateList="{ column: 'notario', table: 'all' }" />
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Subserie" v-model="solicitudForm.subserie" :options="GenerateListService"
                         :GenerateList="{ column: 'subserie', table: 'all' }" />
-                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
-                        v-model="solicitudForm.otorgantes" label="Otorgante"/>
-                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
-                        v-model="solicitudForm.favorecidos" label="Favorecido"/>
-                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
-                        v-model="solicitudForm.bien" label="Nombre del Bien"/>
-                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
-                        v-model="solicitudForm.fecha" label="Fecha" mask="date" :rules="['date']">
-                      <template v-slot:prepend>
-                        <q-icon name="event" class="cursor-pointer">
-                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                            <q-date v-model="solicitudForm.fecha">
-                              <div class="row items-center justify-end">
-                                <q-btn v-close-popup label="Close" color="primary" flat />
-                              </div>
-                            </q-date>
-                          </q-popup-proxy>
-                        </q-icon>
-                      </template>
-                    </q-input>
+                    <q-input
+                      class="col-12 col-md-6 q-pa-sm"
+                      dense
+                      v-model="solicitudForm.otorgantes"
+                      label="Otorgante"
+                      outlined
+                    />
+                    <q-input
+                      class="col-12 col-md-6 q-pa-sm"
+                      dense
+                      v-model="solicitudForm.favorecidos"
+                      label="Favorecido"
+                      outlined
+                    />
                   </div>
                   <q-input dense outlined clearable type="textarea" class="q-pa-sm"
                       v-model="solicitudForm.mas_datos" label="Mas datos: Escritura -  Protocolo -  Folio" />
