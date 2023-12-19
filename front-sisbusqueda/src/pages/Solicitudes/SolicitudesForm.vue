@@ -2,20 +2,9 @@
     <!-- content -->
     <q-card class="my-card" style="width: 1400px; max-width: 80vw">
       <q-card-section class="bg-primary text-white">
-        <div class="text-h6">Nueva Solicitud {{ step }}</div>
-        <!-- <div class="text-subtitle2">Usuario</div> -->
+        <div class="text-h6">Nueva Solicitud</div>
       </q-card-section>
       <q-card-section class="q-pa-none">
-        <!-- <div class="row">
-          <div class="col-xs-12 col-sm-4 q-pa-md">
-            <div class="text-center text-uppercase">
-              <span class="text-weight-bold text-overline" style="font-size: 15px"
-                >Detalles de la Solicitud</span
-              >
-            </div>
-
-            {{ solicitudForm }}
-          </div> -->
         <div class="col-xs-12 col-sm-8 q-pa-sm">
           <q-form @submit="onSubmit">
             <q-stepper v-model="step" ref="stepper" color="primary" header-nav animated flat bordered>
@@ -42,7 +31,6 @@
                         </template>
                       </q-input>
                       <div v-if="NoEncontroDatosPersona"> No se encontraron datos</div>
-                      <div>{{ solicitudForm.nombre_completo }} - name</div>
                       <div class="row">
                         <q-input class="col-12 col-md-6 q-pa-sm" label="Apellido Paterno" dense outlined clearable
                           v-model="solicitudForm.apellido_paterno" :loading="loading" />
@@ -80,20 +68,26 @@
                         :GenerateList="{ column: 'notario', table: 'all' }" />
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Subserie" v-model="solicitudForm.subserie" :options="GenerateListService"
                         :GenerateList="{ column: 'subserie', table: 'all' }" />
-                    <q-input
-                      class="col-12 col-md-6 q-pa-sm"
-                      dense
-                      v-model="solicitudForm.otorgantes"
-                      label="Otorgante"
-                      outlined
-                    />
-                    <q-input
-                      class="col-12 col-md-6 q-pa-sm"
-                      dense
-                      v-model="solicitudForm.favorecidos"
-                      label="Favorecido"
-                      outlined
-                    />
+                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
+                        v-model="solicitudForm.otorgantes" label="Otorgante"/>
+                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
+                        v-model="solicitudForm.favorecidos" label="Favorecido"/>
+                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
+                        v-model="solicitudForm.bien" label="Nombre del Bien"/>
+                    <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
+                        v-model="solicitudForm.fecha" label="Fecha" mask="date" :rules="['date']">
+                      <template v-slot:prepend>
+                        <q-icon name="event" class="cursor-pointer">
+                          <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                            <q-date v-model="solicitudForm.fecha">
+                              <div class="row items-center justify-end">
+                                <q-btn v-close-popup label="Close" color="primary" flat />
+                              </div>
+                            </q-date>
+                          </q-popup-proxy>
+                        </q-icon>
+                      </template>
+                    </q-input>
                   </div>
                   <q-input dense outlined clearable type="textarea" class="q-pa-sm"
                       v-model="solicitudForm.mas_datos" label="Mas datos: Escritura -  Protocolo -  Folio" />
