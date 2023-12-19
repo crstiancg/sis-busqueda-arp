@@ -26,8 +26,9 @@ class SolicitudFactory extends Factory
             'bien' => fake()->colorName(),
             'mas_datos' => fake()->text(),
             'tipo_copia' => fake()->randomElement(array('Testimonio','Copia Certificada','Copia Simple')),
-            'ubigeo_cod' => fake()->randomElement(array('010101','010102','010103','010104','010105','010106')),
-            'estado' => fake()->randomElement(array('Pendiente','En Busquueda','En verificación','Aceptado','Imprimido','Terminado')),
+            'ubigeo_cod' => fake()->randomElement(array('210101','210102','210103','210104','210105','210106')),
+            'estado' => fake()->randomElement(array('En Busquueda','En verificación','Aceptado','Imprimido','Finalizado')),
+            'user_id' => 1,
         ];
     }
 }

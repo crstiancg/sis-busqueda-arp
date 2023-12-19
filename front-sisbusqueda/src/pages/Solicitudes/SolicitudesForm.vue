@@ -187,6 +187,7 @@
 
   const solicitudForm = ref({
     //parte de solicitante ************
+    id:null,
     nombres: "",
     apellido_paterno: "",
     apellido_materno: "",

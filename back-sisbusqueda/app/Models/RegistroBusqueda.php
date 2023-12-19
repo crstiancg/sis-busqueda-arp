@@ -10,7 +10,7 @@ class RegistroBusqueda extends Model
     use HasFactory;
     protected $table = 'registro_busquedas';
     protected $fillable = [
-        'RS_id_derivado',
+        'solicitud_id',
         'user_id',
         'estado',
         'cod_protocolo',
@@ -19,9 +19,9 @@ class RegistroBusqueda extends Model
         'cod_folioFinal',
         'observaciones',
     ];
-    public function registroSolicitud()
+    public function solicitud()
     {
-        return $this->belongsTo(RegistroSolicitud::class, 'RS_id_derivado');
+        return $this->belongsTo(Solicitud::class, 'solicitud_id');
     }
     public function user()
     {
