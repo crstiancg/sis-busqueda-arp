@@ -16,32 +16,91 @@
       </q-breadcrumbs>
     </div>
     <q-separator />
-    <GenerarPDFSolicitud :datosBusqueda="{nombre_completo:'jorge gonsales',num_doc:'59844546',direccion:'Av. Ramon Gutierres',ubigeo:'Puno',celular:'936151311',correo:'jorge@gmail.com'}"/>
+    <GenerarPDFSolicitud
+      :datosBusqueda="{
+        nombre_completo: 'jorge gonsales',
+        num_doc: '59844546',
+        direccion: 'Av. Ramon Gutierres',
+        ubigeo: 'Puno',
+        celular: '936151311',
+        correo: 'jorge@gmail.com',
+      }"
+    />
 
     <div class="q-gutter-xs q-pa-sm">
-      <q-btn color="primary" :disable="loading" :label="$q.screen.lt.sm ? '' : 'Agregar'" icon-right="add"
-          @click=" { formRole = true; edit = false; title = 'Añadir Rol'; } " />
-          {{ nombreNotario_ }}
+      <q-btn
+        color="primary"
+        :disable="loading"
+        :label="$q.screen.lt.sm ? '' : 'Agregar'"
+        icon-right="add"
+        @click="
+          {
+            formRole = true;
+            edit = false;
+            title = 'Añadir Rol';
+          }
+        "
+      />
+      {{ nombreNotario_ }}
 
       <div class="row">
-        <SelectInput class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario" :options="GenerateListService"
-          :GenerateList="{ column: 'notario', table: 'anterior' }" />
-        <SelectInput class="col-4 q-px-xs" label="Lugar" v-model="nombreLugar" :options="GenerateListService"
-          :GenerateList="{ column: 'lugar', table: 'anterior' }" />
-        <!-- <InputTextSelect class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario_" :options="GenerateListService"
-          :GenerateList="{ column: 'otorgantes', table: 'anterior' }"></InputTextSelect> -->
-        <SelectInput class="col-4 q-px-xs" label="Subserie" v-model="nombreSubserie" :options="GenerateListService"
-          :GenerateList="{ column: 'subserie', table: 'anterior' }" />
-
+        <SelectInput
+          class="col-4 q-px-xs"
+          label="Notarios"
+          v-model="nombreNotario"
+          :options="GenerateListService"
+          :GenerateList="{ column: 'notario', table: 'anterior' }"
+        />
+        <SelectInput
+          class="col-4 q-px-xs"
+          label="Lugar"
+          v-model="nombreLugar"
+          :options="GenerateListService"
+          :GenerateList="{ column: 'lugar', table: 'anterior' }"
+        />
+        <InputTextSelect
+          class="col-4 q-px-xs"
+          label="Notarios"
+          v-model="nombreNotario_"
+          :options="GenerateListService"
+          :GenerateList="{ column: 'otorgantes', table: 'anterior' }"
+        ></InputTextSelect>
+        <SelectInput
+          class="col-4 q-px-xs"
+          label="Subserie"
+          v-model="nombreSubserie"
+          :options="GenerateListService"
+          :GenerateList="{ column: 'subserie', table: 'anterior' }"
+        />
       </div>
     </div>
 
-    <q-table :rows-per-page-options="[5, 10, 15, 20]" class="my-sticky-header-table htable q-ma-sm" title="Anteriores"
-      ref="tableRef" :rows="rows" :columns="columns" row-key="id" v-model:pagination="pagination" :loading="loading"
-      :filter="filter" binary-state-sort @request="onRequest" virtual-scroll>
+    <q-table
+      :rows-per-page-options="[5, 10, 15, 20]"
+      class="my-sticky-header-table htable q-ma-sm"
+      title="Anteriores"
+      ref="tableRef"
+      :rows="rows"
+      :columns="columns"
+      row-key="id"
+      v-model:pagination="pagination"
+      :loading="loading"
+      :filter="filter"
+      binary-state-sort
+      @request="onRequest"
+      virtual-scroll
+    >
       <template v-slot:top-right>
-        <q-input clearable active-class="text-white" standout="bg-primary" color="white" dense debounce="500"
-          v-model="filter" placeholder="Buscar">
+        <q-input
+          clearable
+          active-class="text-white"
+          standout="bg-primary"
+          color="white"
+          dense
+          debounce="500"
+          v-model="filter"
+          placeholder="Buscar"
+        >
           <template v-slot:append>
             <q-icon name="search" />
           </template>
@@ -49,20 +108,45 @@
       </template>
       <template v-slot:header="props">
         <q-tr :props="props">
-            <q-th v-for="col in props.cols" :key="col.name" :props="props">
-              <span v-if="col.sortable_" class="span-icono" @click="props.sort(col.name)">
-                <q-icon class="q-table__sort-icon icon-sort" style="" name="arrow_downward" />
-                {{ col.label }}
-              </span>
-              <span v-else>{{ col.label }}</span>
-              <q-icon v-if="col.search" class="q-pa-xs q-mx-xs cursor-pointer" :class="$q.dark.isActive ? 'btn-buscar-dark' : 'btn-buscar'" name="search" size="xs">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-input clearable class="q-px-sm" dense debounce="500" v-model="busColum[col.name]" placeholder="Buscar">
-                    <template v-slot:append> <q-icon name="search" /> </template>
-                  </q-input>
-                </q-popup-proxy>
-              </q-icon>
-            </q-th>
+          <q-th v-for="col in props.cols" :key="col.name" :props="props">
+            <span
+              v-if="col.sortable_"
+              class="span-icono"
+              @click="props.sort(col.name)"
+            >
+              <q-icon
+                class="q-table__sort-icon icon-sort"
+                style=""
+                name="arrow_downward"
+              />
+              {{ col.label }}
+            </span>
+            <span v-else>{{ col.label }}</span>
+            <q-icon
+              v-if="col.search"
+              class="q-pa-xs q-mx-xs cursor-pointer"
+              :class="$q.dark.isActive ? 'btn-buscar-dark' : 'btn-buscar'"
+              name="search"
+              size="xs"
+            >
+              <q-popup-proxy
+                cover
+                transition-show="scale"
+                transition-hide="scale"
+              >
+                <q-input
+                  clearable
+                  class="q-px-sm"
+                  dense
+                  debounce="500"
+                  v-model="busColum[col.name]"
+                  placeholder="Buscar"
+                >
+                  <template v-slot:append> <q-icon name="search" /> </template>
+                </q-input>
+              </q-popup-proxy>
+            </q-icon>
+          </q-th>
           <q-th auto-width> Acciones </q-th>
         </q-tr>
       </template>
@@ -73,8 +157,23 @@
             {{ col.value }}
           </q-td>
           <q-td auto-width>
-            <q-btn size="sm" outline color="green" round @click="editar(props.row.id)" icon="edit" class="q-mr-xs" />
-            <q-btn size="sm" outline color="red" round @click="eliminar(props.row.id)" icon="delete" />
+            <q-btn
+              size="sm"
+              outline
+              color="green"
+              round
+              @click="editar(props.row.id)"
+              icon="edit"
+              class="q-mr-xs"
+            />
+            <q-btn
+              size="sm"
+              outline
+              color="red"
+              round
+              @click="eliminar(props.row.id)"
+              icon="delete"
+            />
           </q-td>
         </q-tr>
       </template>
@@ -100,31 +199,106 @@ import { useQuasar } from "quasar";
 import InputTextSelect from "src/components/InputTextSelect.vue";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
 
-import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue"
+import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
 
 const $q = useQuasar();
 
 async function verDat() {
-  const filtros = {lugar:'col1',col2:'col2',notario:'col1',col4:'col2'};
+  const filtros = {
+    lugar: "col1",
+    col2: "col2",
+    notario: "col1",
+    col4: "col2",
+  };
   const dato = await AnteriorService.getData({
-    params: { rowsPerPage: 10, page:1, search: 'roger', order_by:'',search_by:busColum.value},
-  })
+    params: {
+      rowsPerPage: 10,
+      page: 1,
+      search: "roger",
+      order_by: "",
+      search_by: busColum.value,
+    },
+  });
   console.log(dato);
 }
 // verDat(); //
 const nombreNotario_ = ref();
 const columns = [
-  { name: 'index', label: '#', field: 'index' },
-  { field: (row) => row.notario, name: "notario", label: "Notario", align: "left", sortable_: true, search: true },
-  { field: (row) => row.lugar, name: "lugar", label: "Lugar", align: "left", sortable_: true, search: true },
-  { field: (row) => row.subserie, name: "subserie", label: "Subserie", align: "center", sortable_: true, search: true },
-  { field: (row) => row.fecha, name: "fecha", label: "Fecha", align: "center", sortable_: true, search: true },
-  { field: (row) => row.bien, name: "bien", label: "Bien", align: "left", sortable_: true, },
-  { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", align: "center", sortable_: true, },
-  { field: (row) => row.nescritura, name: "nescritura", label: "Escritura", align: "center", sortable_: true, },
-  { field: (row) => row.folio, name: "folio", label: "Folio", align: "center", sortable_: true, },
-  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", align: "center", sortable_: true, },
-  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", align: "center", sortable_: true, },
+  { name: "index", label: "#", field: "index" },
+  {
+    field: (row) => row.notario,
+    name: "notario",
+    label: "Notario",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.lugar,
+    name: "lugar",
+    label: "Lugar",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.subserie,
+    name: "subserie",
+    label: "Subserie",
+    align: "center",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.fecha,
+    name: "fecha",
+    label: "Fecha",
+    align: "center",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.bien,
+    name: "bien",
+    label: "Bien",
+    align: "left",
+    sortable_: true,
+  },
+  {
+    field: (row) => row.protocolo,
+    name: "protocolo",
+    label: "Protocolo",
+    align: "center",
+    sortable_: true,
+  },
+  {
+    field: (row) => row.nescritura,
+    name: "nescritura",
+    label: "Escritura",
+    align: "center",
+    sortable_: true,
+  },
+  {
+    field: (row) => row.folio,
+    name: "folio",
+    label: "Folio",
+    align: "center",
+    sortable_: true,
+  },
+  {
+    field: (row) => row.otorgantes,
+    name: "otorgantes",
+    label: "Otorgantes",
+    align: "center",
+    sortable_: true,
+  },
+  {
+    field: (row) => row.favorecidos,
+    name: "favorecidos",
+    label: "Favorecidos",
+    align: "center",
+    sortable_: true,
+  },
 ];
 
 const tableRef = ref();
@@ -170,22 +344,33 @@ async function onRequest(props) {
   loading.value = true;
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
-  const order_by = filter ? '' : descending ? "-" + sortBy : sortBy;
-  const filtros = {notario: nombreNotario.value, lugar: nombreLugar.value, subserie: nombreSubserie.value};
+  const order_by = filter ? "" : descending ? "-" + sortBy : sortBy;
+  const filtros = {
+    notario: nombreNotario.value,
+    lugar: nombreLugar.value,
+    subserie: nombreSubserie.value,
+  };
   const { data, total = 0 } = await AnteriorService.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by, search_by:busColum.value, filter_by:filtros,},
-  });;
+    params: {
+      rowsPerPage: fetchCount,
+      page,
+      search: filter,
+      order_by,
+      search_by: busColum.value,
+      filter_by: filtros,
+    },
+  });
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
   for (const key in columns) {
-    if (columns[key].name === 'index') {
-      let cantidad = (page - 1) * fetchCount
+    if (columns[key].name === "index") {
+      let cantidad = (page - 1) * fetchCount;
       rows.value.forEach((row, index) => {
         row.index = index + 1 + cantidad;
       });
       break;
     }
-  };
+  }
 
   // don't forget to update local pagination object
   !total
@@ -198,7 +383,6 @@ async function onRequest(props) {
   // ...and turn of loading indicator
   loading.value = false;
 }
-
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();

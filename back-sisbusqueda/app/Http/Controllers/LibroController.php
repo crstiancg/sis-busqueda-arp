@@ -13,6 +13,8 @@ class LibroController extends Controller
     public function index()
     {
         //
+        $libros = Libro::with('notario')->OrderByDesc('created_at')->limit(2)->get();
+        return response()->json($libros);
     }
 
     /**
@@ -37,6 +39,7 @@ class LibroController extends Controller
     public function show(Libro $libro)
     {
         //
+        return response()->json($libro);
     }
 
     /**
