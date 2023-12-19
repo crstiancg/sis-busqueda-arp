@@ -65,7 +65,18 @@
       <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.label }}
+            <span v-if="col.sortable_" class="span-icono" @click="props.sort(col.name)">
+              <q-icon class="q-table__sort-icon icon-sort" style="" name="arrow_downward" />
+              {{ col.label }}
+            </span>
+            <span v-else>{{ col.label }}</span>
+            <q-icon v-if="col.search" class="q-pa-xs q-mx-xs cursor-pointer" :class="$q.dark.isActive ? 'btn-buscar-dark' : 'btn-buscar'" name="search" size="xs">
+              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-input clearable class="q-px-sm" dense debounce="500" v-model="busColum[col.name]" placeholder="Buscar">
+                  <template v-slot:append> <q-icon name="search" /> </template>
+                </q-input>
+              </q-popup-proxy>
+            </q-icon>
           </q-th>
           <q-th auto-width> Acciones </q-th>
         </q-tr>
@@ -102,7 +113,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Sis2018Service from "src/services/arp_v1/Sis2018Service";
 import { useQuasar } from "quasar";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
@@ -118,15 +129,17 @@ async function verDat(){
 // verDat();
 
 const columns = [
-  { field: (row) => row.id, name: "id", label: "Id", aling: "center", sortable: true, },
-  { field: (row) => row.notario, name: "notario", label: "Notario", aling: "center", sortable: true,},
-  { field: (row) => row.lugar, name: "lugar", label: "Lugar", aling: "center", sortable: true,},
   { field: (row) => row.subserie, name: "subserie", label: "Subserie", aling: "center", sortable: true,},
   { field: (row) => row.fecha, name: "fecha", label: "Fecha", aling: "center", sortable: true,},
   { field: (row) => row.bien, name: "bien", label: "Bien", aling: "center", sortable: true,},
-  { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", aling: "center", sortable: true,},
+  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", aling: "center", sortable: true, search: true},
+  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", aling: "center", sortable: true, search: true},
 ];
+const busColum = ref({});
 
+watch(busColum.value, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
 const tableRef = ref();
 const formRole = ref(false);
 const rolesformRef = ref();
@@ -152,7 +165,7 @@ async function onRequest(props) {
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter? '': descending ? "-" + sortBy : sortBy;
   const { data, total = 0 } = await Sis2018Service.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by },
+    params: { rowsPerPage: fetchCount, page, search: filter, search_by:busColum.value, order_by },
   });;
   // console.log(data);
   // clear out existing data and add new

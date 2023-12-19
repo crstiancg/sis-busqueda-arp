@@ -32,7 +32,16 @@
         "
       />
     </div>
-
+    <div class="row">
+      <SelectInput class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario" :options="GenerateListService"
+        :GenerateList="{ column: 'notario', table: 'sis2018_2' }" />
+      <SelectInput class="col-4 q-px-xs" label="Lugar" v-model="nombreLugar" :options="GenerateListService"
+        :GenerateList="{ column: 'lugar', table: 'sis2018_2' }" />
+      <!-- <InputTextSelect class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario_" :options="GenerateListService"
+        :GenerateList="{ column: 'otorgantes', table: 'anterior' }"></InputTextSelect> -->
+      <SelectInput class="col-4 q-px-xs" label="Subserie" v-model="nombreSubserie" :options="GenerateListService"
+        :GenerateList="{ column: 'subserie', table: 'sis2018_2' }" />
+    </div>
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
@@ -102,10 +111,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import Sis2018_2Service from "src/services/arp_v1/Sis2018_2Service";
 import { useQuasar } from "quasar";
 import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
+import GenerateListService from "src/services/arp_v1/GenerateListService";
+import SelectInput from "src/components/SelectInput.vue";
 const $q = useQuasar();
 
 async function verDat(){
@@ -126,6 +137,25 @@ const columns = [
   { field: (row) => row.bien, name: "bien", label: "Bien", aling: "center", sortable: true,},
   { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", aling: "center", sortable: true,},
 ];
+
+const nombreNotario = ref();
+const nombreLugar = ref();
+const nombreSubserie = ref();
+
+const busColum = ref({});
+
+watch(nombreNotario, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(nombreLugar, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(nombreSubserie, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
+watch(busColum.value, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
 
 const tableRef = ref();
 const formRole = ref(false);
@@ -151,8 +181,9 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter? '': descending ? "-" + sortBy : sortBy;
+  const filtros = {notario: nombreNotario.value, lugar: nombreLugar.value, subserie: nombreSubserie.value};
   const { data, total = 0 } = await Sis2018_2Service.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by },
+    params: { rowsPerPage: fetchCount, page, search: filter, order_by, search_by:busColum.value, filter_by:filtros,},    
   });;
   // console.log(data);
   // clear out existing data and add new
