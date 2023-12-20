@@ -61,6 +61,12 @@ function generarPDF(datos) {
   doc.rect(25, 76, 8, 5); doc.text("Testimonio", 35, 80);
   doc.rect(60, 76, 8, 5); doc.text("Copia Certificada", 70, 80);
   doc.rect(105, 76, 8, 5);  doc.text("Copia Simple", 115, 80);
+  if(datos.tipo_copia==='Testimonio')
+    doc.text("X", 28, 80);
+  else if(datos.tipo_copia==='Copia Certificada')
+    doc.text("X", 63, 80);
+  else if(datos.tipo_copia==='Copia Simple')
+    doc.text("X", 108, 80);
 
   doc.text("Otros:", 145, 77);
   doc.line(145, 83, 190, 83);
@@ -107,10 +113,9 @@ function generarPDF(datos) {
 
 function VerificaDatos(){
   if(props.datosSolicitud){
-    console.log(props.datosSolicitud);
     generarPDF(props.datosSolicitud)
   }else if(props.datosSolicitudRow){
-    console.log(props.datosSolicitudRow);
+    // console.log(props.datosSolicitudRow);
     const datosSolici = {
       nombres: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.nombres:'',
       apellido_paterno: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.apellido_paterno:'',
@@ -128,6 +133,7 @@ function VerificaDatos(){
       mas_datos: props.datosSolicitudRow.mas_datos,
       notario:props.datosSolicitudRow.notario?props.datosSolicitudRow.notario.nombre_completo:'',
       subserie:props.datosSolicitudRow.subserie?props.datosSolicitudRow.subserie.nombre:'',
+      tipo_copia:props.datosSolicitudRow.tipo_copia,
       ubigeo_soli:props.datosSolicitudRow.ubigeo_nombre,
       created_at:props.datosSolicitudRow.created_at,
       testimonio: "",

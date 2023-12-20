@@ -1,8 +1,9 @@
 <template>
     <!-- content -->
     <q-card class="my-card" style="width: 1400px; max-width: 80vw">
-      <q-card-section class="bg-primary text-white">
-        <div class="text-h6">Nueva Solicitud</div>
+      <q-card-section class="bg-primary text-white row">
+        <div class="text-h6">Nueva Solicitud</div><q-space />
+        <q-btn icon="close" color="negative" round  v-close-popup />
       </q-card-section>
       <q-card-section class="q-pa-none">
         <div class="col-xs-12 col-sm-8 q-pa-sm">
@@ -39,7 +40,7 @@
                         <q-input class="col-12 col-md-6 q-pa-sm" label="Nombres" dense outlined clearable
                           v-model="solicitudForm.nombres" :loading="loading" />
                         <q-input class="col-12 col-md-6 q-pa-sm" label="Celular" dense outlined clearable
-                          v-model="solicitudForm.celular" />
+                          v-model="solicitudForm.celular" mask="### ### ###"/>
                         <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod"
                           @selectedItem="updateUbigeo($event)" Class="col-12 col-md-6 q-pa-sm"/>
                       </div>
@@ -50,7 +51,7 @@
                 <div v-if="okSolicitante"  class="q-gutter-md">
                   <div class="row">
                     <q-input class="col-12 col-md-6 q-pa-sm" label="Correo Electronico" dense outlined clearable
-                        v-model="solicitudForm.correo" />
+                        v-model="solicitudForm.correo" :rules="['email']"/>
                     <q-input class="col-12 col-md-6 q-pa-sm" label="Direccion - Domicilio" dense outlined clearable
                         v-model="solicitudForm.direccion" />
                   </div>
@@ -95,33 +96,12 @@
               </div>
               <p>Seleccione el titulo de documento</p>
               <div>
-                <q-toggle
-                color="pink"
-                false-value="Disagreed"
-                true-value="Agreed"
-                :label="`Model is number ${solicitudForm.testimonio}`"
-                v-model="solicitudForm.testimonio"
-              />
-
-              <q-toggle
-                :false-value="13"
-                :label="`Model is number ${solicitudForm.copiaCertificada}`"
-                :true-value="42"
-                color="green"
-                v-model="solicitudForm.copiaCertificada"
-              />
-
-              <q-toggle
-                :false-value="true"
-                :label="`Model is ${solicitudForm.copiaSimple} (flipped boolean)`"
-                :true-value="false"
-                color="red"
-                v-model="solicitudForm.copiaSimple"
-              />
+                <q-toggle v-model="solicitudForm.tipo_copia" color="pink" true-value="Testimonio" label="Testimonio"/>
+                <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Certificada" true-value="Copia Certificada" color="green" />
+                <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Simple" true-value="Copia Simple" color="red" />
               </div>
                 <!-- CONTENIDO -->
               </q-step>
-
               <template v-slot:navigation>
                 <q-stepper-navigation>
                   <!-- <q-btn
@@ -206,9 +186,9 @@
     fecha:'',
     bien: "",
     mas_datos: "",
-    tipo_copia:'',
+    tipo_copia:'Copia Simple',
     ubigeo_cod_soli: null,
-    estado:'En Proceso de Busqueda...',
+    estado:'',
     //datos para generar PDF **********
     testimonio: "",
     copiaCertificada: "",
