@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="formPermisos">
+    <q-dialog v-model="formPermisos" persistent>
       <SolicitudesForm
         :title="title"
         :edit="edit"
