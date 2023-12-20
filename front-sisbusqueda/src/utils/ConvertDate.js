@@ -3,7 +3,8 @@ import es from 'date-fns/locale/es';
 
 const iso8601Format = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'";
 const supportedDateFormats = [
-    "E MMM d y",        // Ejemplo: "mar nov 14 2023"
+    "EEEE d 'de' MMMM y",        // Ejemplo: "martes 19 de diciembre 2023"
+    "E MMM d y",         // Ejemplo: "mar nov 14 2023"
     "dd/MM/yyyy",        // Ejemplo: "04/11/2023"
     "dd/MM/yy",          // Ejemplo: "04/11/23"
     "dd/MMM/yy",         // Ejemplo: "04/nov/23"
