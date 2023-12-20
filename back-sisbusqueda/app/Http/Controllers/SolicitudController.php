@@ -85,15 +85,15 @@ class SolicitudController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Solicitud $solicitud)
+    public function show(Solicitud $solicitude)
     {
-        //
+        return response()->json($solicitude);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Solicitud $solicitud)
+    public function edit(Solicitud $solicitude)
     {
         //
     }
@@ -101,7 +101,7 @@ class SolicitudController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Solicitud $solicitud)
+    public function update(Request $request, Solicitud $solicitude)
     {
         //
     }
@@ -109,14 +109,14 @@ class SolicitudController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Solicitud $solicitud)
+    public function destroy(Solicitud $solicitude)
     {
-        //
+        return response()->json($solicitude->delete());
     }
 
-    private function RegistrarABusqueda(Solicitud $solicitud){
+    private function RegistrarABusqueda(Solicitud $solicitude){
         return RegistroBusqueda::create([
-            'solicitud_id' =>$solicitud->id,
+            'solicitud_id' =>$solicitude->id,
             'estado' => 0,
         ]);
     }
