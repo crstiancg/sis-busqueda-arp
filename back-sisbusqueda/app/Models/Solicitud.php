@@ -16,10 +16,12 @@ class Solicitud extends Model
         'otorgantes',
         'favorecidos',
         'fecha',
+        'ubigeo_cod',
         'bien',
         'mas_datos',
         'tipo_copia',
-        'ubigeo_cod',
+        'cantidad_copia',
+        'precio_id',
         'estado',
         'user_id',
     ];
@@ -42,6 +44,10 @@ class Solicitud extends Model
     public function ubigeo()
     {
         return $this->belongsTo(Ubigeo::class, 'ubigeo_cod','codigo');
+    }
+    public function precio()
+    {
+        return $this->belongsTo(Precio::class, 'precio_id');
     }
     public function user()
     {

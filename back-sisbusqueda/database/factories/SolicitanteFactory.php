@@ -12,7 +12,7 @@ class SolicitanteFactory extends Factory
     /**
      * Define the model's default state.
      *
-     * @return array<string, mixed>
+     * @return array<string, mixed2
      */
     protected $v=100;
     public function definition(): array
@@ -27,7 +27,7 @@ class SolicitanteFactory extends Factory
             'direccion' => fake()->address(),
             'correo' => fake()->email(),
             'celular' => fake()->phoneNumber(),
-            'ubigeo_cod' => fake()->randomElement(array('010101','010102','010103','010104','010105','010106')),
+            'ubigeo_cod' => fake()->randomElement(array('210101','210102','210103','210104','210105','210106')),
         ];
     }
 }

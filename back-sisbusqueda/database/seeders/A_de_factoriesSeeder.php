@@ -13,6 +13,7 @@ use App\Models\Solicitante;
 use App\Models\Solicitud;
 use App\Models\SubSerie;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class A_de_factoriesSeeder extends Seeder
 {
@@ -21,6 +22,7 @@ class A_de_factoriesSeeder extends Seeder
      */
     public function run(): void
     {
+        // php artisan db:seed --class=A_de_factoriesSeeder
         Notario::factory(10)->create();
         Libro::factory(30)->create();
         SubSerie::factory(10)->create();
@@ -28,6 +30,7 @@ class A_de_factoriesSeeder extends Seeder
         Favorecido::factory(60)->create();
         Otorgante::factory(60)->create();
 
+        DB::table('precios')->insert(['monto'=> 9.00 ,'vigente'=>1]);
         Solicitante::factory(100)->create();
         Solicitud::factory(50)->create();
         RegistroBusqueda::factory(50)->create();

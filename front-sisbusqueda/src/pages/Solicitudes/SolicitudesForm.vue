@@ -9,7 +9,7 @@
         <div class="col-xs-12 col-sm-8 q-pa-sm">
           <q-form @submit="onSubmit">
             <q-stepper v-model="step" ref="stepper" color="primary" header-nav animated flat bordered>
-              <q-step :name="1" title="Datos Generales" icon="settings"
+              <q-step :name="1" title="Registro Solicitante" icon="settings"
                 :done="step > 1" :header-nav="step > 1">
                 <q-option-group
                   v-model="solicitudForm.tipo_documento" inline @update:model-value="onReset"
@@ -59,7 +59,7 @@
 
               </q-step>
 
-              <q-step :name="2" title="Registrar Solicitud" caption="Opcional" icon="create_new_folder"
+              <q-step :name="2" title="Registrar Solicitud" icon="create_new_folder"
                 :done="step > 2" :header-nav="step > 2" >
                 <div class="q-gutter-md q-mb-md">
                   <div class="row">
@@ -92,15 +92,42 @@
                   </div>
                   <q-input dense outlined clearable type="textarea" class="q-pa-sm"
                       v-model="solicitudForm.mas_datos" label="Mas datos: Escritura -  Protocolo -  Folio" />
-
-              </div>
-              <p>Seleccione el titulo de documento</p>
-              <div>
-                <q-toggle v-model="solicitudForm.tipo_copia" color="pink" true-value="Testimonio" label="Testimonio"/>
-                <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Certificada" true-value="Copia Certificada" color="green" />
-                <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Simple" true-value="Copia Simple" color="red" />
               </div>
                 <!-- CONTENIDO -->
+              </q-step>
+              <q-step :name="3" title="Registro Caja" icon="point_of_sale"
+                :done="step > 3" :header-nav="step > 3" >
+                  <div class="row">
+                    <p>Seleccione el Tipo de Documento:</p> <q-space />
+                    <GenerarPDFSolicitud :datosSolicitud="solicitudForm" :precio="precioVigente" label="Pre Generar PDF" class="q-ml-sm"/>
+                  </div>
+                  <div class="row full-width">
+                    <q-toggle v-model="solicitudForm.tipo_copia" color="pink" true-value="Testimonio" label="Testimonio"/>
+                    <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Certificada" true-value="Copia Certificada" color="green" />
+                    <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Simple" true-value="Copia Simple" color="red" />
+                    <q-space/>
+                    <div class="row items-center">Precio por Copia: {{ formatNumberToSoles(precioVigente) }}</div>
+                  </div>
+                  <div class="row">
+                    <div class="col-12 col-md-6">
+                      <q-input class="q-pa-sm" type="number" suffix="Copia(s)" dense outlined clearable
+                          v-model="solicitudForm.cantidad_copia" label="Cantidad de copias"/>
+                      <q-input class="q-pa-sm" type="number" prefix="s/" dense outlined clearable
+                          v-model="montoEntregado" label="Monto entregado"/>
+                    </div>
+                    <div class="col-12 col-md-6 row">
+                      <div class="col-7">
+                        <div class="q-ma-sm text-right text-weight-bold text-subtitle1">Subtotal :</div>
+                        <div class="q-ma-sm text-right text-weight-bold text-subtitle1">Monto Entrgado :</div>
+                        <div class="q-ma-sm text-right text-weight-bold text-subtitle1">Monto de Cambio (vuelto) :</div>
+                      </div>
+                      <div class="col-5">
+                        <div class="q-ma-sm text-green-13 text-weight-bold text-subtitle1">{{ solicitudForm.cantidad_copia?formatNumberToSoles(precioVigente*solicitudForm.cantidad_copia):'' }}</div>
+                        <div class="q-ma-sm text-subtitle1">{{ montoEntregado?formatNumberToSoles(montoEntregado):'' }}</div>
+                        <div class="q-ma-sm text-yellow-6 text-subtitle1">{{ montoEntregado?formatNumberToSoles(montoEntregado-(precioVigente*solicitudForm.cantidad_copia)):'' }}</div>
+                      </div>
+                    </div>
+                  </div>
               </q-step>
               <template v-slot:navigation>
                 <q-stepper-navigation>
@@ -112,14 +139,14 @@
                     type="button"
                   /> -->
                   <q-btn
-                    v-if="step !== 2"
+                    v-if="step !== 3"
                     @click="$refs.stepper.next()"
                     color="primary"
                     label="Siguiente"
                     type="button"
                   />
                   <q-btn
-                    v-if="step === 2"
+                    v-if="step === 3"
                     @click="$refs.stepper.next()"
                     color="primary"
                     type="submit"
@@ -133,7 +160,6 @@
                     label="Regresar"
                     class="q-ml-sm"
                     />
-                  <GenerarPDFSolicitud v-if="step === 2" :datosSolicitud="solicitudForm" class="q-ml-sm"/>
                   <span v-if="regla_DNI" class="text-red-5 q-mx-sm">Ingrese DNI</span>
                 </q-stepper-navigation>
               </template>
@@ -146,26 +172,29 @@
   </template>
 
 <script setup>
-  import { ref, computed, watch } from "vue";
-  import DniService from "src/services/DniService";
-  import SolicitudService from "src/services/SolicitudService";
-  import NotarioService from "src/services/NotarioService";
-  import SubSerieService from "src/services/SubSerieService";
-  import SelectUbigeoPuno from "src/components/SelectUbigeoPuno.vue";
-  import SelectInput from "src/components/SelectInput.vue";
-  import GenerateListService from "src/services/arp_v1/GenerateListService"
+import { ref, computed, watch } from "vue";
+import DniService from "src/services/DniService";
+import SolicitudService from "src/services/SolicitudService";
+import NotarioService from "src/services/NotarioService";
+import SubSerieService from "src/services/SubSerieService";
+import SelectUbigeoPuno from "src/components/SelectUbigeoPuno.vue";
+import SelectInput from "src/components/SelectInput.vue";
+import GenerateListService from "src/services/arp_v1/GenerateListService"
 
-  import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
-  import { useQuasar } from "quasar";
+import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
+import { formatNumberToSoles } from "src/utils/ConvertMoney"
+import { useQuasar } from "quasar";
 
-  const $q = useQuasar();
+const $q = useQuasar();
 
-  const step = ref(1);
+const step = ref(1);
 
-  const emit = defineEmits(["save"]);
-  const regla_DNI = ref(false);
+const emit = defineEmits(["save"]);
+const regla_DNI = ref(false);
 
-  const solicitudForm = ref({
+const montoEntregado = ref();
+const precioVigente = ref(9.00);
+const solicitudForm = ref({
     //parte de solicitante ************
     id:null,
     nombres: "",
@@ -184,10 +213,11 @@
     otorgantes: "",
     favorecidos: "",
     fecha:'',
+    ubigeo_cod_soli: null,
     bien: "",
     mas_datos: "",
     tipo_copia:'Copia Simple',
-    ubigeo_cod_soli: null,
+    cantidad_copia:'',
     estado:'',
     //datos para generar PDF **********
     testimonio: "",

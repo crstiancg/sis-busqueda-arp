@@ -7,11 +7,13 @@
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { convertDate } from "src/utils/ConvertDate";
+import { formatNumberToSoles } from "src/utils/ConvertMoney";
 const props = defineProps({
   datosSolicitud:{default:null},
   datosSolicitudRow:{default:null},
   datosBusqueda:{default:null},
   datosVerificacion:{default:null},
+  precio:{default:0.00},
   label:{default:'Generar PDF'},
   vericon:{default:false},
 });
@@ -85,22 +87,22 @@ function generarPDF(datos) {
 
   doc.line(40, 180, 90, 180); // firma del solicitante
   doc.text('FIRMA DEL SOLICITANTE', 40, 184);
-  doc.text('IMPORTE: S/{importe}', 120, 175);
+  doc.text('IMPORTE: '+formatNumberToSoles(datos.cantidad_copia*props.precio), 120, 175);
   doc.text('Puno, '+convertDate(datos?.created_at?datos.created_at:new Date,"EEEE d 'de' MMMM y"), 120, 183);
 
   doc.text("FASE DE BUSQUEDA:", 20, 190);
   doc.line(20, 192, 70, 192);
-  doc.text("Buscado por:", 25, 197);    doc.text("Firma:__________", 135, 197);
-  doc.text("Protocolo:", 25, 204);    doc.text("Registro N°:", 80, 204);    doc.text("Legajo N°:", 135, 204);
-  doc.text(true?"Escritura N°:":"Minuta N°:", 25, 211);   doc.text("Folio, del:", 80, 211);    doc.text("al:", 135, 211);
+  doc.text("Buscado por:________________________________", 25, 197);    doc.text("Firma:_______________", 135, 197);
+  doc.text("Protocolo:_______________", 25, 204);    doc.text("Registro N°:__________", 80, 204);    doc.text("Legajo N°:________", 135, 204);
+  doc.text(true?"Escritura N°:_____________":"Minuta N°:______", 25, 211);   doc.text("Folio, del:________", 80, 211);    doc.text("al:_________", 135, 211);
   doc.text("Observaciones del Buscador:{oBserva}____________________________________________________________________________________________________________", 25, 218,{align: "justify" , maxWidth: maxWidth-10});
 
   doc.text("FASE DE VERIFICACIÓN:", 20, 232);
   doc.line(20, 234, 70, 234);
-  doc.text("Verificado por:", 25, 241);    doc.text("Firma:__________", 135, 241);
-  doc.text("Derecho N° Copias:", 25, 248);    doc.text("N° de hojas:", 80, 248);    doc.text("s/:", 135, 248);
-  doc.text("Verificación:", 25, 255);    doc.text("s/:", 135, 255);
-  doc.text("N° de copias:", 80, 262);    doc.text("s/:", 135, 262);
+  doc.text("Verificado por:_______________________________", 25, 241);    doc.text("Firma:_______________", 135, 241);
+  doc.text("Derecho N° Copias:________", 25, 248);    doc.text("N° de hojas:_____________", 80, 248);    doc.text("s/:_________", 135, 248);
+  doc.text("Verificación:_________________________________", 25, 255);    doc.text("s/:_____________", 135, 255);
+  doc.text("N° de copias: "+datos.cantidad_copia, 80, 262);    doc.text("s/:"+formatNumberToSoles(datos.cantidad_copia*props.precio), 135, 262);
   doc.text("Observaciones:{oBserva}____________________________________________________________________________________________________________", 25, 269,{align: "justify" , maxWidth: maxWidth-10});
 
   window.open(doc.output("bloburl"), "_blank");
@@ -129,12 +131,13 @@ function VerificaDatos(){
       otorgantes: props.datosSolicitudRow.otorgantes,
       favorecidos: props.datosSolicitudRow.favorecidos,
       fecha:props.datosSolicitudRow.fecha,
+      ubigeo_soli:props.datosSolicitudRow.ubigeo_nombre,
       bien: props.datosSolicitudRow.bien,
       mas_datos: props.datosSolicitudRow.mas_datos,
       notario:props.datosSolicitudRow.notario?props.datosSolicitudRow.notario.nombre_completo:'',
       subserie:props.datosSolicitudRow.subserie?props.datosSolicitudRow.subserie.nombre:'',
       tipo_copia:props.datosSolicitudRow.tipo_copia,
-      ubigeo_soli:props.datosSolicitudRow.ubigeo_nombre,
+      cantidad_copia:props.datosSolicitudRow.cantidad_copia,
       created_at:props.datosSolicitudRow.created_at,
       testimonio: "",
       copiaCertificada: "",

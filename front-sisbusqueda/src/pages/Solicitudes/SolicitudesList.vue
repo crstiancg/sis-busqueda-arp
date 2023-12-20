@@ -84,7 +84,7 @@
             </q-td>
             <q-td auto-width>
               <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
-                :datosSolicitudRow="props.row"/>
+                :datosSolicitudRow="props.row" :precio="precioVigente"/>
               <q-btn
                 size="sm"
                 outline
@@ -131,6 +131,7 @@ const columns = [
   { field: (row) => row.id, name: "id", label: "ID", align: "left", sortable_: true, search: true },
   { field: (row) => row.solicitante.nombre_completo, name: "solicitante.nombre_completo", label: "Solicitante", align: "left", sortable_: true, search: true },
   { field: (row) => row.tipo_copia, name: "tipo_copia", label: "Tipo de Copia", align: "center", sortable_: true, search: true },
+  { field: (row) => row.cantidad_copia, name: "cantidad_copia", label: "CAntidad de Copia", align: "center", sortable_: true, search: true },
   { field: (row) => row.estado, name: "estado", label: "Estado", align: "center", sortable_: true, },
   { field: (row) => row.updated_at , name: "updated_at", label: "Fecha actualizacion", align: "center", sortable_: true, },
 ];
@@ -152,6 +153,7 @@ const columns = [
     rowsNumber: 10,
   });
 
+  const precioVigente = ref(9.00);
   async function onRequest(props) {
     const { page, rowsPerPage, sortBy, descending } = props.pagination;
     const filter = props.filter;
