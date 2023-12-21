@@ -70,7 +70,7 @@
             </div>
           </template>
         </q-input>
-        <SelectArea
+        <SelectArea ref="areaSelectRef"
           class="q-mb-md"
           label="Area de Trabajo"
           :id="form.area_id||idSelectArea"
@@ -115,18 +115,21 @@
 import { useForm } from "laravel-precognition-vue";
 import { onMounted, ref } from "vue";
 import RoleService from "src/services/RoleService";
-import AreaService from "src/services/AreaService";
+import SelectArea from "src/components/SelectArea.vue";
+// import AreaService from "src/services/AreaService";
+
 const isPwd = ref(true);
 const roles = ref([]);
 const emits = defineEmits(["save"]);
-const Area = ref();
 
-async function data(){
-  const data1 = await AreaService.getData()
-  console.log(data1);
-};
+const idSelectArea = ref(null);
 
-data();
+// async function data(){
+//   const data1 = await AreaService.getData()
+//   console.log(data1);
+// };
+
+// data();
 
 const props = defineProps({
   title: String,
@@ -144,6 +147,7 @@ if (props.edit) {
     name: "",
     email: "",
     password: "",
+    area_id: null,
     rolesSelected: [],
   });
 } else {
@@ -152,6 +156,7 @@ if (props.edit) {
     name: "",
     email: "",
     password: "",
+    area_id: "",
     rolesSelected: [],
   });
 }
@@ -162,6 +167,24 @@ async function cargar() {
   roles.value = data;
   console.log(roles.value);
 }
+
+function updateArea(event) {
+  // console.log("gaaaa");
+  if (event) {
+    form.area_id = event.id;
+    idSelectArea.value = event.id;
+  } else {
+    idSelectArea.value = null;
+    form.area_id = null;
+  }
+}
+
+ const areaSelectRef = ref("");
+
+  function setValue(values) {
+      form.value = values;
+      areaSelectRef.value.get(form.value.area_id);
+  }
 
 
 
@@ -193,6 +216,7 @@ onMounted(() => {
 
 defineExpose({
   // setData,
+  setValue,
   form,
 });
 </script>

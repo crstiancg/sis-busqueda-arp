@@ -39,6 +39,7 @@
           </q-item>
           <q-separator />
           <q-item
+          v-if="userStore.hasPermission('admin-permisos')"
             :to="{ name: 'Permisos' }"
             :active="link === 'Permisos'"
             @click="link = 'Permisos'"
@@ -202,9 +203,11 @@
 <script setup>
 import { onMounted, ref } from "vue";
 import SwitchDarkMode from "components/SwitchDarkMode.vue";
+import { useUserStore } from "src/stores/user-store";
 import NabvarUser from "components/NabvarUser.vue";
 import { useRoute } from "vue-router";
 import { format } from "quasar";
+const userStore = useUserStore();
 
 const drawer = ref(false);
 const miniState = ref(true);
