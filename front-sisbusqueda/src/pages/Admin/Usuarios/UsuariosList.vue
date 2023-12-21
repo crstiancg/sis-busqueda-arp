@@ -145,6 +145,13 @@ const columns = [
     field: (row) => row.email,
     sortable: true,
   },
+  {
+    name: "area",
+    label: "Area",
+    aling: "center",
+    field: (row) => (row.area ? row.area.nombre : "N/A"),
+    sortable: true,
+  },
 ];
 
 const tableRef = ref();

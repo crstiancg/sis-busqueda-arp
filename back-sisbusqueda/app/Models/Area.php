@@ -12,4 +12,9 @@ class Area extends Model
     protected $fillable = [
         'nombre'
     ];
+
+    public function usuarios()
+    {
+        return $this->hasMany(User::class);
+    }
 }

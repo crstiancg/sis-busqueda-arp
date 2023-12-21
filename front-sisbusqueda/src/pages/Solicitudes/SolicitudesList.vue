@@ -161,7 +161,7 @@ const columns = [
     const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
     const order_by = descending ? "-" + sortBy : sortBy;
     const { data, total = 0 } = await SolicitudService.getData({
-      params: { rowsPerPage: fetchCount, page, search: filter, order_by },
+      params: { rowsPerPage: fetchCount, page, search: filter, order_by},
     });
     // clear out existing data and add new
     rows.value.splice(0, rows.value.length, ...data);
