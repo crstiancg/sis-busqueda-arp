@@ -193,18 +193,21 @@ const columns = [
     });
   };
   async function editar(id) {
-    title.value = "Editar Notario";
+    title.value = "Editar Solicitud";
     formPermisos.value = true;
     edit.value = true;
     editId.value = id;
     const row = await SolicitudService.get(id);
     console.log(row);
 
-    solicitudesformRef.value.form.setData({
-      id: row.id,
+    // solicitudesformRef.value.form.setData({
+    //   id: row.id,
+      
+    // });
 
-    });
     solicitudesformRef.value.setValue(row);
+    solicitudesformRef.value.setValue(row);
+    // solicitudesformRef.value.setValue(row);
   }
 
   async function eliminar(id) {

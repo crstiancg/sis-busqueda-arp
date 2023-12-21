@@ -2,7 +2,8 @@
     <!-- content -->
     <q-card class="my-card" style="width: 1400px; max-width: 80vw">
       <q-card-section class="bg-primary text-white row">
-        <div class="text-h6">Nueva Solicitud</div><q-space />
+        <div class="text-h6">{{title}}</div>
+        <q-space />
         <q-btn icon="close" color="negative" round  v-close-popup />
       </q-card-section>
       <q-card-section class="q-pa-none">
@@ -63,7 +64,7 @@
                 :done="step > 2" :header-nav="step > 2" >
                 <div class="q-gutter-md q-mb-md">
                   <div class="row">
-                    <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod_soli"
+                    <SelectUbigeoPuno ref="ubigeoSelectPunoRef" :ubigeo_cod="solicitudForm.ubigeo_cod"
                         @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/>
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Notarios" v-model="solicitudForm.notario" :options="GenerateListService"
                         :GenerateList="{ column: 'notario', table: 'all' }" />
@@ -192,6 +193,10 @@ const regla_DNI = ref(false);
 
 const montoEntregado = ref();
 const precioVigente = ref();
+const props = defineProps ({
+  title: String,
+});
+const ubigeoSelectPunoRef = ref("");
 
 const solicitudForm = ref({
     //parte de solicitante ************
@@ -333,5 +338,36 @@ const save = () => {
       timeout: 1000,
     });
 };
+
+// function setValue(values) {
+//       form.value = values;
+//       ubigeoSelectPunoRef.value.getUbigeo(form.value.ubigeo_cod);
+// }
+
+function setValue(values) {
+  // solicitudForm.value = values;
+  solicitudForm.value.id = values.id;
+  solicitudForm.value.nombres = values.solicitante.nombres;
+  solicitudForm.value.apellido_paterno = values.solicitante.apellido_paterno;
+  solicitudForm.value.apellido_materno = values.solicitante.apellido_materno;
+  solicitudForm.value.num_documento = values.solicitante.num_documento;
+  solicitudForm.value.celular = values.solicitante.celular;
+  // solicitudForm.value.ubigeo_cod = values.ubigeo_cod;
+  solicitudForm.value.correo = values.solicitante.correo;
+  solicitudForm.value.direccion = values.solicitante.direccion;
+  solicitudForm.value.otorgantes = values.otorgantes;
+  solicitudForm.value.favorecidos = values.favorecidos;
+  solicitudForm.value.bien = values.bien;
+  solicitudForm.value.fecha = values.fecha;
+  solicitudForm.value.mas_datos = values.mas_datos;
+  ubigeoSelectPunoRef.value.getUbigeo(solicitudForm.value.ubigeo_cod);
+
+  // console.log(ubigeoSelectPunoRef.value);
+}
+
+defineExpose({
+    // setData,
+    setValue,
+  });
 </script>
 <style></style>
