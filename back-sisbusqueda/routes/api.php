@@ -19,6 +19,7 @@ use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermisoController;
+use App\Http\Controllers\PrecioController;
 use App\Http\Controllers\RegistroBusquedaController;
 use App\Http\Controllers\RegistroVerificacionController;
 use App\Http\Controllers\SiaController;
@@ -96,6 +97,7 @@ Route::apiResource('/favorecidos', FavorecidoController::class)->middleware([Han
 Route::apiResource('/solicitantes', SolicitanteController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/solicitantes/dni/{dni}', [SolicitanteController::class, 'getSolicitanteDni']);
 
+Route::apiResource('/precios', PrecioController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/solicitudes', SolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 Route::apiResource('/registro_busquedas', RegistroBusquedaController::class)->middleware([HandlePrecognitiveRequests::class]);

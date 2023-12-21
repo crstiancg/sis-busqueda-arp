@@ -13,7 +13,6 @@ const props = defineProps({
   datosSolicitudRow:{default:null},
   datosBusqueda:{default:null},
   datosVerificacion:{default:null},
-  precio:{default:0.00},
   label:{default:'Generar PDF'},
   vericon:{default:false},
 });
@@ -87,7 +86,7 @@ function generarPDF(datos) {
 
   doc.line(40, 180, 90, 180); // firma del solicitante
   doc.text('FIRMA DEL SOLICITANTE', 40, 184);
-  doc.text('IMPORTE: '+formatNumberToSoles(datos.cantidad_copia*props.precio), 120, 175);
+  doc.text('IMPORTE: '+formatNumberToSoles(datos.cantidad_copia*datos.precio), 120, 175);
   doc.text('Puno, '+convertDate(datos?.created_at?datos.created_at:new Date,"EEEE d 'de' MMMM y"), 120, 183);
 
   doc.text("FASE DE BUSQUEDA:", 20, 190);
@@ -102,7 +101,7 @@ function generarPDF(datos) {
   doc.text("Verificado por:_______________________________", 25, 241);    doc.text("Firma:_______________", 135, 241);
   doc.text("Derecho N° Copias:________", 25, 248);    doc.text("N° de hojas:_____________", 80, 248);    doc.text("s/:_________", 135, 248);
   doc.text("Verificación:_________________________________", 25, 255);    doc.text("s/:_____________", 135, 255);
-  doc.text("N° de copias: "+datos.cantidad_copia, 80, 262);    doc.text("s/:"+formatNumberToSoles(datos.cantidad_copia*props.precio), 135, 262);
+  doc.text("N° de copias: "+datos.cantidad_copia, 80, 262);    doc.text("s/:"+formatNumberToSoles(datos.cantidad_copia*datos.precio), 135, 262);
   doc.text("Observaciones:{oBserva}____________________________________________________________________________________________________________", 25, 269,{align: "justify" , maxWidth: maxWidth-10});
 
   window.open(doc.output("bloburl"), "_blank");
@@ -116,6 +115,7 @@ function generarPDF(datos) {
 function VerificaDatos(){
   if(props.datosSolicitud){
     generarPDF(props.datosSolicitud)
+    // console.log(props.datosSolicitud);
   }else if(props.datosSolicitudRow){
     // console.log(props.datosSolicitudRow);
     const datosSolici = {
@@ -139,6 +139,7 @@ function VerificaDatos(){
       tipo_copia:props.datosSolicitudRow.tipo_copia,
       cantidad_copia:props.datosSolicitudRow.cantidad_copia,
       created_at:props.datosSolicitudRow.created_at,
+      precio:props.datosSolicitudRow.precio?props.datosSolicitudRow.precio.monto:0.0,
       testimonio: "",
       copiaCertificada: "",
       copiaSimple: "",

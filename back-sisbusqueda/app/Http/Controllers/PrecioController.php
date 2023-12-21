@@ -10,9 +10,21 @@ class PrecioController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->filled('vigencia')) {
+            return Precio::where('vigente',$request->vigencia)->get();
+        }else{
+            $precios = Precio::query();
+            $columnas = $precios->getModel()->getFillable();
+            return  $this->generateViewSetList(
+                $request,
+                $precios,
+                $columnas, //para el filtrado
+                $columnas,  //para la busqueda
+                $columnas //para el odenamiento
+            );
+        }
     }
 
     /**

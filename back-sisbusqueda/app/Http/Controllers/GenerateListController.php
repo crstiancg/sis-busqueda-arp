@@ -103,13 +103,16 @@ class GenerateListController extends Controller
             ->unionAll(Nuevo::select("*"))
             ->unionAll(Nuevo2::select("*"));
 
-        return  $this->generateViewSetList(
-            $request,
-            $tempTable,
-            ['notario','lugar','subserie','otorgantes'], //para el filtrado
-            ['id','notario',],  //para la busqueda
-            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
-        );
+        $querySetSql = $tempTable->toSql();
+        $query = DB::table(DB::raw("($querySetSql) as TempTable"));
+
+        // return  $this->generateViewSetList(
+        //     $request,
+        //     $tempTable,
+        //     ['notario','lugar','subserie','otorgantes'], //para el filtrado
+        //     ['id','notario',],  //para la busqueda
+        //     ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
+        // );
     }
 
 }

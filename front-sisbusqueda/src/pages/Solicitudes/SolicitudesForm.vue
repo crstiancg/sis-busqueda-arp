@@ -99,7 +99,7 @@
                 :done="step > 3" :header-nav="step > 3" >
                   <div class="row">
                     <p>Seleccione el Tipo de Documento:</p> <q-space />
-                    <GenerarPDFSolicitud :datosSolicitud="solicitudForm" :precio="precioVigente" label="Pre Generar PDF" class="q-ml-sm"/>
+                    <GenerarPDFSolicitud :datosSolicitud="solicitudForm" label="Pre Generar PDF" class="q-ml-sm"/>
                   </div>
                   <div class="row full-width">
                     <q-toggle v-model="solicitudForm.tipo_copia" color="pink" true-value="Testimonio" label="Testimonio"/>
@@ -172,15 +172,13 @@
   </template>
 
 <script setup>
-import { ref, computed, watch } from "vue";
+import { ref, computed, watch, onMounted } from "vue";
 import DniService from "src/services/DniService";
 import SolicitudService from "src/services/SolicitudService";
-import NotarioService from "src/services/NotarioService";
-import SubSerieService from "src/services/SubSerieService";
+import PrecioService from "src/services/PrecioService";
 import SelectUbigeoPuno from "src/components/SelectUbigeoPuno.vue";
 import SelectInput from "src/components/SelectInput.vue";
 import GenerateListService from "src/services/arp_v1/GenerateListService"
-
 import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
 import { formatNumberToSoles } from "src/utils/ConvertMoney"
 import { useQuasar } from "quasar";
@@ -193,7 +191,8 @@ const emit = defineEmits(["save"]);
 const regla_DNI = ref(false);
 
 const montoEntregado = ref();
-const precioVigente = ref(9.00);
+const precioVigente = ref();
+
 const solicitudForm = ref({
     //parte de solicitante ************
     id:null,
@@ -220,14 +219,26 @@ const solicitudForm = ref({
     cantidad_copia:'',
     estado:'',
     //datos para generar PDF **********
-    testimonio: "",
-    copiaCertificada: "",
-    copiaSimple: "",
     notario:null,
     subserie:null,
     ubigeo_soli:'',
     ubigeo_pers:'',
+    precio:'',
+    /******************* */
+    testimonio: "",
+    copiaCertificada: "",
+    copiaSimple: "",
   });
+
+async function getPrecioVigente(){
+  precioVigente.value = (await PrecioService.getData({params: {vigencia:1}}))[0].monto;
+  solicitudForm.value.precio = precioVigente.value;
+  // console.log(precioVigente.value);
+}
+
+onMounted(()=>{
+  getPrecioVigente();
+});
 
 function updateUbigeo(event) {
   solicitudForm.value.ubigeo_cod = event.ubigeo_cod;
@@ -263,20 +274,6 @@ const nombreCompleto = computed(() => {
     solicitudForm.value.apellido_materno
   );
 });
-
-async function getData(){
-  const res = await NotarioService.getData();
-  console.log(res.data);
-};
-
-  // getData();
-
-  // async function subserie(){
-  //   const res = await SubSerieService.getData();
-  //   console.log(res);
-  // };
-
-  // subserie();
 
 const loading = ref(false);
 const NoEncontroDatosPersona = ref(false);

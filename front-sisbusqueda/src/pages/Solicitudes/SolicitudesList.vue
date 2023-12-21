@@ -13,7 +13,7 @@
         <q-breadcrumbs>
           <q-breadcrumbs-el icon="home" />
 
-          <q-breadcrumbs-el label="Permisos" icon="mdi-key" />
+          <q-breadcrumbs-el label="Solicitudes" icon="mdi-key" />
         </q-breadcrumbs>
       </div>
       <q-separator />
@@ -27,7 +27,7 @@
             {
               formPermisos = true;
               edit = false;
-              title = 'Añadir Notario';
+              title = 'Registrar una Solicitud';
             }
           "
         />
@@ -84,7 +84,7 @@
             </q-td>
             <q-td auto-width>
               <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
-                :datosSolicitudRow="props.row" :precio="precioVigente"/>
+                :datosSolicitudRow="props.row"/>
               <q-btn
                 size="sm"
                 outline
@@ -153,7 +153,6 @@ const columns = [
     rowsNumber: 10,
   });
 
-  const precioVigente = ref(9.00);
   async function onRequest(props) {
     const { page, rowsPerPage, sortBy, descending } = props.pagination;
     const filter = props.filter;
