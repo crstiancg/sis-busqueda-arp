@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Area extends Model
+class Precio extends Model
 {
     use HasFactory;
-
+    protected $table = 'precios';
     protected $fillable = [
-        'nombre'
+        'monto',
+        'vigente',
     ];
-
-    public function usuarios()
+    public function solicitud()
     {
-        return $this->hasMany(User::class);
+        return $this->hasMany(Solicitud::class, 'precio_id');
     }
 }

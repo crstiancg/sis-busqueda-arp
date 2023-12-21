@@ -26,6 +26,8 @@ class SolicitudFactory extends Factory
             'bien' => fake()->colorName(),
             'mas_datos' => fake()->text(),
             'tipo_copia' => fake()->randomElement(array('Testimonio','Copia Certificada','Copia Simple')),
+            'cantidad_copia' => fake()->numberBetween(1,3),
+            'precio_id' => 1,
             'ubigeo_cod' => fake()->randomElement(array('210101','210102','210103','210104','210105','210106')),
             'estado' => fake()->randomElement(array('En Busquueda','En verificación','Aceptado','Imprimido','Finalizado')),
             'user_id' => 1,

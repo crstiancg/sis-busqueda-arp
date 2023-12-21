@@ -22,11 +22,14 @@ return new class extends Migration
             $table->string('otorgantes');
             $table->string('favorecidos');
             $table->date('fecha');
+            $table->char('ubigeo_cod', 6)->nullable();
+            $table->foreign('ubigeo_cod')->references('codigo')->on('ubigeos')->nullOnDelete();
             $table->string('bien')->nullable();
             $table->text('mas_datos')->nullable();
             $table->string('tipo_copia')->nullable();
-            $table->char('ubigeo_cod', 6)->nullable();
-            $table->foreign('ubigeo_cod')->references('codigo')->on('ubigeos')->nullOnDelete();
+            $table->unsignedInteger('cantidad_copia')->nullable();
+            $table->unsignedBigInteger('precio_id')->nullable();
+            $table->foreign('precio_id')->references('id')->on('precios')->nullOnDelete();
             $table->string('estado');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();

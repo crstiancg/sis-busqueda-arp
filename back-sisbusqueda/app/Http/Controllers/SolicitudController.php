@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Precio;
 use App\Models\RegistroBusqueda;
 use App\Models\Solicitante;
 use App\Models\Solicitud;
@@ -16,7 +17,7 @@ class SolicitudController extends Controller
     {
         $solicitudesConUbigeos = Solicitud::join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
             ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
-            ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario'); // Incluir relaciones adicionales si es necesario
+            ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario','precio'); // Incluir relaciones adicionales si es necesario
 
         // return $solicitudesConUbigeos;//Solicitud::with('solicitante')->get();
         return $this->generateViewSetList(
@@ -60,6 +61,7 @@ class SolicitudController extends Controller
             ]);
         // }
         $id_solicitabte = $solicitante->id;
+        $id_precio = Precio::where('vigente',1)->first();
         $solicitud = Solicitud::create([
             'notario_id' => 1,  // ojo tenr que agregar
             'subserie_id'=> 1,  // ojo tenr que agregar
@@ -67,10 +69,12 @@ class SolicitudController extends Controller
             'otorgantes'=> $request->otorgantes,
             'favorecidos'=> $request->favorecidos,
             'fecha'=> $request->fecha,
+            'ubigeo_cod'=> $request->ubigeo_cod_soli,
             'bien'=> $request->bien,
             'mas_datos'=> $request->mas_datos,
             'tipo_copia'=> $request->tipo_copia,
-            'ubigeo_cod'=> $request->ubigeo_cod_soli,
+            'cantidad_copia'=> $request->cantidad_copia,
+            'precio_id'=> $id_precio->id,
             'estado'=> 'En busqueda',
             'user_id' =>auth()->user()->id,
         ]);
@@ -81,15 +85,15 @@ class SolicitudController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Solicitud $solicitud)
+    public function show(Solicitud $solicitude)
     {
-        //
+        return response()->json($solicitude);
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Solicitud $solicitud)
+    public function edit(Solicitud $solicitude)
     {
         //
     }
@@ -97,7 +101,7 @@ class SolicitudController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Solicitud $solicitud)
+    public function update(Request $request, Solicitud $solicitude)
     {
         //
     }
@@ -105,14 +109,14 @@ class SolicitudController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Solicitud $solicitud)
+    public function destroy(Solicitud $solicitude)
     {
-        //
+        return response()->json($solicitude->delete());
     }
 
-    private function RegistrarABusqueda(Solicitud $solicitud){
+    private function RegistrarABusqueda(Solicitud $solicitude){
         return RegistroBusqueda::create([
-            'solicitud_id' =>$solicitud->id,
+            'solicitud_id' =>$solicitude->id,
             'estado' => 0,
         ]);
     }

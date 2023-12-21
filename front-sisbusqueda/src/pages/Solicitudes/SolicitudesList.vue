@@ -1,5 +1,5 @@
 <template>
-    <q-dialog v-model="formPermisos">
+    <q-dialog v-model="formPermisos" persistent>
       <SolicitudesForm
         :title="title"
         :edit="edit"
@@ -13,7 +13,7 @@
         <q-breadcrumbs>
           <q-breadcrumbs-el icon="home" />
 
-          <q-breadcrumbs-el label="Permisos" icon="mdi-key" />
+          <q-breadcrumbs-el label="Solicitudes" icon="mdi-key" />
         </q-breadcrumbs>
       </div>
       <q-separator />
@@ -27,7 +27,7 @@
             {
               formPermisos = true;
               edit = false;
-              title = 'Añadir Notario';
+              title = 'Registrar una Solicitud';
             }
           "
         />
@@ -74,7 +74,13 @@
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td v-for="col in props.cols" :key="col.name" :props="props">
-              {{ col.value }}
+              <span v-if="col.name === 'updated_at'">{{ convertDate(col.value,'dd/MM/yyyy h:mm:ss a') }}</span>
+              <span v-else-if="col.name === 'estado'">
+                <q-badge :color="col.value ==='Finalizado'?'green':'orange'" class="text-subtitle2">
+                  {{ col.value }}
+                </q-badge>
+              </span>
+              <span v-else>{{ col.value }}</span>
             </q-td>
             <q-td auto-width>
               <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
@@ -109,6 +115,7 @@
   import { useQuasar } from "quasar";
   import SolicitudesForm from "src/pages/Solicitudes/SolicitudesForm.vue";
   import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
+  import { convertDate } from "src/utils/ConvertDate";
   const $q = useQuasar();
 
 async function verDat(){
@@ -121,10 +128,10 @@ async function verDat(){
 // verDat();
 
 const columns = [
-  { name: 'index', label: '#', field: 'index' },
   { field: (row) => row.id, name: "id", label: "ID", align: "left", sortable_: true, search: true },
   { field: (row) => row.solicitante.nombre_completo, name: "solicitante.nombre_completo", label: "Solicitante", align: "left", sortable_: true, search: true },
-  { field: (row) => row.subserie.nombre, name: "subserie.nombre", label: "Subserie", align: "center", sortable_: true, search: true },
+  { field: (row) => row.tipo_copia, name: "tipo_copia", label: "Tipo de Copia", align: "center", sortable_: true, search: true },
+  { field: (row) => row.cantidad_copia, name: "cantidad_copia", label: "CAntidad de Copia", align: "center", sortable_: true, search: true },
   { field: (row) => row.estado, name: "estado", label: "Estado", align: "center", sortable_: true, },
   { field: (row) => row.updated_at , name: "updated_at", label: "Fecha actualizacion", align: "center", sortable_: true, },
 ];
@@ -154,9 +161,8 @@ const columns = [
     const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
     const order_by = descending ? "-" + sortBy : sortBy;
     const { data, total = 0 } = await SolicitudService.getData({
-      params: { rowsPerPage: fetchCount, page, search: filter, order_by },
+      params: { rowsPerPage: fetchCount, page, search: filter, order_by},
     });
-    console.log(data);
     // clear out existing data and add new
     rows.value.splice(0, rows.value.length, ...data);
     // don't forget to update local pagination object
@@ -187,18 +193,21 @@ const columns = [
     });
   };
   async function editar(id) {
-    title.value = "Editar Notario";
+    title.value = "Editar Solicitud";
     formPermisos.value = true;
     edit.value = true;
     editId.value = id;
     const row = await SolicitudService.get(id);
     console.log(row);
 
-    solicitudesformRef.value.form.setData({
-      id: row.id,
+    // solicitudesformRef.value.form.setData({
+    //   id: row.id,
+      
+    // });
 
-    });
     solicitudesformRef.value.setValue(row);
+    solicitudesformRef.value.setValue(row);
+    // solicitudesformRef.value.setValue(row);
   }
 
   async function eliminar(id) {

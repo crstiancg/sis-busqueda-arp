@@ -24,8 +24,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'area_id',
     ];
     protected $guard_name = 'api';
+    protected $with = ['area'];
 
     // public function validateForPassportPasswordGrant($password)
     // {
@@ -50,4 +52,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
 }

@@ -33,6 +33,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
+            'area_id'=>$request->area_id,
             'password' => bcrypt($request->password),
         ]);
         $user->syncRoles($request->rolesSelected);
@@ -67,6 +68,7 @@ class UserController extends Controller
         $usuario->update([
             'name' => $request->name,
             'email' => $request->email,
+            'area_id'=>$request->area_id,
             'password' => $request->password ? bcrypt($request->password) : $usuario->password,
         ]);
         return response()->json($usuario);
