@@ -10,9 +10,17 @@ class OtorganteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+
+        return $this->generateViewSetList(
+            $request,
+            Otorgante::query(),
+            [],
+            ['nombre_completo'],
+            ['id', 'nombre']
+        );
+    
     }
 
     /**

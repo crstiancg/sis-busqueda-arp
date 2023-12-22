@@ -9,6 +9,7 @@ class Solicitud extends Model
 {
     use HasFactory;
     protected $table = 'solicituds';
+    protected $with = ['solicitante','ubigeo','notario','SubSerie'];
     protected $fillable = [
         'notario_id',
         'subserie_id',

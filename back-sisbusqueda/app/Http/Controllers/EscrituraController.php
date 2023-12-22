@@ -10,15 +10,22 @@ class EscrituraController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $datos = Escritura::with(
-            'subSerie',
-            'libro',
-                'libro.notario',
-            'favorecidos',
-            'otorgantes')->get();
-        return $datos;
+        // $datos = Escritura::with(
+        //     'subSerie',
+        //     'libro',
+        //         'libro.notario',
+        //     'favorecidos',
+        //     'otorgantes')->get();
+        // return $datos;
+        return $this->generateViewSetList(
+            $request,
+            Escritura::query(),
+            ['libro_id'],
+            ['bien'],
+            ['id', 'bien']
+        );
     }
 
     /**
@@ -35,6 +42,15 @@ class EscrituraController extends Controller
     public function store(Request $request)
     {
         //
+        $escritura = Escritura::create($request->all());
+        if ($request->has('otorgantes')) {
+            $escritura->otorgantes()->attach($request->input('otorgantes'));
+        }
+        if ($request->has('favorecidos')) {
+            $escritura->favorecidos()->attach($request->input('favorecidos'));
+        }
+        return response()->json($escritura, 201);
+        // return response(, 201);
     }
 
     /**

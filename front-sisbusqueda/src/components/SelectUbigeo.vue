@@ -199,6 +199,11 @@ function updateDistrito(event) {
     updateUbigeo();
 }
 
+function setData(provincia, distrito){
+    modelDistrito.value = distrito;
+    modelProvincia.value = provincia;
+}
+
 function reset() {
     // modelDepartamento.value = null;
     modelProvincia.value = null;
@@ -209,6 +214,7 @@ function reset() {
 defineExpose({
     reset,
     getUbigeo,
-    setUbigeo
+    setUbigeo,
+    setData
 });
 </script>

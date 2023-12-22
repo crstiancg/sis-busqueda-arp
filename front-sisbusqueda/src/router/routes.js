@@ -46,7 +46,8 @@ const routes = [
       {
         path: "anteriores2",
         name: "Anteriores2",
-        component: () => import("pages/Arp_v1/Anteriores2/Anteriores2Index.vue"),
+        component: () =>
+          import("pages/Arp_v1/Anteriores2/Anteriores2Index.vue"),
       },
       {
         path: "arbolito",
@@ -92,6 +93,16 @@ const routes = [
         path: "areas",
         name: "Areas",
         component: () => import("pages/Admin/Areas/AreasList.vue"),
+      },
+      {
+        path: "proyectos",
+        name: "Proyectos",
+        component: () => import("pages/Arp_v1/Proyectos/IndexPage.vue"),
+      },
+      {
+        path: "proyecto/:id",
+        name: "Proyecto",
+        component: () => import("pages/Arp_v1/Proyectos/ShowProyectoList.vue"),
       },
 
       {

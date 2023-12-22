@@ -8,31 +8,31 @@ use Illuminate\Http\Request;
 
 class SubSerieController extends Controller
 {
-   
+
     public function index(Request $request)
     {
         return $this->generateViewSetList(
             $request,
             SubSerie::query(),
             [],
-            ['id', 'nombre_completo'],
-            ['id', 'nombre_completo']
+            ['id', 'nombre'],
+            ['id', 'nombre']
         );
     }
 
-    
+
     public function store(StoreSubSerieRequest $request)
     {
         return response(SubSerie::create($request->all()), 201);
     }
 
-    
+
     public function show(SubSerie $subseries)
     {
         return response()->json($subseries);
     }
 
-   
+
     public function update(StoreSubSerieRequest $request, SubSerie $subseries)
     {
         $subseries->update($request->all());
@@ -40,7 +40,7 @@ class SubSerieController extends Controller
         return response()->json([$request, $subseries]);
     }
 
-    
+
     public function destroy(SubSerie $subseries)
     {
         return response()->json($subseries->delete());
