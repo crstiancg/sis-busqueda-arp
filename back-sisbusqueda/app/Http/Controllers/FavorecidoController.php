@@ -10,9 +10,16 @@ class FavorecidoController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         //
+        return $this->generateViewSetList(
+            $request,
+            Favorecido::query(),
+            [],
+            ['nombre_completo'],
+            ['id', 'nombre']
+        );
     }
 
     /**
