@@ -9,7 +9,7 @@
     ></UsuariosForm>
   </q-dialog>
   <q-dialog v-model="dialogFolio">
-    <CardFormFolioVue :proyecto="libro"></CardFormFolioVue>
+    <CardFormFolioVue :proyecto="libro" @save="save"></CardFormFolioVue>
   </q-dialog>
   <q-page>
     <div class="q-pa-md q-gutter-sm">
@@ -37,7 +37,7 @@
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
-      title="Usuarios"
+      title="Escrituras"
       ref="tableRef"
       :rows="rows"
       :columns="columns"
@@ -121,6 +121,7 @@ import UsuariosForm from "src/pages/Admin/Usuarios/UsuariosForm.vue";
 import { useRoute } from "vue-router";
 import CardFormFolioVue from "components/CardFormFolio.vue";
 import LibroService from "src/services/arp_v1/LibroService";
+import EscrituraService from "src/services/arp_v1/EscrituraService";
 const route = useRoute();
 const $q = useQuasar();
 const dialogFolio = ref(false);
@@ -134,17 +135,17 @@ const columns = [
     sortable: true,
   },
   {
-    name: "name",
-    label: "Usuario",
+    name: "bien",
+    label: "Bien",
     aling: "center",
-    field: (row) => row.name,
+    field: (row) => row.bien,
     sortable: true,
   },
   {
-    name: "email",
-    label: "Email",
+    name: "cod_escritura",
+    label: "Cod. Escritura",
     aling: "center",
-    field: (row) => row.email,
+    field: (row) => row.cod_escritura,
     sortable: true,
   },
 ];
@@ -173,8 +174,14 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = descending ? "-" + sortBy : sortBy;
-  const { data, total = 0 } = await UsuarioService.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, order_by },
+  const { data, total = 0 } = await EscrituraService.getData({
+    params: {
+      libro_id: route.params.id,
+      rowsPerPage: fetchCount,
+      page,
+      search: filter,
+      order_by,
+    },
   });
   console.log(data);
   // clear out existing data and add new
@@ -197,7 +204,7 @@ onMounted(() => {
 });
 
 const save = () => {
-  formUser.value = false;
+  dialogFolio.value = false;
   tableRef.value.requestServerInteraction();
   $q.notify({
     type: "positive",
