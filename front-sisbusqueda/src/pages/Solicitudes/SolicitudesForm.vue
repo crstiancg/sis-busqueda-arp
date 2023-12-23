@@ -66,7 +66,7 @@
                 :done="step > 2" :header-nav="step > 2" >
                 <div class="q-gutter-md q-mb-md">
                   <div class="row">
-                    <SelectUbigeoPuno ref="ubigeoSelectPunoRef" :ubigeo_cod="solicitudForm.ubigeo_cod"
+                    <SelectUbigeoPuno ref="solicitudUbigeoRef" :ubigeo_cod="solicitudForm.ubigeo_cod_soli"
                         @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/>
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Notarios" v-model="solicitudForm.notario" :options="GenerateListService"
                         :GenerateList="{ column: 'notario', table: 'all' }" />
@@ -199,8 +199,8 @@ const precioVigente = ref();
 const props = defineProps ({
   title: String,
 });
-const ubigeoSelectPunoRef = ref("");
-
+const usuarioUbigeoRef = ref("");
+const solicitudUbigeoRef = ref("");
 const solicitudForm = ref({
     //parte de solicitante ************
     id:null,
@@ -344,7 +344,7 @@ const save = () => {
 
 // function setValue(values) {
 //       form.value = values;
-//       ubigeoSelectPunoRef.value.getUbigeo(form.value.ubigeo_cod);
+//       usuarioUbigeoRef.value.getUbigeo(form.value.ubigeo_cod);
 // }
 
 function setValue(values) {
@@ -363,9 +363,9 @@ function setValue(values) {
   solicitudForm.value.bien = values.bien;
   solicitudForm.value.fecha = values.fecha;
   solicitudForm.value.mas_datos = values.mas_datos;
-  ubigeoSelectPunoRef.value.getUbigeo(solicitudForm.value.ubigeo_cod);
-
-  // console.log(ubigeoSelectPunoRef.value);
+  usuarioUbigeoRef.value.getUbigeo(values.ubigeo_cod);
+  // solicitudUbigeoRef.value.getUbigeo(values.ubigeo_cod);
+  console.log(solicitudUbigeoRef.value);
 }
 
 defineExpose({
