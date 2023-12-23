@@ -6,7 +6,7 @@
 </div>
 -->
 <template>
-  <q-select v-if="props.cod_departamento !== null && show_departamento" borderless dense debounce="300" outlined use-input hide-selected fill-input input-debounce="0" clearable
+  <q-select v-if="props.cod_departamento !== null && props.show_departamento" borderless dense debounce="300" outlined use-input hide-selected fill-input input-debounce="0" clearable
       v-model="model_depa" label="Departamento" :class="Class"
       :options="optionsDepartamentos" option-label="nombre" option-value="cod_dep"
       @filter="filterDepartamentos" :loading="loading" :disable="loading || props.cod_departamento !== null">
@@ -18,7 +18,7 @@
           </q-item>
       </template>
   </q-select>
-  <q-select v-if="props.cod_provincia !== null && show_provincia" borderless dense debounce="300" outlined use-input hide-selected fill-input input-debounce="0" clearable
+  <q-select borderless dense debounce="300" outlined use-input hide-selected fill-input input-debounce="0" clearable
       v-model="model_prov" label="Provincia" :class="Class"
       :options="optionsProvincias"  option-label="nombre" option-value="cod_prov"
       @filter="filterProvincias" :loading="loading" :disable="loading || props.cod_provincia !== null">
@@ -50,8 +50,8 @@ const emit = defineEmits(['update:modelValue']);
 const props = defineProps({
     modelValue: {default:null},
     Class: {default:''},
-    cod_departamento: {default:null},
-    cod_provincia: {default:null},
+    cod_departamento: {type:String,default:null},
+    cod_provincia: {type:String,default:null},
     show_departamento: {default:false},
     show_provincia: {default:false},
 });
@@ -89,17 +89,14 @@ onBeforeMount(async () => {
   let codigo_array = banderaModelValue ? separarCadena(props.modelValue):[];
   if (props.cod_departamento){
     codigo_array[0] = props.cod_departamento;
-    if(!props.modelValue){
+    console.log(props.cod_departamento);
       await getProvincias(codigo_array[0]);
       model_depa.value = stringDepartamentos.find(v => v.cod_dep === codigo_array[0]);
-    }
   }
   if(props.cod_departamento && props.cod_provincia){
     codigo_array[1] = props.cod_provincia;
-    if(!props.modelValue){
       await getDistritos(codigo_array[0], codigo_array[1]);
       model_prov.value = stringProvincias.find(v => v.cod_prov === codigo_array[1]);
-    }
   }
   if (banderaModelValue) {
     await getProvincias(codigo_array[0]);

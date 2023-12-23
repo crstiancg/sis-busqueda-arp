@@ -87,13 +87,4 @@ class Controller extends BaseController
 
         return $this->getPageSize()?$querySet->paginate($this->getPageSize()):response()->json(['data'=>$querySet->get()]);
     }
-
-    public function generateSelectList(Builder $querySet,String $column){
-        $querySetSql = $querySet->toSql();
-        return DB::table(DB::raw("($querySetSql) as TempTable"))
-            ->select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".$column.", ' '), '[[:space:]]+', ' ')) as ".$column))
-            ->distinct()->whereNotNull($column)
-            ->orderBy("$column",'asc')
-            ->get();
-    }
 }

@@ -4,6 +4,7 @@
       <q-card-section class="bg-primary text-white row">
         <div class="text-h6">{{title}}</div>
         <q-space />
+
         <q-btn icon="close" color="negative" round  v-close-popup />
       </q-card-section>
       <q-card-section class="q-pa-none">
@@ -42,8 +43,9 @@
                           v-model="solicitudForm.nombres" :loading="loading" />
                         <q-input class="col-12 col-md-6 q-pa-sm" label="Celular" dense outlined clearable
                           v-model="solicitudForm.celular" mask="### ### ###"/>
-                        <SelectUbigeoPuno :ubigeo_cod="solicitudForm.ubigeo_cod"
-                          @selectedItem="updateUbigeo($event)" Class="col-12 col-md-6 q-pa-sm"/>
+                        <div class="row full-width">
+                          <SelectUbigeoPlus v-model="solicitudForm.ubigeo_cod" cod_departamento="21" Class="q-pa-sm col-12 col-md-6"/>
+                        </div>
                       </div>
                     </div>
                   </q-tab-panel>
@@ -178,6 +180,7 @@ import DniService from "src/services/DniService";
 import SolicitudService from "src/services/SolicitudService";
 import PrecioService from "src/services/PrecioService";
 import SelectUbigeoPuno from "src/components/SelectUbigeoPuno.vue";
+import SelectUbigeoPlus from "src/components/SelectUbigeoPlus.vue"
 import SelectInput from "src/components/SelectInput.vue";
 import GenerateListService from "src/services/arp_v1/GenerateListService"
 import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";

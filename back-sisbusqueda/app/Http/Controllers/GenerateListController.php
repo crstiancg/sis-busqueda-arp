@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Builder;
 use App\Models\Anterior;
 use App\Models\Anterior2;
 use App\Models\Arbolito;
@@ -113,6 +114,15 @@ class GenerateListController extends Controller
         //     ['id','notario',],  //para la busqueda
         //     ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         // );
+    }
+
+    public function generateSelectList(Builder $querySet,String $column){
+        $querySetSql = $querySet->toSql();
+        return DB::table(DB::raw("($querySetSql) as TempTable"))
+            ->select(DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".$column.", ' '), '[[:space:]]+', ' ')) as ".$column))
+            ->distinct()->whereNotNull($column)
+            ->orderBy("$column",'asc')
+            ->get();
     }
 
 }
