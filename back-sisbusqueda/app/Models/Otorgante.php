@@ -16,8 +16,8 @@ class Otorgante extends Model
         'nombre_completo',
         'escritura_id',
     ];
-    public function escritura()
+    public function escrituras()
     {
-        return $this->belongsTo(Escritura::class, 'escritura_id');
+        return $this->belongsToMany(Escritura::class);
     }
 }

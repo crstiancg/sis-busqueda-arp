@@ -29,10 +29,10 @@ class Escritura extends Model
 
     public function favorecidos()
     {
-        return $this->hasMany(Favorecido::class, 'escritura_id');
+        return $this->belongsToMany(Favorecido::class);
     }
     public function otorgantes()
     {
-        return $this->hasMany(Otorgante::class, 'escritura_id');
+        return $this->belongsToMany(Otorgante::class);
     }
 }

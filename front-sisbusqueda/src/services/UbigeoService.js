@@ -18,6 +18,12 @@ class UbigeosService {
         var list = (await api.get("api/distritos")).data;
         return list.filter((x) => x.cod_dep == cod_dep && x.cod_prov == cod_prov);
     }
+    static async getAllUbigeo() {
+        var dep = (await api.get("api/departamentos")).data;
+        var pro = (await api.get("api/provincias")).data;
+        var dis = (await api.get("api/distritos")).data;
+        return [dep,pro,dis];
+    }
 }
 
 export default UbigeosService;
