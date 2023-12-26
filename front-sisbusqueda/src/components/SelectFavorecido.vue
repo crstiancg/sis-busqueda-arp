@@ -15,7 +15,7 @@
 </template>
 <script setup>
 import { onMounted, ref } from "vue";
-import FavorecidoService from "src/services/arp_v1/FavorecidoService";
+import FavorecidoService from "src/services/FavorecidoService";
 
 const props = defineProps(["favorecido"]);
 const emits = defineEmits(["update:favorecido"]);

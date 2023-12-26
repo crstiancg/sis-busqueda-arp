@@ -17,8 +17,6 @@ return new class extends Migration
             $table->string('apellido_paterno');
             $table->string('apellido_materno');
             $table->string('nombre_completo');
-            $table->unsignedBigInteger('escritura_id')->nullable();
-            $table->foreign('escritura_id')->references('id')->on('escrituras')->nullOnDelete();
             $table->timestamps();
         });
     }

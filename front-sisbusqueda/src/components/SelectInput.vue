@@ -1,5 +1,5 @@
 <template>
-  <q-select outlined use-input borderless dense fill-input hide-selected
+  <q-select use-input fill-input hide-selected
       debounce="200" clearable input-debounce="0"
       :label="label"
       v-model="model"
@@ -52,10 +52,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-//Emits
+import { ref, onBeforeMount, watchEffect, watch } from 'vue';
 const emit = defineEmits(['update:modelValue']);
-//Props
 const props = defineProps({
   label:{default:'Select'},
   modelValue: {default:null},
@@ -73,6 +71,69 @@ const loading = ref(false);
 const op_label = ref('');
 const op_value = ref('');
 
+function emitir(_model){
+  if(typeof props.OptionValue === 'object' && _model && typeof _model === 'object'){
+    let op_array_value = {};
+    props.OptionValue.forEach(element => {
+      if (_model?.[element])
+        op_array_value[element] = _model[element];
+    });
+    emit('update:modelValue', op_array_value);
+  }else
+    emit('update:modelValue', _model && typeof _model === 'object' ? _model[op_value.value]:_model);
+}
+onBeforeMount(async () => {
+  loading.value=true;
+  op_label.value = typeof props.OptionLabel === 'object'? props.OptionLabel[0]: props.GenerateList ? props.GenerateList.column : props.OptionLabel;
+  op_value.value = typeof props.OptionValue === 'object'? props.OptionValue[0]: props.GenerateList ? props.GenerateList.column : props.OptionValue;
+  stringOptions = await ExtraerDatos(props.options);
+  if (props.LimpEspaRepe)
+    stringOptions = limpiarEspaciosRepetidos(stringOptions,op_value.value);
+  CargarModel(props.modelValue);
+  loading.value=false;
+});
+watchEffect(async()=>{
+  let newVal = props.options;
+  loading.value=true;
+  stringOptions = await ExtraerDatos(newVal);
+  CargarModel(props.modelValue);
+  loading.value=false;
+});
+watch(()=>props.modelValue,(newVal,oldVal)=>{
+  CargarModel(newVal);
+});
+const filterOptions = ref(stringOptions);
+function filter(val, update) {
+  update(() => {
+    if (val === '') filterOptions.value = stringOptions;
+    else {
+      filterOptions.value = stringOptions.filter(v => {
+        if(typeof v === 'object'){
+          return v[op_label.value].toString().toLowerCase().includes(val.toLowerCase());
+        }else
+          return v.toString().toLowerCase().includes(val.toLowerCase())
+      });
+    }
+  });
+}
+async function ExtraerDatos(options){
+  if(props.options.hasOwnProperty('getData')){
+    if(props.GenerateList) return await props.options.getData(props.GenerateList);
+    const data = (await props.options.getData({params: {rowsPerPage: 0,order_by:op_label.value}}))
+    if(data.hasOwnProperty('data')){
+      return data.data;
+    }else
+      return data;
+  }else{
+    return options
+  }
+}
+function CargarModel(_model){
+  if (_model && typeof stringOptions[0] === 'object' && typeof _model !== 'object')
+    model.value = stringOptions.find(v => v[op_value.value] === _model);
+  else
+    model.value = _model;
+}
 function limpiarEspaciosRepetidos(array,val) {
   // Limpiar espacios en cada notario
   array.forEach((item) => {
@@ -85,56 +146,5 @@ function limpiarEspaciosRepetidos(array,val) {
       self.findIndex((t) => t[val] === item[val])
   );
   return array_;
-}
-function emitir(_model){
-  if(typeof props.OptionValue === 'object' && _model && typeof _model === 'object'){
-    let op_array_value = {};
-    props.OptionValue.forEach(element => {
-      if (_model?.[element])
-        op_array_value[element] = _model[element];
-    });
-    emit('update:modelValue', op_array_value);
-  }else
-    emit('update:modelValue', _model && typeof _model === 'object' ? _model[op_value.value]:_model);
-}
-onMounted(async () => {
-  loading.value=true;
-  op_label.value = typeof props.OptionLabel === 'object'? props.OptionLabel[0]: props.GenerateList ? props.GenerateList.column : props.OptionLabel;
-  op_value.value = typeof props.OptionValue === 'object'? props.OptionValue[0]: props.GenerateList ? props.GenerateList.column : props.OptionValue;
-
-  stringOptions = props.options.hasOwnProperty('getData') ?
-        props.GenerateList?
-          (await props.options.getData(props.GenerateList))
-          :(await props.options.getData({params: {rowsPerPage: 0,order_by:op_label.value}})).data
-      :props.options;
-
-  if (props.LimpEspaRepe)
-    stringOptions = limpiarEspaciosRepetidos(stringOptions,op_value.value);
-
-  if (props.modelValue) {
-    if (typeof stringOptions[0] === 'object' && typeof props.modelValue !== 'object')
-      model.value = stringOptions.find(v => v[op_value.value] === props.modelValue);
-    else
-      model.value = props.modelValue;
-    emitir(model.value);
-  }
-  loading.value=false;
-});
-const filterOptions = ref(stringOptions);
-function filter(val, update) {
-  update(() => {
-      if (val === '') {
-        filterOptions.value = stringOptions
-      } else {
-          const needle = val.toLowerCase();
-          filterOptions.value = stringOptions.filter(v => {
-              if(typeof v === 'object'){
-                return v[op_label.value].toString().toLowerCase().includes(needle);
-              }else
-                return v.toString().toLowerCase().includes(needle)
-            }
-          )
-      }
-    })
 }
 </script>

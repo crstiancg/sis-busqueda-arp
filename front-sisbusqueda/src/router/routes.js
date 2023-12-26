@@ -97,12 +97,12 @@ const routes = [
       {
         path: "proyectos",
         name: "Proyectos",
-        component: () => import("pages/Arp_v1/Proyectos/IndexPage.vue"),
+        component: () => import("pages/Libros/IndexPage.vue"),
       },
       {
         path: "proyecto/:id",
         name: "Proyecto",
-        component: () => import("pages/Arp_v1/Proyectos/ShowProyectoList.vue"),
+        component: () => import("pages/Libros/ShowProyectoList.vue"),
       },
 
       {

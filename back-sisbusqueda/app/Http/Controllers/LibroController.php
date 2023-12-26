@@ -4,17 +4,25 @@ namespace App\Http\Controllers;
 
 use App\Models\Libro;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class LibroController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-        $libros = Libro::with('notario')->OrderByDesc('created_at')->limit(20)->get();
-        return response()->json($libros);
+        $libros = Libro::orderBy('updated_at', 'desc');
+        return  $this->generateViewSetList(
+            $request,
+            $libros,
+            $libros->getModel()->getFillable(), //para el filtrado
+            $libros->getModel()->getFillable(),  //para la busqueda
+            $libros->getModel()->getFillable() //para el odenamiento
+        );
+        // $libros = Libro::with('notario')->OrderByDesc('created_at')->limit(20)->get();
+        // return response()->json($libros);
     }
 
     /**
@@ -30,7 +38,8 @@ class LibroController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // return $request->all();
+        return response(Libro::create($request->all()),201);
     }
 
     /**
@@ -55,7 +64,7 @@ class LibroController extends Controller
      */
     public function update(Request $request, Libro $libro)
     {
-        //
+        return response($libro->update($request->all()),201);
     }
 
     /**

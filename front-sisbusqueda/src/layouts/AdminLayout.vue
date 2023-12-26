@@ -18,7 +18,7 @@
       :width="230"
       :breakpoint="500"
       bordered
-      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-4'"
+      :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'"
     >
       <q-scroll-area class="fit" :horizontal-thumb-style="{ opacity: 0 }">
         <q-list  padding>
@@ -38,19 +38,18 @@
             <q-item-section> Inicio </q-item-section>
           </q-item>
           <q-separator />
-          <q-item
-          v-if="userStore.hasPermission('admin-permisos')"
-            :to="{ name: 'Permisos' }"
-            :active="link === 'Permisos'"
-            @click="link = 'Permisos'"
-            clickable
-            v-ripple
-            class="q-ma-xs rounded-borders"
-            active-class="my-menu-link"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-key" />
-            </q-item-section>
+          <q-item v-if="userStore.hasPermission('admin-permisos')"
+              :to="{ name: 'Permisos' }"
+              :active="link === 'Permisos'"
+              @click="link = 'Permisos'"
+              clickable
+              v-ripple
+              class="q-ma-xs rounded-borders"
+              active-class="my-menu-link"
+            >
+              <q-item-section avatar>
+                <q-icon name="mdi-key" />
+              </q-item-section>
 
             <q-item-section> Permisos </q-item-section>
           </q-item>
@@ -87,36 +86,6 @@
           </q-item>
 
           <q-item
-            :to="{ name: 'Notarios' }"
-            :active="link === 'Notarios'"
-            @click="link = 'Notarios'"
-            clickable
-            v-ripple
-            class="q-ma-xs rounded-borders"
-            active-class="my-menu-link"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> Notarios </q-item-section>
-          </q-item>
-          <q-item
-            :to="{ name: 'SubSeries' }"
-            :active="link === 'SubSeries'"
-            @click="link = 'SubSeries'"
-            clickable
-            v-ripple
-            class="q-ma-xs rounded-borders"
-            active-class="my-menu-link"
-          >
-            <q-item-section avatar>
-              <q-icon name="mdi-account" />
-            </q-item-section>
-
-            <q-item-section> SubSeries </q-item-section>
-          </q-item>
-          <q-item
             :to="{ name: 'Areas' }"
             :active="link === 'Areas'"
             @click="link = 'Areas'"
@@ -131,10 +100,32 @@
 
             <q-item-section> Areas </q-item-section>
           </q-item>
+
+          <!-- /**** panel de Escrituras*********************************************************** */ -->
+          <q-expansion-item expand-separator icon="collections_bookmark" label="Panel de escrituras" default-opened header-class="bg-blue-6 text-white" expand-icon-class="text-white" >
+            <div class="q-ml-md line-l">
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Proyectos' }" :active="link === 'Proyectos'" @click="link = 'Proyectos'" >
+                  <!-- <q-item-section avatar> <q-icon name="mdi-account" /> </q-item-section> -->
+                  <q-item-section> Libros  </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'Notarios' }" :active="link === 'Notarios'" @click="link = 'Notarios'" >
+                  <!-- <q-item-section avatar> <q-icon name="mdi-account" /> </q-item-section> -->
+                  <q-item-section> Notarios  </q-item-section>
+              </q-item>
+              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
+                  :to="{ name: 'SubSeries' }" :active="link === 'SubSeries'" @click="link = 'SubSeries'" >
+                  <!-- <q-item-section avatar> <q-icon name="mdi-account" /> </q-item-section> -->
+                  <q-item-section> Subseries  </q-item-section>
+              </q-item>
+            </div>
+          </q-expansion-item>
+          <!-- /******** ************************************************************************* */ -->
           <q-separator />
-    <!-- ruta de prueba  **************************************************** -->
+    <!-- Pante de Tablas Anteriores  **************************************************** -->
           <q-expansion-item expand-separator icon="list" label="SA" default-opened header-class="bg-blue-6 text-white" expand-icon-class="text-white" >
-            <div class="q-pl-md">
+            <div class="q-ml-md line-l">
               <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
                   :to="{ name: 'Anteriores' }" :active="link === 'Anteriores'" @click="link = 'Anteriores'" >
                   <!-- <q-item-section avatar> <q-icon name="mdi-account" /> </q-item-section> -->
@@ -170,26 +161,8 @@
               </q-item>
             </div>
           </q-expansion-item>
-
-          <q-expansion-item expand-separator icon="list" label="Panel de escrituras" default-opened header-class="bg-blue-6 text-white" expand-icon-class="text-white" >
-            <div class="q-pl-md">
-              <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
-                  :to="{ name: 'Anteriores' }" :active="link === 'Anteriores'" @click="link = 'Anteriores'" >
-                  <!-- <q-item-section avatar> <q-icon name="mdi-account" /> </q-item-section> -->
-                  <q-item-section> Anteriores </q-item-section>
-              </q-item>
-            </div>
-          </q-expansion-item>
     <!-- ********************************************************************* -->
           <q-separator />
-
-          <q-item clickable v-ripple>
-            <q-item-section avatar>
-              <q-icon name="drafts" />
-            </q-item-section>
-
-            <q-item-section> Drafts </q-item-section>
-          </q-item>
         </q-list>
       </q-scroll-area>
     </q-drawer>
@@ -218,4 +191,7 @@ const link = ref(route.name);
 .my-menu-link
   color: white
   background: $primary
+
+.line-l
+  border-left: 1px solid $grey-5
 </style>

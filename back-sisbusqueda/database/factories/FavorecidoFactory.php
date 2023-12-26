@@ -21,7 +21,6 @@ class FavorecidoFactory extends Factory
             'apellido_paterno' => fake()->lastName(),
             'apellido_materno' => fake()->lastName(),
             'nombre_completo' => fake()->name().' '.fake()->lastName(),
-            'escritura_id' => fake()->numberBetween(1,30),
         ];
     }
 }

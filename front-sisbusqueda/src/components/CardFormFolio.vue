@@ -239,7 +239,7 @@ import { ref } from "vue";
 import SelectSubSerie from "components/SelectSubSerie.vue";
 import SelectOtorgante from "components/SelectOtorgante.vue";
 import SelectFavorecido from "components/SelectFavorecido.vue";
-import EscrituraService from "src/services/arp_v1/EscrituraService";
+import EscrituraService from "src/services/EscrituraService";
 const props = defineProps({
   proyecto: Object,
 });

@@ -16,7 +16,7 @@
 </template>
 <script setup>
 import { onMounted, ref } from "vue";
-import OtorganteService from "src/services/arp_v1/OtorganteService";
+import OtorganteService from "src/services/OtorganteService";
 
 const props = defineProps(["otorgante"]);
 const emits = defineEmits(["update:otorgante"]);
