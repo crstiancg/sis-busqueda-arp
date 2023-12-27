@@ -71,7 +71,7 @@ let stringDepartamentos = [];
 let stringProvincias = [];
 let stringDistritos = [];
 
-let banderaModelValue = props.modelValue !== null;
+let banderaModelValue = props.modelValue !== null && props.modelValue!=='';
 let banderaCodDeparta = props.cod_departamento !== null;
 
 function emitir(_model){

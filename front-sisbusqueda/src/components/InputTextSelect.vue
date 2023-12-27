@@ -56,8 +56,7 @@ async function ExtraerDatos(options){
     return options
   }
 }
-watchEffect(async()=>{
-  let newVal = props.options;
+watch(()=>props.options,async(newVal,oldVal)=>{
   loading.value=true;
   array = await ExtraerDatos(newVal);
   loading.value=false;

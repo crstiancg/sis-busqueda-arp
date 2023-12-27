@@ -92,8 +92,7 @@ onBeforeMount(async () => {
   CargarModel(props.modelValue);
   loading.value=false;
 });
-watchEffect(async()=>{
-  let newVal = props.options;
+watch(()=>props.options,async(newVal,oldVal)=>{
   loading.value=true;
   stringOptions = await ExtraerDatos(newVal);
   CargarModel(props.modelValue);

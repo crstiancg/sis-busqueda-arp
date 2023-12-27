@@ -94,7 +94,7 @@ export function convertDate(inputDate, outputFormat) {
       return null;
     }
   }else{
-    console.warn('Formato de fecha de entrada no válido: 🚫'+inputDate);
+    // console.warn('Formato de fecha de entrada no válido: 🚫'+inputDate);
     return null;
   }
   const result = format(parsedDate, outputFormat, { locale: es });

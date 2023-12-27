@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreLibroRequest;
 use App\Models\Libro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -36,7 +37,7 @@ class LibroController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreLibroRequest $request)
     {
         // return $request->all();
         return response(Libro::create($request->all()),201);
@@ -62,7 +63,7 @@ class LibroController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Libro $libro)
+    public function update(StoreLibroRequest $request, Libro $libro)
     {
         return response($libro->update($request->all()),201);
     }
