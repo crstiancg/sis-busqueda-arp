@@ -33,10 +33,13 @@
       <div class="col-xs-12 col-md-6 col-lg-4 q-pa-sm" v-for="(v, k) in libros" :key="k">
         <q-card class="my-card">
           <q-card-section class="text-white" :class="tipoAccion[k] === 'agregar'?'bg-positive':tipoAccion[k] === 'editar'?'bg-secondary':'bg-primary'">
-            <div class="text-h5 text-center">{{ v.nombre }}</div>
-            <q-popup-edit v-if="tipoAccion[k]!=='list'" v-model="v.nombre" buttons v-slot="scope">
-              <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set" label-set="aceptar" label-cancel="cancelar"/>
-            </q-popup-edit>
+            <div v-if="tipoAccion[k]==='list'" class="text-h5 text-center" style="height: 1.5em;">{{ v.nombre }}</div>
+            <q-input v-else label="Nombre Libro" dense clearable class="q-my-sm" color="blue-1"
+                v-model="v.nombre" :readonly="tipoAccion[k]==='list'"
+                :error-message="errores[k]?errores[k].nombre?errores[k].nombre[0]:'':''" :error="errores[k] && errores[k].nombre != null"/>
+            <!-- <q-popup-edit v-if="tipoAccion[k]!=='list'" v-model="v.nombre" buttons v-slot="scope" label-set="aceptar" label-cancel="cancelar">
+              <q-input v-model="scope.value" dense autofocus counter @keyup.enter="scope.set"/>
+            </q-popup-edit> -->
           </q-card-section>
 
           <q-card-section class="">
@@ -227,6 +230,7 @@ function GuardarLibro(object,index){
               progress: true,
               timeout: 1000,
           });
+          errores.value[index.toString()] = null;
         } catch (error) {
           errores.value[index.toString()]= error.response.data.errors;
         }
