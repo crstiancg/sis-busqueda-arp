@@ -51,7 +51,7 @@ function generarPDF(datos) {
 
 
   doc.text("N° Solicitud: {id_solicitud}", 120, 30);
-  const parrafo1 = `        Yo, ${ datos.nombres } ${ datos.apellido_paterno } ${ datos.apellido_paterno } natural de ${ datos.ubigeo_pers } identificado con D.N.I. ${ datos.num_documento } y con domicilio en ${ datos.direccion } del distrito ${ datos.ubigeo_pers }, ante Usted con el debido respeto me presento y expongo:`;
+  const parrafo1 = `        Yo, ${ datos.nombres } ${ datos.apellido_paterno } ${ datos.apellido_materno } natural de ${ datos.ubigeo_pers } identificado con D.N.I. ${ datos.num_documento } y con domicilio en ${ datos.direccion } del distrito ${ datos.ubigeo_pers }, ante Usted con el debido respeto me presento y expongo:`;
   // const lineas = doc.splitTextToSize(parrafo1, maxWidth);
   doc.text(parrafo1, 20, 40, { align: "justify" , maxWidth: maxWidth});
   doc.text("Celular: "+datos.celular+'\t'+"Correo: "+datos.correo, 30, 60);

@@ -67,7 +67,7 @@
                 <div class="q-gutter-md q-mb-md">
                   <div class="row">
                     <div class="row full-width">
-                      <SelectUbigeoPlus v-model="solicitudForm.ubigeo_cod_soli" cod_departamento="21" cod_provincia="01" show_provincia="false" Class="q-pa-sm col-12 col-md-6"/>
+                      <SelectUbigeoPlus v-model="solicitudForm.ubigeo_cod_soli" cod_departamento="21" Class="q-pa-sm col-12 col-md-6"/>
                     </div>
                     <!-- <SelectUbigeoPuno ref="solicitudUbigeoRef" :ubigeo_cod="solicitudForm.ubigeo_cod_soli"
                         @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/> -->
@@ -363,6 +363,7 @@ function setValue(values) {
   solicitudForm.value.ubigeo_cod = values.solicitante.ubigeo_cod;
   solicitudForm.value.otorgantes = values.otorgantes;
   solicitudForm.value.favorecidos = values.favorecidos;
+  solicitudForm.value.ubigeo_cod_soli = values.ubigeo_cod;
   solicitudForm.value.bien = values.bien;
   solicitudForm.value.fecha = values.fecha;
   solicitudForm.value.mas_datos = values.mas_datos;
