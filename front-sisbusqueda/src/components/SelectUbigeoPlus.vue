@@ -47,7 +47,7 @@
 </template>
 <script setup>
 import UbigeosService from 'src/services/UbigeoService';
-import { onBeforeMount, onMounted, ref, watch } from 'vue';
+import { onMounted, ref, watch } from 'vue';
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps({
     modelValue: {default:null},
@@ -63,7 +63,7 @@ const model_depa = ref();
 const model_prov = ref();
 const model_dist = ref();
 
-let allDepartamentos = [];
+// let allDepartamentos = [];
 let allProvincias = [];
 let allDistritos = [];
 
@@ -74,16 +74,14 @@ let stringDistritos = [];
 let banderaModelValue = props.modelValue !== null;
 let banderaCodDeparta = props.cod_departamento !== null;
 
+let num_ban = 0;
+
 function emitir(_model){
   emit('update:modelValue', _model? typeof _model === 'object'? _model.cod_dep+_model.cod_prov+_model.cod_dist:_model:null);
 }
-function separarCadena(cadena) {
-  return cadena.match(/.{1,2}/g) || [];
-}
 onMounted(async () => {
   loading.value = true;
-  [allDepartamentos, allProvincias, allDistritos] = await UbigeosService.getAllUbigeo();
-  stringDepartamentos = allDepartamentos;
+  [stringDepartamentos, allProvincias, allDistritos] = await UbigeosService.getAllUbigeo();
   await CargarModel();
   loading.value = false;
 });
@@ -109,17 +107,20 @@ watch(model_prov,(newval,oldval)=>{
   if(newval) getDistritos(newval.cod_dep,newval.cod_prov);
 });
 watch(model_dist,(newval,oldval)=>{
-  banderaModelValue = false;
+  if(banderaModelValue) banderaModelValue = false;
   emitir(newval);
 });
 
 watch(()=>props.modelValue,async (newval,oldval)=>{
-  console.log(newval);
-  await CargarModel();
+  if(num_ban<=2) await CargarModel();
 });
-
+/*** ********************************************************************* */
+function separarCadena(cadena) {
+  return cadena.match(/.{1,2}/g) || [];
+}
 async function CargarModel(){
-  banderaModelValue = props.modelValue !== null;
+  num_ban++;
+  if(num_ban<=1) banderaModelValue = props.modelValue !== null;
   let codigo_array = banderaModelValue ? separarCadena(props.modelValue):[null,null,null];
   if (props.cod_departamento) codigo_array[0] = props.cod_departamento;
   if(props.cod_departamento && props.cod_provincia) codigo_array[1] = props.cod_provincia;
@@ -168,13 +169,4 @@ function filterDistritos(val, update) {
     }
   })
 };
-
-// function setData(){
-//     model_depa.value = props.cod_departamento.departamento;
-//     model_prov.value = props.cod_prov.provincia;
-// }
-
-// defineExpose({
-//   setData
-// });
 </script>
