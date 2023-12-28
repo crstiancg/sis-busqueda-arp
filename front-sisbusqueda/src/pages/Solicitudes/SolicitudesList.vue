@@ -94,14 +94,14 @@
                 icon="edit"
                 class="q-mr-xs"
               />
-              <q-btn
+              <!-- <q-btn
                 size="sm"
                 outline
                 color="red"
                 round
                 @click="eliminar(props.row.id)"
                 icon="delete"
-              />
+              /> -->
             </q-td>
           </q-tr>
         </template>
