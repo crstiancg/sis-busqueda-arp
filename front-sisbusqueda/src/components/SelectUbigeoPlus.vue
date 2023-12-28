@@ -158,4 +158,13 @@ function filterDistritos(val, update) {
     }
   })
 };
+
+// function setData(){
+//     model_depa.value = props.cod_departamento.departamento;
+//     model_prov.value = props.cod_prov.provincia;
+// }
+
+// defineExpose({
+//   setData
+// });
 </script>

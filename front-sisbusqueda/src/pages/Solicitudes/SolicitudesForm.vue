@@ -66,8 +66,11 @@
                 :done="step > 2" :header-nav="step > 2" >
                 <div class="q-gutter-md q-mb-md">
                   <div class="row">
-                    <SelectUbigeoPuno ref="solicitudUbigeoRef" :ubigeo_cod="solicitudForm.ubigeo_cod_soli"
-                        @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/>
+                    <div class="row full-width">
+                      <SelectUbigeoPlus v-model="solicitudForm.ubigeo_cod_soli" cod_departamento="21" cod_provincia="01" show_provincia="false" Class="q-pa-sm col-12 col-md-6"/>
+                    </div>
+                    <!-- <SelectUbigeoPuno ref="solicitudUbigeoRef" :ubigeo_cod="solicitudForm.ubigeo_cod_soli"
+                        @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/> -->
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Notarios" v-model="solicitudForm.notario" :options="GenerateListService"
                         :GenerateList="{ column: 'notario', table: 'all' }" />
                     <SelectInput class="col-12 col-md-6 q-pa-sm" label="Subserie" v-model="solicitudForm.subserie" :options="GenerateListService"
@@ -355,17 +358,14 @@ function setValue(values) {
   solicitudForm.value.apellido_materno = values.solicitante.apellido_materno;
   solicitudForm.value.num_documento = values.solicitante.num_documento;
   solicitudForm.value.celular = values.solicitante.celular;
-  // solicitudForm.value.ubigeo_cod = values.ubigeo_cod;
   solicitudForm.value.correo = values.solicitante.correo;
   solicitudForm.value.direccion = values.solicitante.direccion;
+  // solicitudForm.value.ubigeo_cod = values.solicitante.ubigeo_cod;
   solicitudForm.value.otorgantes = values.otorgantes;
   solicitudForm.value.favorecidos = values.favorecidos;
   solicitudForm.value.bien = values.bien;
   solicitudForm.value.fecha = values.fecha;
   solicitudForm.value.mas_datos = values.mas_datos;
-  usuarioUbigeoRef.value.getUbigeo(values.ubigeo_cod);
-  // solicitudUbigeoRef.value.getUbigeo(values.ubigeo_cod);
-  console.log(solicitudUbigeoRef.value);
 }
 
 defineExpose({

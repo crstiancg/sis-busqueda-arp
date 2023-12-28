@@ -206,7 +206,7 @@ const columns = [
     // });
 
     solicitudesformRef.value.setValue(row);
-    solicitudesformRef.value.setValue(row);
+    // solicitudesformRef.value.setValue(row);
     // solicitudesformRef.value.setValue(row);
   }
 
