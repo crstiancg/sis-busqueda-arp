@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Sis_Anterior;
 
-use App\Models\Sia;
+use App\Http\Controllers\Controller2;
+use App\Models\Sis_AnteriorModels\Sis2018;
 use Illuminate\Http\Request;
 
-class SiaController extends Controller
+class Sis2018Controller extends Controller2
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +15,10 @@ class SiaController extends Controller
     {
         return  $this->generateViewSetList(
             $request,
-            Sia::query(),
-            ['notario'], //para el filtrado
-            ['id','notario','otorgante','favorecido','fecha'],  //para la busqueda
-            ['id','notario','otorgante','favorecido','fecha', 'serie','folio','escritura','bien',] //para el odenamiento
+            Sis2018::query(),
+            ['notario','lugar','otorgantes', 'favorecidos'], //para el filtrado
+            ['id','notario','otorgantes','favorecidos',],  //para la busqueda
+            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         );
     }
 
@@ -40,7 +41,7 @@ class SiaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Sia $sia)
+    public function show(Sis2018 $sis2018)
     {
         //
     }
@@ -48,7 +49,7 @@ class SiaController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Sia $sia)
+    public function edit(Sis2018 $sis2018)
     {
         //
     }
@@ -56,7 +57,7 @@ class SiaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Sia $sia)
+    public function update(Request $request, Sis2018 $sis2018)
     {
         //
     }
@@ -64,7 +65,7 @@ class SiaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Sia $sia)
+    public function destroy(Sis2018 $sis2018)
     {
         //
     }

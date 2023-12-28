@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder as QueryBuilder;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -10,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\DB;
 
-class Controller extends BaseController
+class Controller2 extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
@@ -28,7 +29,7 @@ class Controller extends BaseController
         return config('controller.page_size', 20);
     }
 
-    public function generateViewSetList(Request $request, Builder $querySet, array $filterBy, array $searchBy, array $orderBy)
+    public function generateViewSetList(Request $request, Builder $query_Set=null, array $filterBy, array $searchBy, array $orderBy, String $nameTable=null, QueryBuilder $querySetBuilder=null)
     {
         function addOrSkipBaseTable(string $colName, string $tableBaseName)
         {
@@ -37,7 +38,16 @@ class Controller extends BaseController
             }
             return $colName;
         }
-        $tableBaseName = $querySet->getModel()->getTable();
+        $querySet = null;
+        $tableBaseName = null;
+        if($nameTable && $querySetBuilder){
+            $querySet= $querySetBuilder;
+            $tableBaseName = $nameTable;
+            // return addOrSkipBaseTable("minimini",$nameTable);
+        }else{
+            $querySet = $query_Set;
+            $tableBaseName = $querySet->getModel()->getTable();
+        }
         // $fillableArray = $querySet->getModel()->getFillable();
         if ($request->filled('filter_by')) {
             foreach ($request->filter_by as $index_col => $val_filter) {
@@ -85,6 +95,17 @@ class Controller extends BaseController
             }
         }
 
-        return $this->getPageSize()?$querySet->paginate($this->getPageSize()):response()->json(['data'=>$querySet->get()]);
+        return $this->getPageSize() ? $querySet->paginate($this->getPageSize()) : response()->json(['data'=>$querySet->get()]);
+    }
+
+    public function QueryGenerateViewSetList(Request $request, Builder $querySet, array $filterBy, array $searchBy, array $orderBy)
+    {
+        $querySetSql = $querySet->toSql();
+        $tableBaseName = "TempTable";
+        $query = DB::table(DB::raw("($querySetSql) as $tableBaseName"));
+        return $request->all();
+        // return $this->generateViewSetList($request,null,$filterBy,$searchBy,$orderBy,$tableBaseName,$query);
+        // return $query->select('subserie')->limit(20)->get();
+        // return $query->paginate($this->getPageSize());
     }
 }

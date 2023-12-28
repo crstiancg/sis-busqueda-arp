@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Sis_Anterior;
 
-use App\Models\Arbolito;
+use App\Http\Controllers\Controller2;
+use App\Models\Sis_AnteriorModels\Arbolito;
 use Illuminate\Http\Request;
 
-class ArbolitoController extends Controller
+class ArbolitoController extends Controller2
 {
     /**
      * Display a listing of the resource.

@@ -105,7 +105,7 @@
           <q-expansion-item expand-separator icon="collections_bookmark" label="Panel de escrituras" default-opened header-class="bg-blue-6 text-white" expand-icon-class="text-white" >
             <div class="q-ml-md line-l">
               <q-item clickable v-ripple class="q-ma-xs rounded-borders" active-class="my-menu-link"
-                  :to="{ name: 'Proyectos' }" :active="link === 'Proyectos'" @click="link = 'Proyectos'" >
+                  :to="{ name: 'Libros' }" :active="link === 'Libros'" @click="link = 'Libros'" >
                   <!-- <q-item-section avatar> <q-icon name="mdi-account" /> </q-item-section> -->
                   <q-item-section> Libros  </q-item-section>
               </q-item>

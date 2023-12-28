@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Sis_Anterior;
 
-use App\Models\Nuevo2;
+use App\Http\Controllers\Controller2;
+use App\Models\Sis_AnteriorModels\Sia;
 use Illuminate\Http\Request;
 
-class Nuevo2Controller extends Controller
+class SiaController extends Controller2
 {
     /**
      * Display a listing of the resource.
@@ -14,10 +15,10 @@ class Nuevo2Controller extends Controller
     {
         return  $this->generateViewSetList(
             $request,
-            Nuevo2::query(),
-            ['notario','lugar'], //para el filtrado
-            ['id','notario',],  //para la busqueda
-            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
+            Sia::query(),
+            ['notario'], //para el filtrado
+            ['id','notario','otorgante','favorecido','fecha'],  //para la busqueda
+            ['id','notario','otorgante','favorecido','fecha', 'serie','folio','escritura','bien',] //para el odenamiento
         );
     }
 
@@ -40,7 +41,7 @@ class Nuevo2Controller extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Nuevo2 $nuevo2)
+    public function show(Sia $sia)
     {
         //
     }
@@ -48,7 +49,7 @@ class Nuevo2Controller extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Nuevo2 $nuevo2)
+    public function edit(Sia $sia)
     {
         //
     }
@@ -56,7 +57,7 @@ class Nuevo2Controller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Nuevo2 $nuevo2)
+    public function update(Request $request, Sia $sia)
     {
         //
     }
@@ -64,7 +65,7 @@ class Nuevo2Controller extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Nuevo2 $nuevo2)
+    public function destroy(Sia $sia)
     {
         //
     }

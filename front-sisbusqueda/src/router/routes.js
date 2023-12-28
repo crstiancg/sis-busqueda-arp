@@ -46,8 +46,7 @@ const routes = [
       {
         path: "anteriores2",
         name: "Anteriores2",
-        component: () =>
-          import("pages/Arp_v1/Anteriores2/Anteriores2Index.vue"),
+        component: () => import("pages/Arp_v1/Anteriores2/Anteriores2Index.vue"),
       },
       {
         path: "arbolito",
@@ -95,14 +94,14 @@ const routes = [
         component: () => import("pages/Admin/Areas/AreasList.vue"),
       },
       {
-        path: "proyectos",
-        name: "Proyectos",
+        path: "libros",
+        name: "Libros",
         component: () => import("pages/Libros/IndexPage.vue"),
       },
       {
-        path: "proyecto/:id",
-        name: "Proyecto",
-        component: () => import("pages/Libros/ShowProyectoList.vue"),
+        path: "escrituras/:id",
+        name: "Escrituras",
+        component: () => import("pages/Libros/ShowEcriturastoList.vue"),
       },
 
       {

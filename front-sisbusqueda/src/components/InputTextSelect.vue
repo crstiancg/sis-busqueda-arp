@@ -1,13 +1,13 @@
 <template>
   <div style="position: relative;" ref="recomendacion">
-    <q-input outlined borderless dense clearable :label="label" :loading="loading"
+    <q-input :outlined="outlined" :dense="dense" :clearable="clearable" :label="label" :loading="loading"
       v-model="model" :class="Class"
       @update:model-value="emitir(model)">
     </q-input>
-    <div v-if="show" class="posicion" @focusout="show=false">
-      <div v-for="val, index in filterOptions" :key="index" @click="show=false; emitir(val); " :class="$q.dark.isActive ? 'select-dark':'select'" class="cursor-pointer q-px-md q-py-sm">
+    <div v-if="show" class="posicion">
+      <div v-for="val, index in filterOptions" :key="index" @click="SelectItem(val)" :class="$q.dark.isActive ? 'select-dark':'select'" class="cursor-pointer q-px-md q-py-sm">
         <span>
-          {{ typeof val === 'object'? val[op_label] :val}}
+          {{ typeof val === 'object'? val[op_label] : val }}
         </span>
       </div>
     </div>
@@ -22,7 +22,11 @@ const props = defineProps({
   options: {default:null},
   OptionLabel:{default:'nombre'},
   GenerateList :{default:null},
+// aprtir de aqui son los estilos para definir
   Class :{default:''},
+  clearable :{default:false},
+  outlined :{default:false},
+  dense :{default:false},
 });
 let array = [];
 const op_label = ref('');
@@ -42,7 +46,11 @@ onMounted(async () => {
 });
 function emitir(_model){
   emit('update:modelValue', _model? typeof _model === 'object'?_model[op_label.value]:_model :_model);
-  model.value = _model && typeof _model === 'object'?_model[op_label.value]:_model;
+}
+function SelectItem(item){
+  show.value=false;
+  model.value = item && typeof item === 'object'?item[op_label.value]:item;
+  emitir(item)
 }
 async function ExtraerDatos(options){
   if(props.options.hasOwnProperty('getData')){
@@ -62,7 +70,7 @@ watch(()=>props.options,async(newVal,oldVal)=>{
   loading.value=false;
 });
 watch(model,(newtext,oldtext)=>{
-  if (newtext && newtext.length > 0 && !array.some(item => {
+  if (newtext && newtext.length >= 2 && !filterOptions.value.some(item => {
           const compareText = (typeof item === 'object' ? item[op_label.value] : item) || '';
           return compareText === newtext;
         })
@@ -82,9 +90,7 @@ const filterOptions = computed(()=> {
 });
 const ClickFueraDelRef = (event) => {
   if (recomendacion.value && !recomendacion.value.contains(event.target)) {
-    if (show.value) {
-      show.value = false;
-    }
+    if (show.value) show.value = false;
   }
 };
 </script>
@@ -103,7 +109,8 @@ const ClickFueraDelRef = (event) => {
 .posicion
   position: absolute
   z-index: 100
-  max-height: 200px
+  // height: 100%
+  max-height: 7em
   overflow-y: auto
   width: 100%
 

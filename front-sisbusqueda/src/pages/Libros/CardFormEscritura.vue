@@ -2,79 +2,51 @@
   <q-card class="my-card">
     <q-card-section class="bg-primary text-white q-pa-none">
       <q-toolbar>
-        <q-toolbar-title class="text-h5 text-center">{{
-          proyecto.nombre
-        }}</q-toolbar-title>
+        <q-toolbar-title class="text-h5 text-center">{{ Libro.nombre }}</q-toolbar-title>
         <q-btn flat v-close-popup round dense icon="close" />
       </q-toolbar>
     </q-card-section>
     <q-separator />
 
     <q-form @submit="onSubmit">
-      <q-stepper
-        v-model="step"
-        ref="stepper"
-        color="primary"
-        flat
-        animated
-        header-nav
-      >
-        <q-step
-          :name="1"
-          title="Select campaign settings"
-          icon="settings"
-          :done="step > 1"
-        >
-          <q-input v-model="escritura.folio" label="Folio" dense> </q-input>
-          <q-input
-            v-model="escritura.cod_escritura"
-            label="N° de Escritura"
-            dense
-          >
-          </q-input>
-          <!-- <q-select label="Sub-Series" dense></q-select> -->
-          <SelectSubSerie
-            v-model:sub-serie="subSerie"
-            @update:sub-serie="(e) => (escritura.subserie_id = e.id)"
-          ></SelectSubSerie>
-          <q-input
-            v-model="escritura.observacion"
-            label="Observaciones de Escritura"
-            autogrow
-            dense
-          ></q-input>
-          <q-input
-            v-model="escritura.n_folios"
-            label="Cantidad de folios"
-            type="number"
-            dense
-          ></q-input>
-          <q-input
-            v-model="escritura.bien"
-            label="Nombre de bien"
-            dense
-          ></q-input>
-          <q-input
-            v-model="escritura.fecha"
-            label="Fecha de Escritura"
-            type="date"
-          ></q-input>
+      <q-stepper v-model="step" ref="stepper" color="primary" flat animated>
+        <q-step :name="1" title="Select campaign settings" icon="settings" :done="step > 1">
+          <div class="row">
+            <q-input label="N° de Escritura" dense class="col-12 col-sm-6 col-md-3 q-pa-sm"
+                v-model="escritura.cod_escritura"/>
+            <q-input label="Fecha de Escritura" mask="##/##/####" dense class="col-12 col-sm-6 col-md-3 q-pa-sm"
+                v-model="escritura.fecha">
+                <template v-slot:append>
+                  <q-icon icon name="event" class="cursor-pointer">
+                    <q-popup-proxy  cover transition-show="scale" transition-hide="scale">
+                      <q-date v-model="escritura.fecha" mask="DD/MM/YYYY" today-btn>
+                        <div class="row items-center justify-end">
+                          <q-btn v-close-popup label="Cerrar" color="primary" flat />
+                        </div>
+                      </q-date>
+                    </q-popup-proxy>
+                  </q-icon>
+                </template>
+            </q-input>
+            <q-input  label="Folio" dense class="col-12 col-sm-6 col-md-3 q-pa-sm"
+                v-model="escritura.folio" prefix="F-"/>
+            <q-input label="Cantidad de folios" type="number" dense class="col-12 col-sm-6 col-md-3 q-pa-sm"
+                v-model="escritura.n_folios" />
+            <SelectInput label="Subserie" dense class="col-12 q-pa-sm"
+                v-model="subSerie" :options="SubSerieService" OptionLabel="nombre" OptionValue="id" />
+            <q-input label="Nombre de bien" dense class="col-12 q-pa-sm"
+                v-model="escritura.bien" />
+            <q-input label="Observaciones de Escritura" autogrow dense class="col-12 q-pa-sm"
+                v-model="escritura.observacion"/>
+          </div>
         </q-step>
-        <q-step
-          :name="2"
-          title="Create an ad group"
-          caption="Optional"
-          icon="create_new_folder"
-          :done="step > 2"
-        >
-          <q-option-group
-            v-model="tipoPersona"
-            inline
-            :options="[
-              { label: 'Natural', value: 'Natural' },
-              { label: 'Jurico', value: 'Jurico' },
-            ]"
-          />
+        <q-step :name="2" title="Create an ad group" caption="Optional" icon="create_new_folder" :done="step > 2">
+          <q-option-group inline
+              v-model="tipoPersona"
+              :options="[
+                { label: 'Natural', value: 'Natural' },
+                { label: 'Jurico', value: 'Jurico' },
+              ]"/>
           <q-tab-panels v-model="tipoPersona">
             <q-tab-panel name="Natural">
               <div class="text-h6">Persona Natural</div>
@@ -83,12 +55,11 @@
                   <q-btn color="primary" label="Añadir"></q-btn>
                 </template>
               </q-select> -->
-              <SelectOtorgante v-model:otorgante="otorgante"></SelectOtorgante>
-              <q-btn
-                label="Añadir"
-                @click="addOtorgante"
-                color="primary"
-              ></q-btn>
+              <SelectInput label="Otorgantes" dense clearable
+                  v-model="otorgante" :options="OtorganteService" OptionLabel="nombre_completo" OptionValue="id"
+                  :ValueMulti="['id','nombre_completo']"/>
+              <q-btn label="Añadir"
+                @click="addOtorgante" color="primary"/>
               <q-btn label="Nuevo" color="positive"></q-btn>
 
               <q-markup-table flat class="q-mt-sm">
@@ -104,14 +75,8 @@
                     <td>{{ i + 1 }}</td>
                     <td class="text-right">{{ v.nombre_completo }}</td>
                     <td class="text-right">
-                      <q-btn
-                        size="sm"
-                        outline
-                        color="red"
-                        round
-                        @click="removeOtorgante(i)"
-                        icon="delete"
-                      />
+                      <q-btn size="sm" outline color="red" round icon="delete"
+                        @click="removeOtorgante(i)"/>
                     </td>
                   </tr>
                 </tbody>
@@ -125,21 +90,13 @@
           </q-tab-panels>
         </q-step>
 
-        <q-step
-          :name="3"
-          title="Create an ad group"
-          caption="Optional"
-          icon="create_new_folder"
-          :done="step > 2"
-        >
-          <q-option-group
-            v-model="tipoPersona"
-            inline
-            :options="[
-              { label: 'Natural', value: 'Natural' },
-              { label: 'Jurico', value: 'Jurico' },
-            ]"
-          />
+        <q-step :name="3" title="Create an ad group" caption="Optional" icon="create_new_folder" :done="step > 2">
+          <q-option-group inline
+              v-model="tipoPersona"
+              :options="[
+                { label: 'Natural', value: 'Natural' },
+                { label: 'Jurico', value: 'Jurico' },
+              ]"/>
           <q-tab-panels v-model="tipoPersona">
             <q-tab-panel name="Natural">
               <div class="text-h6">Persona Natural</div>
@@ -148,9 +105,9 @@
                   <q-btn color="primary" label="Añadir"></q-btn>
                 </template>
               </q-select> -->
-              <SelectFavorecido
-                v-model:favorecido="favorecido"
-              ></SelectFavorecido>
+              <SelectInput label="Favorecidos" dense clearable
+                  v-model="favorecido" :options="FavorecidoService" OptionLabel="nombre_completo" OptionValue="id"
+                  :ValueMulti="['id','nombre_completo']"/>
               <q-btn
                 label="Añadir"
                 @click="addFavorecido"
@@ -171,14 +128,8 @@
                     <td>{{ i + 1 }}</td>
                     <td class="text-right">{{ v.nombre_completo }}</td>
                     <td class="text-right">
-                      <q-btn
-                        size="sm"
-                        outline
-                        color="red"
-                        round
-                        @click="removeFavorecido(i)"
-                        icon="delete"
-                      />
+                      <q-btn size="sm" outline color="red" round icon="delete"
+                        @click="removeFavorecido(i)" />
                     </td>
                   </tr>
                 </tbody>
@@ -194,54 +145,35 @@
         <template v-slot:navigation>
           <q-stepper-navigation>
             <q-card-actions align="between">
-              <q-btn
-                v-if="step === 1"
-                flat
-                color="primary"
-                v-close-popup
-                label="Cerrar"
-                class="q-ml-sm"
-              />
-              <q-btn
-                v-if="step > 1"
-                flat
-                color="primary"
-                @click="$refs.stepper.previous()"
-                label="Anterior"
-                class="q-ml-sm"
-              />
-              <q-btn
-                v-if="step < 3"
-                @click="$refs.stepper.next()"
-                color="primary"
-                label="Continuar"
-              />
-              <q-btn
-                v-if="step === 3"
-                type="submit"
-                color="positive"
-                label="Registrar"
-              />
+              <q-btn v-if="step === 1"
+                  label="Cerrar" v-close-popup flat color="primary" class="q-ml-sm" />
+              <q-btn v-if="step > 1"
+                  label="Anterior" flat color="primary" class="q-ml-sm"
+                  @click="$refs.stepper.previous()" />
+              <q-btn v-if="step < 3"
+                  label="Continuar" color="primary"
+                  @click="$refs.stepper.next()" />
+              <q-btn v-if="step === 3"
+                  label="Registrar" type="submit" color="positive" />
             </q-card-actions>
           </q-stepper-navigation>
         </template>
       </q-stepper>
     </q-form>
-    <!-- <q-card-actions align="right">
-      <q-btn>Editar</q-btn>
-      <q-btn color="primary" icon="search">Consultar</q-btn>
-    </q-card-actions> -->
   </q-card>
 </template>
 
 <script setup>
-import { ref } from "vue";
-import SelectSubSerie from "components/SelectSubSerie.vue";
-import SelectOtorgante from "components/SelectOtorgante.vue";
-import SelectFavorecido from "components/SelectFavorecido.vue";
+import { onBeforeMount, ref } from "vue";
+import SelectInput from "src/components/SelectInput.vue";
+import InputTextSelect from "src/components/InputTextSelect.vue";
+import SubSerieService from "src/services/SubSerieService";
+import OtorganteService from "src/services/OtorganteService";
+import FavorecidoService from "src/services/FavorecidoService";
 import EscrituraService from "src/services/EscrituraService";
 const props = defineProps({
-  proyecto: Object,
+  Libro: {type:Object,default:null},
+  Editar: {type:Object,default:null},
 });
 
 const emits = defineEmits(["save"]);
@@ -252,7 +184,7 @@ const escritura = ref({
   cod_escritura: null,
   subserie_id: null,
   observacion: null,
-  n_folios: 0,
+  n_folios: 1,
   cod_folioInicial: null,
   cod_folioFinal: null,
   bien: null,
@@ -264,9 +196,12 @@ const escritura = ref({
 const otorgante = ref(null);
 const favorecido = ref(null);
 
-const step = ref(1);
+const step = ref(2);
 
 const tipoPersona = ref("Natural");
+onBeforeMount(()=>{
+  console.log(props.Editar);
+});
 
 const addOtorgante = () => {
   escritura.value.otorgantes.push({ ...otorgante.value });
@@ -290,9 +225,13 @@ const removeFavorecido = (i) => {
 const onSubmit = async () => {
   console.log("enviando");
   try {
-    escritura.value.libro_id = props.proyecto.id;
-    escritura.value.cod_folioInicial = escritura.value.folio;
-    escritura.value.cod_folioFinal = escritura.value.folio;
+    escritura.value.libro_id = props.Libro.id;
+    escritura.value.cod_folioInicial = 'F-'+escritura.value.folio;
+    let patron = /\d+/;
+    let resultado = escritura.value.folio.match(patron);
+    let num = resultado ? parseInt(resultado[0], 10)+escritura.value.n_folios-1 : null;
+    console.log(num);
+    escritura.value.cod_folioFinal = num? 'F-'+num.toString():'F-'+escritura.value.folio;
     escritura.value.otorgantes = escritura.value.otorgantes.map((o) => {
       return o.id;
     });

@@ -1,77 +1,32 @@
 <template>
-  <q-dialog v-model="formUser">
-    <UsuariosForm
-      :title="title"
-      :edit="edit"
-      :id="editId"
-      ref="usuariosformRef"
-      @save="save"
-    ></UsuariosForm>
-  </q-dialog>
-  <q-dialog v-model="dialogFolio">
-    <CardFormFolioVue :proyecto="libro" @save="save"></CardFormFolioVue>
+  <q-dialog v-model="dialogEscritura">
+    <CardFormEscritura :Libro="libro" :Editar="escrituraEdit" @save="save"></CardFormEscritura>
   </q-dialog>
   <q-page>
     <div class="q-pa-md q-gutter-sm">
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" />
-        <q-breadcrumbs-el
-          label="Proyectos"
-          icon="navigation"
-          :to="{ name: 'Proyectos' }"
-        />
-        <q-breadcrumbs-el :label="libro.nombre" icon="mdi-account" />
+        <q-breadcrumbs-el icon="book" label="Libros" :to="{ name: 'Libros' }" />
+        <q-breadcrumbs-el icon="receipt_long" :label="libro.nombre"  />
       </q-breadcrumbs>
     </div>
     <q-separator />
     <div class="q-gutter-xs q-pa-sm">
-      <q-btn
-        color="primary"
-        :disable="loading"
+    <!-- botones de Aministracion *********************************************************  -->
+      <q-btn color="primary" :disable="loading" icon-right="add"
         :label="$q.screen.lt.sm ? '' : 'Agregar'"
-        icon-right="add"
-        @click="addProyecto"
-      />
+        @click="editar(null)" />
     </div>
 
-    <q-table
-      :rows-per-page-options="[7, 10, 15]"
-      class="my-sticky-header-table htable q-ma-sm"
-      title="Escrituras"
-      ref="tableRef"
-      :rows="rows"
-      :columns="columns"
-      row-key="id"
-      v-model:pagination="pagination"
-      :loading="loading"
-      :filter="filter"
-      binary-state-sort
-      @request="onRequest"
-    >
-      <!-- <template v-slot:top-left>
-
-        <q-btn
-          color="primary"
-          :disable="loading"
-          :label="$q.screen.lt.sm ? '' : 'Agregar'"
-          icon-right="add"
-          @click="usuariosformRef.show = true"
-        />
-      </template> -->
-
+    <q-table class="my-sticky-header-table htable q-ma-sm" binary-state-sort
+        title="Escrituras" :rows-per-page-options="[5, 10, 15, 20]"
+        :rows="rows" :columns="columns" row-key="id"
+        v-model:pagination="pagination" ref="tableRef"
+        :loading="loading" :filter="filter" @request="onRequest" >
       <template v-slot:top-right>
-        <q-input
-          active-class="text-white"
-          standout="bg-primary"
-          color="white"
-          dense
-          debounce="500"
-          v-model="filter"
-          placeholder="Buscar"
-        >
-          <template v-slot:append>
-            <q-icon name="search" />
-          </template>
+        <q-input active-class="text-white" standout="bg-primary" color="white" dense debounce="500"
+            v-model="filter" placeholder="Buscar">
+            <template v-slot:append>  <q-icon name="search" /> </template>
         </q-input>
       </template>
       <template v-slot:header="props">
@@ -82,30 +37,24 @@
           <q-th auto-width> Acciones </q-th>
         </q-tr>
       </template>
-
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
-            {{ col.value }}
+            <template v-if="col.name === 'otorgantes.nombre'">
+              <div v-for="nombres,index in col.value" :key="index">{{ nombres.nombre_completo }}</div>
+            </template>
+            <template v-else-if="col.name === 'favorecidos.nombre'">
+              <div v-for="nombres,index in col.value" :key="index">{{ nombres.nombre_completo }}</div>
+            </template>
+            <template v-else>
+              {{ col.value }}
+            </template>
           </q-td>
           <q-td auto-width>
-            <q-btn
-              size="sm"
-              outline
-              color="green"
-              round
-              @click="editar(props.row.id)"
-              icon="edit"
-              class="q-mr-xs"
-            />
-            <q-btn
-              size="sm"
-              outline
-              color="red"
-              round
-              @click="eliminar(props.row.id)"
-              icon="delete"
-            />
+            <q-btn size="sm" outline color="green" round class="q-mr-xs"
+              @click="editar(props.row)"  icon="edit" />
+            <q-btn size="sm" outline color="red" round
+              @click="eliminar(props.row.id)" icon="delete" />
           </q-td>
         </q-tr>
       </template>
@@ -115,47 +64,26 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import UsuarioService from "src/services/UsuarioService";
 import { useQuasar } from "quasar";
-import UsuariosForm from "src/pages/Admin/Usuarios/UsuariosForm.vue";
 import { useRoute } from "vue-router";
-import CardFormFolioVue from "components/CardFormFolio.vue";
+import CardFormEscritura from "../Libros/CardFormEscritura.vue";
 import LibroService from "src/services/LibroService";
 import EscrituraService from "src/services/EscrituraService";
 const route = useRoute();
 const $q = useQuasar();
-const dialogFolio = ref(false);
+const dialogEscritura = ref(false);
 const libro = ref({});
 const columns = [
-  {
-    name: "id",
-    label: "Id",
-    aling: "center",
-    field: (row) => row.id,
-    sortable: true,
-  },
-  {
-    name: "bien",
-    label: "Bien",
-    aling: "center",
-    field: (row) => row.bien,
-    sortable: true,
-  },
-  {
-    name: "cod_escritura",
-    label: "Cod. Escritura",
-    aling: "center",
-    field: (row) => row.cod_escritura,
-    sortable: true,
-  },
+  { field: (row) => row.cod_escritura, name: "cod_escritura", label: "Cod. Escritura", align: "center", sortable: true,},
+  { field: (row) => row.fecha, name: "fecha", label: "Fecha", align: "center", sortable: true,},
+  { field: (row) => row.cod_folioInicial+'  a  '+row.cod_folioFinal, name: "cod_folioInicial", label: "Folios", align: "center", sortable: true,},
+  { field: (row) => row.bien, name: "bien", label: "Bien", align: "center", sortable: true,},
+  { field: (row) => row.sub_serie?row.sub_serie.nombre:'sin SubSerie', name: "sub_series.nombre", label: "Subserie", align: "center", sortable: true,},
+  { field: (row) => row.otorgantes?row.otorgantes:'sin Otorgantes', name: "otorgantes.nombre", label: "Otorgantes", align: "left", sortable: true,},
+  { field: (row) => row.favorecidos?row.favorecidos:'sin Favorecidos', name: "favorecidos.nombre", label: "Favorecidos", align: "left", sortable: true,},
 ];
 
 const tableRef = ref();
-const formUser = ref(false);
-const usuariosformRef = ref();
-const title = ref("");
-const edit = ref(false);
-const editId = ref();
 const rows = ref([]);
 const filter = ref("");
 const loading = ref(false);
@@ -167,6 +95,7 @@ const pagination = ref({
   rowsNumber: 10,
 });
 
+const escrituraEdit = ref(null);
 async function onRequest(props) {
   const { page, rowsPerPage, sortBy, descending } = props.pagination;
   const filter = props.filter;
@@ -198,13 +127,13 @@ async function onRequest(props) {
   loading.value = false;
 }
 
-onMounted(() => {
-  getLibro();
+onMounted(async() => {
+  await getLibro();
   tableRef.value.requestServerInteraction();
 });
 
 const save = () => {
-  dialogFolio.value = false;
+  dialogEscritura.value = false;
   tableRef.value.requestServerInteraction();
   $q.notify({
     type: "positive",
@@ -214,33 +143,32 @@ const save = () => {
     timeout: 1000,
   });
 };
-async function editar(id) {
-  title.value = "Editar Usuario";
-  formUser.value = true;
-  edit.value = true;
-  editId.value = id;
-  const row = await UsuarioService.get(id);
-  console.log(row);
+async function editar(row) {
+  escrituraEdit.value = row;
+  dialogEscritura.value = true;
+  // title.value = "Editar Usuario";
+  // formUser.value = true;
+  // edit.value = true;
+  // editId.value = id;
+  // const row = await UsuarioService.get(id);
+  // console.log(row);
 
-  usuariosformRef.value.form.setData({
-    id: row.user.id,
-    name: row.user.name,
-    email: row.user.email,
-    rolesSelected: row.rolesSelected,
-  });
-
-  // permisosformRef.value.setValue(row);
-  // usuariosformRef.value.setData(row);
+  // usuariosformRef.value.form.setData({
+  //   id: row.user.id,
+  //   name: row.user.name,
+  //   email: row.user.email,
+  //   rolesSelected: row.rolesSelected,
+  // });
 }
 
 async function eliminar(id) {
   $q.dialog({
-    title: "¿Estas seguro de eliminar este registro?",
+    title: "¿Estas seguro de eliminar este registro? "+id,
     message: "Este proceso es irreversible.",
     cancel: true,
     persistent: true,
   }).onOk(async () => {
-    await UsuarioService.delete(id);
+    // await UsuarioService.delete(id);
     tableRef.value.requestServerInteraction();
     $q.notify({
       type: "positive",
@@ -256,7 +184,8 @@ const getLibro = async () => {
   libro.value = res;
 };
 const addProyecto = () => {
-  dialogFolio.value = true;
+  escrituraEdit.value = null;
+  dialogEscritura.value = true;
 };
 </script>
 

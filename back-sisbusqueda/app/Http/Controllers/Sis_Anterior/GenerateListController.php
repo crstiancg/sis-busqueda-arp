@@ -1,20 +1,21 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Sis_Anterior;
 
+use App\Http\Controllers\Controller2;
 use Illuminate\Database\Eloquent\Builder;
-use App\Models\Anterior;
-use App\Models\Anterior2;
-use App\Models\Arbolito;
-use App\Models\Nuevo;
-use App\Models\Nuevo2;
-use App\Models\Sia;
-use App\Models\Sis2018;
-use App\Models\Sis2018_2;
+use App\Models\Sis_AnteriorModels\Anterior;
+use App\Models\Sis_AnteriorModels\Anterior2;
+use App\Models\Sis_AnteriorModels\Arbolito;
+use App\Models\Sis_AnteriorModels\Nuevo;
+use App\Models\Sis_AnteriorModels\Nuevo2;
+use App\Models\Sis_AnteriorModels\Sia;
+use App\Models\Sis_AnteriorModels\Sis2018;
+use App\Models\Sis_AnteriorModels\Sis2018_2;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class GenerateListController extends Controller
+class GenerateListController extends Controller2
 {
     /**
      * Display a listing of the resource.
@@ -97,6 +98,7 @@ class GenerateListController extends Controller
     {
         // return $request;
 
+        // $tempTable = Libro::with('escrituras');
         $tempTable = Anterior::select("*")
             ->unionAll(Anterior2::select("*"))
             ->unionAll(Sis2018::select("*"))
@@ -104,8 +106,7 @@ class GenerateListController extends Controller
             ->unionAll(Nuevo::select("*"))
             ->unionAll(Nuevo2::select("*"));
 
-        $querySetSql = $tempTable->toSql();
-        $query = DB::table(DB::raw("($querySetSql) as TempTable"));
+        return $this->QueryGenerateViewSetList($request,$tempTable,[],[],[]);
 
         // return  $this->generateViewSetList(
         //     $request,

@@ -1,23 +1,28 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Sis_Anterior;
 
-use App\Models\Anterior2;
+use App\Http\Controllers\Controller2;
+use App\Models\Sis_AnteriorModels\Anterior;
 use Illuminate\Http\Request;
 
-class Anterior2Controller extends Controller
+class AnteriorController extends Controller2
 {
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request)
     {
+        // $tempTable = Anterior::query();
+
+        $tempTable = Anterior::query();
+
         return  $this->generateViewSetList(
             $request,
-            Anterior2::query(),
-            ['notario','lugar'], //para el filtrado
-            ['id','notario','lugar','otorgantes','favorecidos'],  //para la busqueda
-            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
+            $tempTable,
+            $tempTable->getModel()->getFillable(), //para el filtrado
+            ['notario','subserie','otorgantes','favorecidos'],  //para la busqueda
+            ['id','notario','lugar','subserie','fecha','bien','protocolo','nescritura','folio','cfolio','trabajador'.'otorgantes'] //para el odenamiento
         );
     }
 
@@ -40,7 +45,7 @@ class Anterior2Controller extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Anterior2 $anterior2)
+    public function show(Anterior $anterior)
     {
         //
     }
@@ -48,7 +53,7 @@ class Anterior2Controller extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Anterior2 $anterior2)
+    public function edit(Anterior $anterior)
     {
         //
     }
@@ -56,7 +61,7 @@ class Anterior2Controller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Anterior2 $anterior2)
+    public function update(Request $request, Anterior $anterior)
     {
         //
     }
@@ -64,7 +69,7 @@ class Anterior2Controller extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Anterior2 $anterior2)
+    public function destroy(Anterior $anterior)
     {
         //
     }

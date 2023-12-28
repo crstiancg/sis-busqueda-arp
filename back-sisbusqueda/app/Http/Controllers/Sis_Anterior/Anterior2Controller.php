@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Sis_Anterior;
 
-use App\Models\Sis2018_2;
+use App\Http\Controllers\Controller2;
+use App\Models\Sis_AnteriorModels\Anterior2;
 use Illuminate\Http\Request;
 
-class Sis20182Controller extends Controller
+class Anterior2Controller extends Controller2
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +15,9 @@ class Sis20182Controller extends Controller
     {
         return  $this->generateViewSetList(
             $request,
-            Sis2018_2::query(),
-            ['notario','lugar','subserie'], //para el filtrado
-            ['id','notario',],  //para la busqueda
+            Anterior2::query(),
+            ['notario','lugar'], //para el filtrado
+            ['id','notario','lugar','otorgantes','favorecidos'],  //para la busqueda
             ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         );
     }
@@ -40,7 +41,7 @@ class Sis20182Controller extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Sis2018_2 $sis2018_2)
+    public function show(Anterior2 $anterior2)
     {
         //
     }
@@ -48,7 +49,7 @@ class Sis20182Controller extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Sis2018_2 $sis2018_2)
+    public function edit(Anterior2 $anterior2)
     {
         //
     }
@@ -56,7 +57,7 @@ class Sis20182Controller extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Sis2018_2 $sis2018_2)
+    public function update(Request $request, Anterior2 $anterior2)
     {
         //
     }
@@ -64,7 +65,7 @@ class Sis20182Controller extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Sis2018_2 $sis2018_2)
+    public function destroy(Anterior2 $anterior2)
     {
         //
     }

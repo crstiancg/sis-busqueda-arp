@@ -12,16 +12,15 @@ class EscrituraController extends Controller
      */
     public function index(Request $request)
     {
-        // $datos = Escritura::with(
-        //     'subSerie',
-        //     'libro',
-        //         'libro.notario',
-        //     'favorecidos',
-        //     'otorgantes')->get();
+        $datos = Escritura::with(
+            'subSerie',
+            'favorecidos',
+            'otorgantes');
         // return $datos;
+
         return $this->generateViewSetList(
             $request,
-            Escritura::query(),
+            $datos,
             ['libro_id'],
             ['bien'],
             ['id', 'bien']

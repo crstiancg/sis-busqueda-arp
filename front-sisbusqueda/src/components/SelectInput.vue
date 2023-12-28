@@ -58,12 +58,13 @@ const props = defineProps({
   label:{default:'Select'},
   modelValue: {default:null},
   options: {default:null},
-  OptionValue:{default:'id'},
   OptionLabel:{default:'nombre'},
-  active_before:{default:false},
+  OptionValue:{default:'id'},
+  ValueMulti:{default:null},
+  ValueAll:{default:false},
+/********************************************** */
   GenerateList :{default:null},
-  LimpEspaRepe :{default:false},
-
+  active_before:{default:false}, /* agregar activadores de slots** */
 });
 let stringOptions = null;
 const model = ref('');
@@ -72,23 +73,25 @@ const op_label = ref('');
 const op_value = ref('');
 
 function emitir(_model){
-  if(typeof props.OptionValue === 'object' && _model && typeof _model === 'object'){
-    let op_array_value = {};
-    props.OptionValue.forEach(element => {
-      if (_model?.[element])
-        op_array_value[element] = _model[element];
-    });
-    emit('update:modelValue', op_array_value);
+  if (_model && typeof _model === 'object') {
+    let value = null;
+    if(props.ValueMulti && typeof props.ValueMulti === 'object'){
+      value = {};
+      props.ValueMulti.forEach(element => {
+        if (_model?.[element])
+        value[element] = _model[element];
+      });
+    }else if(props.ValueAll){ value = _model;}
+    else {value = _model[op_value.value]};
+    emit('update:modelValue', value);
   }else
-    emit('update:modelValue', _model && typeof _model === 'object' ? _model[op_value.value]:_model);
+    emit('update:modelValue', _model);
 }
 onBeforeMount(async () => {
   loading.value=true;
-  op_label.value = typeof props.OptionLabel === 'object'? props.OptionLabel[0]: props.GenerateList ? props.GenerateList.column : props.OptionLabel;
-  op_value.value = typeof props.OptionValue === 'object'? props.OptionValue[0]: props.GenerateList ? props.GenerateList.column : props.OptionValue;
+  op_label.value = props.GenerateList ? props.GenerateList.column : props.OptionLabel;
+  op_value.value = props.GenerateList ? props.GenerateList.column : props.OptionValue;
   stringOptions = await ExtraerDatos(props.options);
-  if (props.LimpEspaRepe)
-    stringOptions = limpiarEspaciosRepetidos(stringOptions,op_value.value);
   CargarModel(props.modelValue);
   loading.value=false;
 });
@@ -133,17 +136,17 @@ function CargarModel(_model){
   else
     model.value = _model;
 }
-function limpiarEspaciosRepetidos(array,val) {
-  // Limpiar espacios en cada notario
-  array.forEach((item) => {
-    item[val] = item[val].replace(/\s+/g, ' ').trim();
-  });
-  // Eliminar elementos duplicados
-  const array_ = array.filter(
-    (item, index, self) =>
-      index ===
-      self.findIndex((t) => t[val] === item[val])
-  );
-  return array_;
-}
+// function limpiarEspaciosRepetidos(array,val) {
+//   // Limpiar espacios en cada notario
+//   array.forEach((item) => {
+//     item[val] = item[val].replace(/\s+/g, ' ').trim();
+//   });
+//   // Eliminar elementos duplicados
+//   const array_ = array.filter(
+//     (item, index, self) =>
+//       index ===
+//       self.findIndex((t) => t[val] === item[val])
+//   );
+//   return array_;
+// }
 </script>

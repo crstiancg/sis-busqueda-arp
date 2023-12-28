@@ -7,7 +7,7 @@ use App\Models\Libro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class LibroController extends Controller
+class LibroController extends Controller2
 {
     /**
      * Display a listing of the resource.

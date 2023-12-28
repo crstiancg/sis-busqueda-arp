@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Sis_Anterior;
 
-use App\Models\Nuevo;
+use App\Http\Controllers\Controller2;
+use App\Models\Sis_AnteriorModels\Sis2018_2;
 use Illuminate\Http\Request;
 
-class NuevoController extends Controller
+class Sis20182Controller extends Controller2
 {
     /**
      * Display a listing of the resource.
@@ -14,9 +15,9 @@ class NuevoController extends Controller
     {
         return  $this->generateViewSetList(
             $request,
-            Nuevo::query(),
-            ['notario','lugar'], //para el filtrado
-            ['id','notario','favorecidos'],  //para la busqueda
+            Sis2018_2::query(),
+            ['notario','lugar','subserie'], //para el filtrado
+            ['id','notario',],  //para la busqueda
             ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         );
     }
@@ -40,7 +41,7 @@ class NuevoController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Nuevo $nuevo)
+    public function show(Sis2018_2 $sis2018_2)
     {
         //
     }
@@ -48,7 +49,7 @@ class NuevoController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Nuevo $nuevo)
+    public function edit(Sis2018_2 $sis2018_2)
     {
         //
     }
@@ -56,7 +57,7 @@ class NuevoController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Nuevo $nuevo)
+    public function update(Request $request, Sis2018_2 $sis2018_2)
     {
         //
     }
@@ -64,7 +65,7 @@ class NuevoController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Nuevo $nuevo)
+    public function destroy(Sis2018_2 $sis2018_2)
     {
         //
     }

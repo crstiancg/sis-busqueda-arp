@@ -3,8 +3,7 @@
     <div class="q-pa-md q-gutter-sm absolute-position">
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" />
-
-        <q-breadcrumbs-el label="Proyectos en curso" icon="mdi-account" />
+        <q-breadcrumbs-el label="Libros" icon="book" />
       </q-breadcrumbs>
     </div>
     <q-separator />
@@ -13,7 +12,7 @@
           icon-right="add" @click="AgregarLibro" :disable="tipoAccion.includes('editar')"/>
       <q-space/>
       <SelectInput label="Notario" dense class="q-mx-sm"
-          v-model="filtros" :options="allNotarios" OptionLabel="nombre_completo" OptionValue="id" />
+          v-model="idNotario" :options="allNotarios" OptionLabel="nombre_completo" OptionValue="id" />
       <q-input placeholder="Buscar" dense class="q-mx-sm"
           v-model="busqueda" clearable>
         <template v-slot:append>
@@ -124,7 +123,7 @@ const libros = ref([]);
 const allNotarios = ref([]);
 
 const busqueda = ref();
-const filtros = ref();
+const idNotario = ref();
 const cargar = ref(false);
 
 const errores = ref({});
@@ -138,13 +137,14 @@ onMounted(async () => {
 
 async function CargarData(pag){
   cargar.value = true;
+  let filtros = {notario_id:idNotario.value,};
   const res = await LibroService.getData({
       params: {
         rowsPerPage: pag.num_filas,
         page:pag.pagina,
         order_by:pag.ordenado_por,
         search: busqueda.value,
-        notario_id: filtros.value,
+        filter_by: filtros,
       },
     });
   paginacion.value.primer_pag = await res.current_page;
@@ -160,7 +160,7 @@ watch(()=>paginacion.value.pagina,async (newVal,oldVal) => {
   await CargarData(paginacion.value);
   cargar.value = false;
 });
-watch(()=>filtros.value,async (newVal,oldVal) => {
+watch(()=>idNotario.value,async (newVal,oldVal) => {
   cargar.value = true;
   paginacion.value.pagina = 1;
   await CargarData(paginacion.value);
@@ -182,7 +182,7 @@ watch(()=>busqueda.value,async (newVal,oldVal) => {
 /********************************************************************************** */
 const showProyecto = (object) => {
   router.push({
-    name: "Proyecto",
+    name: "Escrituras",
     params: { id: object.id },
   });
 };

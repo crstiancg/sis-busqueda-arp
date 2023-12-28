@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Sis_AnteriorModels;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Nuevo extends Model
+class Anterior2 extends Model
 {
     use HasFactory;
-    protected $table = 'nuevo';
+    protected $table = 'anterior_2';
     protected $fillable = [
         'notario',
         'lugar',
