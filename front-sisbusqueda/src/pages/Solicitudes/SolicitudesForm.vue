@@ -360,7 +360,7 @@ function setValue(values) {
   solicitudForm.value.celular = values.solicitante.celular;
   solicitudForm.value.correo = values.solicitante.correo;
   solicitudForm.value.direccion = values.solicitante.direccion;
-  // solicitudForm.value.ubigeo_cod = values.solicitante.ubigeo_cod;
+  solicitudForm.value.ubigeo_cod = values.solicitante.ubigeo_cod;
   solicitudForm.value.otorgantes = values.otorgantes;
   solicitudForm.value.favorecidos = values.favorecidos;
   solicitudForm.value.bien = values.bien;

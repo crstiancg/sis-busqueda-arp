@@ -47,7 +47,7 @@
 </template>
 <script setup>
 import UbigeosService from 'src/services/UbigeoService';
-import { onBeforeMount, ref, watch } from 'vue';
+import { onBeforeMount, onMounted, ref, watch } from 'vue';
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps({
     modelValue: {default:null},
@@ -71,7 +71,7 @@ let stringDepartamentos = [];
 let stringProvincias = [];
 let stringDistritos = [];
 
-let banderaModelValue = props.modelValue !== null && props.modelValue!=='';
+let banderaModelValue = props.modelValue !== null;
 let banderaCodDeparta = props.cod_departamento !== null;
 
 function emitir(_model){
@@ -80,22 +80,11 @@ function emitir(_model){
 function separarCadena(cadena) {
   return cadena.match(/.{1,2}/g) || [];
 }
-onBeforeMount(async () => {
+onMounted(async () => {
   loading.value = true;
   [allDepartamentos, allProvincias, allDistritos] = await UbigeosService.getAllUbigeo();
   stringDepartamentos = allDepartamentos;
-  let codigo_array = banderaModelValue ? separarCadena(props.modelValue):[null,null,null];
-  if (props.cod_departamento) codigo_array[0] = props.cod_departamento;
-  if(props.cod_departamento && props.cod_provincia) codigo_array[1] = props.cod_provincia;
-  if(codigo_array[0]){
-    model_depa.value = stringDepartamentos.find(v => v.cod_dep === codigo_array[0]);
-    await getProvincias(codigo_array[0]);
-  }
-  if(codigo_array[0] && codigo_array[1]){
-    model_prov.value = stringProvincias.find(v => v.cod_prov === codigo_array[1]);
-    await getDistritos(codigo_array[0], codigo_array[1]);
-  }
-  if (banderaModelValue) model_dist.value = stringDistritos.find(v => v.cod_dist === codigo_array[2]);
+  await CargarModel();
   loading.value = false;
 });
 
@@ -123,6 +112,27 @@ watch(model_dist,(newval,oldval)=>{
   banderaModelValue = false;
   emitir(newval);
 });
+
+watch(()=>props.modelValue,async (newval,oldval)=>{
+  console.log(newval);
+  await CargarModel();
+});
+
+async function CargarModel(){
+  banderaModelValue = props.modelValue !== null;
+  let codigo_array = banderaModelValue ? separarCadena(props.modelValue):[null,null,null];
+  if (props.cod_departamento) codigo_array[0] = props.cod_departamento;
+  if(props.cod_departamento && props.cod_provincia) codigo_array[1] = props.cod_provincia;
+  if(codigo_array[0]){
+    model_depa.value = stringDepartamentos.find(v => v.cod_dep === codigo_array[0]);
+    await getProvincias(codigo_array[0]);
+  }
+  if(codigo_array[0] && codigo_array[1]){
+    model_prov.value = stringProvincias.find(v => v.cod_prov === codigo_array[1]);
+    await getDistritos(codigo_array[0], codigo_array[1]);
+  }
+  if (banderaModelValue) model_dist.value = stringDistritos.find(v => v.cod_dist === codigo_array[2]);
+}
 
 /*******  para los filtros *********************************************************** */
 const optionsDepartamentos = ref(stringDepartamentos);
