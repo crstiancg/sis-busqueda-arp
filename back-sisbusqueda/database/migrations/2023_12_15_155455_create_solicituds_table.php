@@ -21,7 +21,10 @@ return new class extends Migration
             $table->foreign('solicitante_id')->references('id')->on('solicitantes')->nullOnDelete();
             $table->string('otorgantes');
             $table->string('favorecidos');
-            $table->date('fecha');
+            $table->year('anio')->nullable();
+            $table->unsignedTinyInteger('mes')->nullable();
+            $table->unsignedTinyInteger('dia')->nullable();
+            $table->date('fecha')->nullable();
             $table->char('ubigeo_cod', 6)->nullable();
             $table->foreign('ubigeo_cod')->references('codigo')->on('ubigeos')->nullOnDelete();
             $table->string('bien')->nullable();

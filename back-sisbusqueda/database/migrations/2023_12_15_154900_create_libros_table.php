@@ -14,7 +14,10 @@ return new class extends Migration
         Schema::create('libros', function (Blueprint $table) {
             $table->id();
             $table->string('nombre');
-            $table->date('fecha');
+            $table->year('anio')->nullable();
+            $table->unsignedTinyInteger('mes')->nullable();
+            $table->unsignedTinyInteger('dia')->nullable();
+            $table->date('fecha')->nullable();
             $table->string('protocolo');
             $table->unsignedBigInteger('notario_id')->nullable();
             $table->foreign('notario_id')->references('id')->on('notarios')->nullOnDelete();

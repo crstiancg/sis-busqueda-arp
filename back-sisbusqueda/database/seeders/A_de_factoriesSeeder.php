@@ -25,7 +25,8 @@ class A_de_factoriesSeeder extends Seeder
         // php artisan db:seed --class=A_de_factoriesSeeder
         Notario::factory(10)->create();
         Libro::factory(30)->create();
-        SubSerie::factory(10)->create();
+        $this->call(TransSubserieSeeder::class);
+        // SubSerie::factory(10)->create();
         Escritura::factory(30)->create();
         Favorecido::factory(60)->create();
         Otorgante::factory(60)->create();

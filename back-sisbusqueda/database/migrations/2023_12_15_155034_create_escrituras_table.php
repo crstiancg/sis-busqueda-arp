@@ -16,13 +16,16 @@ return new class extends Migration
             $table->string('bien');
             $table->unsignedBigInteger('subserie_id')->nullable();
             $table->foreign('subserie_id')->references('id')->on('sub_series')->nullOnDelete();
-            $table->date('fecha');
+            $table->year('anio')->nullable();
+            $table->unsignedTinyInteger('mes')->nullable();
+            $table->unsignedTinyInteger('dia')->nullable();
+            $table->date('fecha')->nullable();
             $table->string('cod_escritura');
             $table->string('cod_folioInicial');
             $table->string('cod_folioFinal');
             $table->unsignedBigInteger('libro_id')->nullable();
             $table->foreign('libro_id')->references('id')->on('libros')->nullOnDelete();
-            $table->text('observaciones');
+            $table->text('observaciones')->nullable();
             $table->timestamps();
         });
     }
