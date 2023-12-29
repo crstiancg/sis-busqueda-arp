@@ -22,101 +22,48 @@ class GenerateListController extends Controller2
      */
     public function index(Request $request)
     {
-        if ($request->table === 'all')
+        if (!$request->filled('table') || !$request->filled('column'))
+            return [];
+        elseif ($request->table === 'all')
             return $this->generateListAll($request->column);
-        elseif ($request->table === 'anterior')
-            return $this->generateListAnterior($request->column);
-        elseif ($request->table === 'anterior2')
-            return $this->generateListAnterior2($request->column);
-        elseif ($request->table === 'sis2018')
-            return $this->generateListSis2018($request->column);
-        elseif ($request->table === 'sis2018_2')
-            return $this->generateListSis2018_2($request->column);
-        elseif ($request->table === 'nuevo')
-            return $this->generateListNuevo($request->column);
-        elseif ($request->table === 'nuevo2')
-            return $this->generateListNuevo2($request->column);
-        elseif ($request->table === 'sia')
-            return $this->generateListSia($request->column);
-        elseif ($request->table === 'arbolito')
-            return $this->generateListArbolito($request->column);
+        elseif ($request->table === 'anterior'){
+            return $this->generateSelectList(Anterior::select($request->column)->distinct(),
+                $request->column);
+        }elseif ($request->table === 'anterior2'){
+            return $this->generateSelectList(Anterior2::select($request->column)->distinct(),
+                $request->column);
+        }elseif ($request->table === 'sis2018'){
+            return $this->generateSelectList(Sis2018::select($request->column)->distinct(),
+                $request->column);
+        }elseif ($request->table === 'sis2018_2'){
+            return $this->generateSelectList(Sis2018_2::select($request->column)->distinct(),
+                $request->column);
+        }elseif ($request->table === 'nuevo'){
+            return $this->generateSelectList(Nuevo::select($request->column)->distinct(),
+                $request->column);
+        }elseif ($request->table === 'nuevo2'){
+            return $this->generateSelectList(Nuevo2::select($request->column)->distinct(),
+                $request->column);
+        }elseif ($request->table === 'sia'){
+            return $this->generateSelectList(Sia::select($request->column)->distinct(),
+                $request->column);
+        }elseif ($request->table === 'arbolito'){
+            return $this->generateSelectList(Arbolito::select($request->column)->distinct(),
+                $request->column);
+        }else {
+            return [];
+        }
     }
-
     private function generateListAll(String $column){
-        $tempTable = Anterior::select(DB::raw($column))->distinct()
-            ->unionAll(Anterior2::select(DB::raw($column))->distinct())
-            ->unionAll(Sis2018::select(DB::raw($column))->distinct())
-            ->unionAll(Sis2018_2::select(DB::raw($column))->distinct())
-            ->unionAll(Nuevo::select(DB::raw($column))->distinct())
-            ->unionAll(Nuevo2::select(DB::raw($column))->distinct());
+        $tempTable = Anterior::select($column)->distinct()
+            ->unionAll(Anterior2::select($column)->distinct())
+            ->unionAll(Sis2018::select($column)->distinct())
+            ->unionAll(Sis2018_2::select($column)->distinct())
+            ->unionAll(Nuevo::select($column)->distinct())
+            ->unionAll(Nuevo2::select($column)->distinct());
 
         return $this->generateSelectList($tempTable,$column);
     }
-
-    private function generateListAnterior(String $column){
-        $tempTable = Anterior::select(DB::raw($column))->distinct();
-
-        return $this->generateSelectList($tempTable,$column);
-    }
-    private function generateListAnterior2(String $column){
-        $tempTable = Anterior2::select(DB::raw($column))->distinct();
-
-        return $this->generateSelectList($tempTable,$column);
-    }
-    private function generateListSis2018(String $column){
-        $tempTable = Sis2018::select(DB::raw($column))->distinct();
-
-        return $this->generateSelectList($tempTable,$column);
-    }
-
-    private function generateListSis2018_2(String $column){
-        $tempTable = Sis2018_2::select(DB::raw($column))->distinct();
-
-        return $this->generateSelectList($tempTable,$column);
-    }
-    private function generateListNuevo(String $column){
-        $tempTable = Nuevo::select(DB::raw($column))->distinct();
-
-        return $this->generateSelectList($tempTable,$column);
-    }
-    private function generateListNuevo2(String $column){
-        $tempTable = Nuevo2::select(DB::raw($column))->distinct();
-
-        return $this->generateSelectList($tempTable,$column);
-    }
-    private function generateListSia(String $column){
-        $tempTable = Sia::select(DB::raw($column))->distinct();
-
-        return $this->generateSelectList($tempTable,$column);
-    }
-    private function generateListArbolito(String $column){
-        $tempTable = Arbolito::select(DB::raw($column))->distinct();
-
-        return $this->generateSelectList($tempTable,$column);
-    }
-    public function generateTableAll(Request $request)
-    {
-        // return $request;
-
-        // $tempTable = Libro::with('escrituras');
-        $tempTable = Anterior::select("*")
-            ->unionAll(Anterior2::select("*"))
-            ->unionAll(Sis2018::select("*"))
-            ->unionAll(Sis2018_2::select("*"))
-            ->unionAll(Nuevo::select("*"))
-            ->unionAll(Nuevo2::select("*"));
-
-        return $this->QueryGenerateViewSetList($request,$tempTable,[],[],[]);
-
-        // return  $this->generateViewSetList(
-        //     $request,
-        //     $tempTable,
-        //     ['notario','lugar','subserie','otorgantes'], //para el filtrado
-        //     ['id','notario',],  //para la busqueda
-        //     ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
-        // );
-    }
-
     public function generateSelectList(Builder $querySet,String $column){
         $querySetSql = $querySet->toSql();
         return DB::table(DB::raw("($querySetSql) as TempTable"))
@@ -125,5 +72,26 @@ class GenerateListController extends Controller2
             ->orderBy("$column",'asc')
             ->get();
     }
+    /****** pruebas paragenrar union de varias tablas ******************************************************************** */
+    public function generateTableAll(Request $request)
+    {
+        $tempTable = Anterior::select("*")
+            ->unionAll(Anterior2::select("*"))
+            ->unionAll(Sis2018::select("*"))
+            ->unionAll(Sis2018_2::select("*"))
+            ->unionAll(Nuevo::select("*"))
+            ->unionAll(Nuevo2::select("*"));
+
+        // $request2 = new Request(['filter_by'=>['fecha'=>'1976-11-19']]);
+
+        return $this->QueryGenerateViewSetList(
+            $request,
+            $tempTable,
+            ['notario','lugar','subserie','otorgantes','fecha'], //para el filtrado
+            ['id','notario',],  //para la busqueda
+            ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
+        );
+    }
+
 
 }

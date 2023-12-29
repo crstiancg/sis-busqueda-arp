@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('notarios', function (Blueprint $table) {
             $table->id();
-            $table->string('nombres');
-            $table->string('apellido_paterno');
-            $table->string('apellido_materno');
+            $table->string('nombres')->nullable();
+            $table->string('apellido_paterno')->nullable();
+            $table->string('apellido_materno')->nullable();
             $table->string('nombre_completo');
             $table->year('año_inicio');
             $table->year('año_final');

@@ -16,7 +16,7 @@ class Sis2018Controller extends Controller2
         return  $this->generateViewSetList(
             $request,
             Sis2018::query(),
-            ['notario','lugar','otorgantes', 'favorecidos'], //para el filtrado
+            ['subserie','otorgantes', 'favorecidos'], //para el filtrado
             ['id','notario','otorgantes','favorecidos',],  //para la busqueda
             ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         );

@@ -16,7 +16,7 @@ class ArbolitoController extends Controller2
         return  $this->generateViewSetList(
             $request,
             Arbolito::query(),
-            ['otorgante'], //para el filtrado
+            ['otorgante','favorecido','protocolo'], //para el filtrado
             ['id','otorgante','favorecido','fecha'],  //para la busqueda
             ['id','otorgante','favorecido','fecha','protocolo','escritura','folio','bien','tmp'] //para el odenamiento
         );

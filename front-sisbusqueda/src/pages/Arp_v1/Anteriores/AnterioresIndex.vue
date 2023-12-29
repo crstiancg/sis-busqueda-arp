@@ -1,13 +1,4 @@
 <template>
-  <!-- <q-dialog v-model="formRole">
-    <RolesForm
-      :title="title"
-      :edit="edit"
-      :id="editId"
-      ref="rolesformRef"
-      @save="save"
-    ></RolesForm>
-  </q-dialog> -->
   <q-page>
     <div class="q-pa-md q-gutter-sm">
       <q-breadcrumbs>
@@ -16,62 +7,39 @@
       </q-breadcrumbs>
     </div>
     <q-separator />
-    <GenerarPDFSolicitud
-      :datosBusqueda="{
-        nombre_completo: 'jorge gonsales',
-        num_doc: '59844546',
-        direccion: 'Av. Ramon Gutierres',
-        ubigeo: 'Puno',
-        celular: '936151311',
-        correo: 'jorge@gmail.com',
-      }"
-    />
-
     <div class="q-gutter-xs q-pa-sm">
-      <q-btn
-        color="primary"
-        :disable="loading"
-        :label="$q.screen.lt.sm ? '' : 'Agregar'"
-        icon-right="add"
-        @click="
-          {
-            formRole = true;
-            edit = false;
-            title = 'Añadir Rol';
-          }
-        "
-      />
-      {{ nombreNotario_ }}
 
       <div class="row">
-        <SelectInput
+        <SelectInput dense clearable
           class="col-4 q-px-xs"
           label="Notarios"
           v-model="nombreNotario"
           :options="GenerateListService"
           :GenerateList="{ column: 'notario', table: 'anterior' }"
         />
-        <SelectInput
+        <SelectInput dense clearable
           class="col-4 q-px-xs"
           label="Lugar"
           v-model="nombreLugar"
           :options="GenerateListService"
           :GenerateList="{ column: 'lugar', table: 'anterior' }"
         />
-        <InputTextSelect
-          class="col-4 q-px-xs"
-          label="Notarios"
-          v-model="nombreNotario_"
-          :options="GenerateListService"
-          :GenerateList="{ column: 'otorgantes', table: 'anterior' }"
-        ></InputTextSelect>
-        <SelectInput
+        <SelectInput dense clearable
           class="col-4 q-px-xs"
           label="Subserie"
           v-model="nombreSubserie"
           :options="GenerateListService"
           :GenerateList="{ column: 'subserie', table: 'anterior' }"
         />
+
+        <InputTextSelect dense clearable
+          class="col-4 q-px-xs"
+          label="Otorgantes"
+          v-model="nombreNotario_"
+          :options="GenerateListService"
+          :GenerateList="{ column: 'otorgantes', table: 'anterior' }"
+        ></InputTextSelect>
+        {{ nombreNotario_ }}
       </div>
     </div>
 
@@ -197,9 +165,6 @@ import GenerateListService from "src/services/arp_v1/GenerateListService";
 import SelectInput from "src/components/SelectInput.vue";
 import { useQuasar } from "quasar";
 import InputTextSelect from "src/components/InputTextSelect.vue";
-import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
-
-import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
 
 const $q = useQuasar();
 
@@ -373,7 +338,7 @@ async function eliminar(id) {
 <style lang="sass">
 .my-sticky-header-table
   /* height or max-height is important */
-  max-height: 70vh
+  height: 80vh
   min-height: 40vh
   .q-table__top,
   .q-table__bottom,

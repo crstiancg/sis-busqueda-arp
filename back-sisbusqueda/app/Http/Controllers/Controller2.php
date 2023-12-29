@@ -40,39 +40,45 @@ class Controller2 extends BaseController
         }
         $querySet = null;
         $tableBaseName = null;
-        if($nameTable && $querySetBuilder){
+        if($nameTable && $querySetBuilder){// si existe Builder Query
             $querySet= $querySetBuilder;
             $tableBaseName = $nameTable;
-            // return addOrSkipBaseTable("minimini",$nameTable);
-        }else{
+        }else{                      // si existe Builder Eloquent
             $querySet = $query_Set;
             $tableBaseName = $querySet->getModel()->getTable();
         }
-        // $fillableArray = $querySet->getModel()->getFillable();
-        if ($request->filled('filter_by')) {
-            foreach ($request->filter_by as $index_col => $val_filter) {
-                if ($val_filter and in_array($index_col, $filterBy, true)) {
+        // filtro por columna, ejemplo: {filter_by:{notario:'valor',bien:'valor'}}
+        if ($request->filled('filter_by') and $request->filter_by) {
+            foreach ($request->filter_by as $index_colum => $val_filter) {
+                if ($val_filter and in_array($index_colum, $filterBy, true)) {
                     $querySet->where(
-                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($index_col, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($index_colum, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
                             $val_filter);
                 }
             }
         }
-
-        if ($request->filled('search_by') and $request->search_by) {
-            $querySet->where(function ($q) use ($searchBy, $request, $tableBaseName) {
-                foreach ($request->search_by as $index_col => $val_search) {
-                    if ($val_search and in_array($index_col, $searchBy, true)) {
-                        $q->orwhere(
-                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($index_col, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
-                            'like',
-                            '%' . $val_search . '%');
-                    }
+        //fitro por rango de fechas, ejemplo: {date_range:{fecha:{from:'inicioFecha',to:'finFecha'},updated_at:{from:'2000/01/01',to:'2001/01/01'}}}
+        if ($request->filled('date_range') and $request->date_range) {
+            foreach ($request->date_range as $index_colum => $val_colum) {
+                if ($val_colum and in_array($index_colum, $filterBy, true)
+                    and array_key_exists('from', $val_colum) and array_key_exists('to', $val_colum) and $val_colum['from'] and $val_colum['to']) {
+                    $querySet->whereDate('fecha', '>=', $val_colum['from'])->whereDate('fecha', '<=', $val_colum['to']);
                 }
-                return $q;
-            });
+            }
         }
-
+        //busqueda por columna, ejemplo: {search_by:{notario:'valor',bien:'valor'}
+        if ($request->filled('search_by') and $request->search_by) {
+            foreach ($request->search_by as $index_colum => $val_colum) {
+                if($val_colum and in_array($index_colum, $searchBy, true)){
+                    $querySet->where(
+                        DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($index_colum, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                        'like',
+                        '%' . $val_colum . '%'
+                    );
+                }
+            }
+        }
+        //busqueda global
         if ($request->filled('search')) {
             $querySet->where(function ($q) use ($searchBy, $request, $tableBaseName) {
                 foreach ($searchBy as $searchByCol) {
@@ -84,6 +90,7 @@ class Controller2 extends BaseController
                 return $q;
             });
         }
+        //ordenamiento
         if ($request->filled('order_by')) {
             $searchOrderList = explode(',', $request->input('order_by'));
             foreach ($searchOrderList as $searchOrderParam) {
@@ -94,7 +101,7 @@ class Controller2 extends BaseController
                 }
             }
         }
-
+        // return [$querySet->toSql(),$request->all()];
         return $this->getPageSize() ? $querySet->paginate($this->getPageSize()) : response()->json(['data'=>$querySet->get()]);
     }
 
@@ -102,10 +109,8 @@ class Controller2 extends BaseController
     {
         $querySetSql = $querySet->toSql();
         $tableBaseName = "TempTable";
-        $query = DB::table(DB::raw("($querySetSql) as $tableBaseName"));
-        return $request->all();
-        // return $this->generateViewSetList($request,null,$filterBy,$searchBy,$orderBy,$tableBaseName,$query);
+        $query = DB::table(DB::raw("($querySetSql) as $tableBaseName"))->distinct();
+        return $this->generateViewSetList($request,null,$filterBy,$searchBy,$orderBy,$tableBaseName,$query);
         // return $query->select('subserie')->limit(20)->get();
-        // return $query->paginate($this->getPageSize());
     }
 }

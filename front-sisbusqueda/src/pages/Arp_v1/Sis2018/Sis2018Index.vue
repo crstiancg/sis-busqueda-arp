@@ -1,13 +1,4 @@
 <template>
-  <!-- <q-dialog v-model="formRole">
-    <RolesForm
-      :title="title"
-      :edit="edit"
-      :id="editId"
-      ref="rolesformRef"
-      @save="save"
-    ></RolesForm>
-  </q-dialog> -->
   <q-page>
     <div class="q-pa-md q-gutter-sm">
       <q-breadcrumbs>
@@ -17,22 +8,10 @@
       </q-breadcrumbs>
     </div>
     <q-separator />
-    <div class="q-gutter-xs q-pa-sm">
-      <q-btn
-        color="primary"
-        :disable="loading"
-        :label="$q.screen.lt.sm ? '' : 'Agregar'"
-        icon-right="add"
-        @click="
-          {
-            formRole = true;
-            edit = false;
-            title = 'Añadir Rol';
-          }
-        "
-      />
+    <div class="row">
+      <SelectInput class="col-4 q-px-xs" label="Subserie" dense clearable
+        v-model="nombreSubserie" :options="GenerateListService" :GenerateList="{ column: 'subserie', table: 'sis2018' }" />
     </div>
-
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
@@ -108,6 +87,15 @@
           </q-td>
         </q-tr>
       </template>
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
+      <template v-slot:no-data="{ icon, message, filter }">
+        <div class="full-width row flex-center q-gutter-sm text-subtitle1">
+          <span>{{ message }}</span>
+          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+        </div>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -116,7 +104,8 @@
 import { ref, onMounted, watch } from "vue";
 import Sis2018Service from "src/services/arp_v1/Sis2018Service";
 import { useQuasar } from "quasar";
-import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
+import GenerateListService from "src/services/arp_v1/GenerateListService";
+import SelectInput from "src/components/SelectInput.vue";
 const $q = useQuasar();
 
 async function verDat(){
@@ -129,14 +118,20 @@ async function verDat(){
 // verDat();
 
 const columns = [
-  { field: (row) => row.subserie, name: "subserie", label: "Subserie", aling: "center", sortable: true,},
-  { field: (row) => row.fecha, name: "fecha", label: "Fecha", aling: "center", sortable: true,},
-  { field: (row) => row.bien, name: "bien", label: "Bien", aling: "center", sortable: true,},
-  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", aling: "center", sortable: true, search: true},
-  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", aling: "center", sortable: true, search: true},
+  { field: (row) => row.subserie, name: "subserie", label: "Subserie", align: "center", sortable_: true,},
+  { field: (row) => row.fecha, name: "fecha", label: "Fecha", align: "center", sortable_: true,},
+  { field: (row) => row.bien, name: "bien", label: "Bien", align: "center", sortable_: true,},
+  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", align: "center", sortable_: true, search: true},
+  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", align: "center", sortable_: true, search: true},
 ];
+
+const nombreSubserie = ref();
+
 const busColum = ref({});
 
+watch(nombreSubserie, (newValue, oldValue) => {
+  tableRef.value.requestServerInteraction();
+});
 watch(busColum.value, (newValue, oldValue) => {
   tableRef.value.requestServerInteraction();
 });
@@ -164,12 +159,22 @@ async function onRequest(props) {
 
   const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
   const order_by = filter? '': descending ? "-" + sortBy : sortBy;
+  const filtros = {subserie: nombreSubserie.value};
   const { data, total = 0 } = await Sis2018Service.getData({
-    params: { rowsPerPage: fetchCount, page, search: filter, search_by:busColum.value, order_by },
+    params: { rowsPerPage: fetchCount, page, search: filter, search_by:busColum.value, order_by, filter_by:filtros,},
   });;
   // console.log(data);
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
+  for (const key in columns) {
+    if (columns[key].name === "index") {
+      let cantidad = (page - 1) * fetchCount;
+      rows.value.forEach((row, index) => {
+        row.index = index + 1 + cantidad;
+      });
+      break;
+    }
+  }
   // don't forget to update local pagination object
   !total
     ? (pagination.value.rowsNumber = data.length)
@@ -236,7 +241,7 @@ async function eliminar(id) {
 .my-sticky-header-table
   /* height or max-height is important */
   height: 80vh
-
+  min-height: 40vh
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
@@ -263,4 +268,18 @@ async function eliminar(id) {
 
 .htable
   #height: calc(100vh - 157px)
+.span-icono
+  cursor: pointer
+  &:hover .icon-sort
+    opacity: .64 !important
+
+.btn-buscar:hover
+  color: $grey-9
+  border-radius: 8px
+  background-color: $grey-2
+
+.btn-buscar-dark:hover
+  // border: 1px solid $grey-10
+  border-radius: 8px
+  background-color: $grey-9
 </style>

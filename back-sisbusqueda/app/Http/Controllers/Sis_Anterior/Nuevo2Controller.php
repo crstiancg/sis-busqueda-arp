@@ -16,8 +16,8 @@ class Nuevo2Controller extends Controller2
         return  $this->generateViewSetList(
             $request,
             Nuevo2::query(),
-            ['notario','lugar'], //para el filtrado
-            ['id','notario',],  //para la busqueda
+            ['notario','lugar','subserie'], //para el filtrado
+            ['notario','lugar'],  //para la busqueda
             ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         );
     }

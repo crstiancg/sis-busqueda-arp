@@ -1,13 +1,4 @@
 <template>
-  <!-- <q-dialog v-model="formRole">
-    <RolesForm
-      :title="title"
-      :edit="edit"
-      :id="editId"
-      ref="rolesformRef"
-      @save="save"
-    ></RolesForm>
-  </q-dialog> -->
   <q-page>
     <div class="q-pa-md q-gutter-sm">
       <q-breadcrumbs>
@@ -17,30 +8,13 @@
       </q-breadcrumbs>
     </div>
     <q-separator />
-    <div class="q-gutter-xs q-pa-sm">
-      <q-btn
-        color="primary"
-        :disable="loading"
-        :label="$q.screen.lt.sm ? '' : 'Agregar'"
-        icon-right="add"
-        @click="
-          {
-            formRole = true;
-            edit = false;
-            title = 'Añadir Rol';
-          }
-        "
-      />
-    </div>
     <div class="row">
-      <SelectInput class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario" :options="GenerateListService"
-        :GenerateList="{ column: 'notario', table: 'anterior2' }" />
-      <SelectInput class="col-4 q-px-xs" label="Lugar" v-model="nombreLugar" :options="GenerateListService"
-        :GenerateList="{ column: 'lugar', table: 'anterior2' }" />
-      <!-- <InputTextSelect class="col-4 q-px-xs" label="Notarios" v-model="nombreNotario_" :options="GenerateListService"
-        :GenerateList="{ column: 'otorgantes', table: 'anterior' }"></InputTextSelect> -->
-      <SelectInput class="col-4 q-px-xs" label="Subserie" v-model="nombreSubserie" :options="GenerateListService"
-        :GenerateList="{ column: 'subserie', table: 'anterior2' }" />
+      <SelectInput class="col-4 q-px-xs" label="Notarios" dense clearable
+        v-model="nombreNotario" :options="GenerateListService" :GenerateList="{ column: 'notario', table: 'anterior2' }" />
+      <SelectInput class="col-4 q-px-xs" label="Lugar" dense clearable
+        v-model="nombreLugar" :options="GenerateListService" :GenerateList="{ column: 'lugar', table: 'anterior2' }" />
+      <SelectInput class="col-4 q-px-xs" label="Subserie" dense clearable
+        v-model="nombreSubserie" :options="GenerateListService" :GenerateList="{ column: 'subserie', table: 'anterior2' }" />
     </div>
     <q-table
       :rows-per-page-options="[7, 10, 15]"
@@ -117,6 +91,15 @@
           </q-td>
         </q-tr>
       </template>
+      <template v-slot:loading>
+        <q-inner-loading showing color="primary" />
+      </template>
+      <template v-slot:no-data="{ icon, message, filter }">
+        <div class="full-width row flex-center q-gutter-sm text-subtitle1">
+          <span>{{ message }}</span>
+          <q-icon size="2em" :name="filter ? 'filter_b_and_w' : icon" />
+        </div>
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -126,7 +109,6 @@ import { ref, onMounted, watch } from "vue";
 import Anterior2Service from "src/services/arp_v1/Anterior2Service";
 import { useQuasar } from "quasar";
 import GenerateListService from "src/services/arp_v1/GenerateListService";
-import RolesForm from "src/pages/Admin/Roles/RolesForm.vue";
 import SelectInput from "src/components/SelectInput.vue";
 
 const $q = useQuasar();
@@ -142,15 +124,15 @@ async function verDat(){
 // verDat();
 
 const columns = [
-  { field: (row) => row.id, name: "id", label: "Id", aling: "center", sortable: true, },
-  { field: (row) => row.notario, name: "notario", label: "Notario", aling: "center", sortable: true, search: true},
-  { field: (row) => row.lugar, name: "lugar", label: "Lugar", aling: "center", sortable: true, search: true},
-  { field: (row) => row.subserie, name: "subserie", label: "Subserie", aling: "center", sortable: true,},
-  { field: (row) => row.fecha, name: "fecha", label: "Fecha", aling: "center", sortable: true,},
-  { field: (row) => row.bien, name: "bien", label: "Bien", aling: "center", sortable: true,},
-  { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", aling: "center", sortable: true,},
-  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", aling: "center", sortable: true, search: true},
-  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", aling: "center", sortable: true, search: true},
+  { field: (row) => row.id, name: "id", label: "Id", align: "center", sortable_: true, },
+  { field: (row) => row.notario, name: "notario", label: "Notario", align: "center", sortable_: true, search: true},
+  { field: (row) => row.lugar, name: "lugar", label: "Lugar", align: "center", sortable_: true, search: true},
+  { field: (row) => row.subserie, name: "subserie", label: "Subserie", align: "center", sortable_: true,},
+  { field: (row) => row.fecha, name: "fecha", label: "Fecha", align: "center", sortable_: true,},
+  { field: (row) => row.bien, name: "bien", label: "Bien", align: "center", sortable_: true,},
+  { field: (row) => row.protocolo, name: "protocolo", label: "Protocolo", align: "center", sortable_: true,},
+  { field: (row) => row.otorgantes, name: "otorgantes", label: "Otorgantes", align: "center", sortable_: true, search: true},
+  { field: (row) => row.favorecidos, name: "favorecidos", label: "Favorecidos", align: "center", sortable_: true, search: true},
 ];
 
 const nombreNotario = ref();
@@ -202,6 +184,15 @@ async function onRequest(props) {
   });;
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
+  for (const key in columns) {
+    if (columns[key].name === "index") {
+      let cantidad = (page - 1) * fetchCount;
+      rows.value.forEach((row, index) => {
+        row.index = index + 1 + cantidad;
+      });
+      break;
+    }
+  }
   // don't forget to update local pagination object
   !total
     ? (pagination.value.rowsNumber = data.length)
@@ -269,7 +260,7 @@ async function eliminar(id) {
 .my-sticky-header-table
   /* height or max-height is important */
   height: 80vh
-
+  min-height: 40vh
   .q-table__top,
   .q-table__bottom,
   thead tr:first-child th
@@ -296,4 +287,18 @@ async function eliminar(id) {
 
 .htable
   #height: calc(100vh - 157px)
+.span-icono
+  cursor: pointer
+  &:hover .icon-sort
+    opacity: .64 !important
+
+.btn-buscar:hover
+  color: $grey-9
+  border-radius: 8px
+  background-color: $grey-2
+
+.btn-buscar-dark:hover
+  // border: 1px solid $grey-10
+  border-radius: 8px
+  background-color: $grey-9
 </style>

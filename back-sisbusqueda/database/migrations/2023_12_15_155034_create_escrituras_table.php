@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('cod_folioFinal');
             $table->unsignedBigInteger('libro_id')->nullable();
             $table->foreign('libro_id')->references('id')->on('libros')->nullOnDelete();
+            $table->text('observaciones');
             $table->timestamps();
         });
     }

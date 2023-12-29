@@ -16,7 +16,7 @@ class SiaController extends Controller2
         return  $this->generateViewSetList(
             $request,
             Sia::query(),
-            ['notario'], //para el filtrado
+            ['notario','otorgante', 'serie'], //para el filtrado
             ['id','notario','otorgante','favorecido','fecha'],  //para la busqueda
             ['id','notario','otorgante','favorecido','fecha', 'serie','folio','escritura','bien',] //para el odenamiento
         );

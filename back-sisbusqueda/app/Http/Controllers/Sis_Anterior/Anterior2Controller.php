@@ -16,7 +16,7 @@ class Anterior2Controller extends Controller2
         return  $this->generateViewSetList(
             $request,
             Anterior2::query(),
-            ['notario','lugar'], //para el filtrado
+            ['notario','lugar','subserie'], //para el filtrado
             ['id','notario','lugar','otorgantes','favorecidos'],  //para la busqueda
             ['id','notario','lugar','subserie','fecha','bien','protocolo'] //para el odenamiento
         );
