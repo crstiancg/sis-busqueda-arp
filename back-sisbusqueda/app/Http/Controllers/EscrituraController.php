@@ -73,7 +73,24 @@ class EscrituraController extends Controller
      */
     public function update(Request $request, Escritura $escritura)
     {
-        //
+        $escritura->update($request->all());
+        $escritura_otorgante = [];
+        foreach ($request->otorgantes as $otorganteid) {
+            $escritura_otorgante[] = [
+                'escritura_id' => $escritura->id,
+                'otorgante_id' => $otorganteid,
+            ];
+        }
+        $escritura->otorgantes()->sync($escritura_otorgante);
+        $escritura_favorecido = [];
+        foreach ($request->favorecidos as $favorecidoid) {
+            $escritura_favorecido[] = [
+                'escritura_id' => $escritura->id,
+                'favorecido_id' => $favorecidoid,
+            ];
+        }
+        $escritura->favorecidos()->sync($escritura_favorecido);
+        return response()->json($escritura, 201);
     }
 
     /**

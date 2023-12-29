@@ -1,5 +1,5 @@
 <template>
-  <q-dialog v-model="dialogEscritura">
+  <q-dialog v-model="dialogEscritura" persistent>
     <CardFormEscritura :Libro="libro" :Editar="escrituraEdit" @save="save"></CardFormEscritura>
   </q-dialog>
   <q-page>
@@ -69,6 +69,7 @@ import { useRoute } from "vue-router";
 import CardFormEscritura from "../Libros/CardFormEscritura.vue";
 import LibroService from "src/services/LibroService";
 import EscrituraService from "src/services/EscrituraService";
+import { convertDate } from "src/utils/ConvertDate";
 const route = useRoute();
 const $q = useQuasar();
 const dialogEscritura = ref(false);
@@ -81,6 +82,7 @@ const columns = [
   { field: (row) => row.sub_serie?row.sub_serie.nombre:'sin SubSerie', name: "sub_series.nombre", label: "Subserie", align: "center", sortable: true,},
   { field: (row) => row.otorgantes?row.otorgantes:'sin Otorgantes', name: "otorgantes.nombre", label: "Otorgantes", align: "left", sortable: true,},
   { field: (row) => row.favorecidos?row.favorecidos:'sin Favorecidos', name: "favorecidos.nombre", label: "Favorecidos", align: "left", sortable: true,},
+  { field: (row) => row.updated_at?convertDate(row.updated_at,'dd/MM/yyyy HH:mm:ss'):'sin Fecha de Actualización', name: "updated_at", label: "F. Actualización", align: "left", sortable: true,},
 ];
 
 const tableRef = ref();
@@ -112,7 +114,7 @@ async function onRequest(props) {
       order_by,
     },
   });
-  console.log(data);
+  // console.log(data);
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
   // don't forget to update local pagination object

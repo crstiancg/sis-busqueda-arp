@@ -11,7 +11,7 @@
       <q-btn :label="$q.screen.lt.sm ? '' : 'Agregar'" color="primary"
           icon-right="add" @click="AgregarLibro" :disable="tipoAccion.includes('editar')"/>
       <q-space/>
-      <SelectInput label="Notario" dense class="q-mx-sm"
+      <SelectInput label="Notario" dense class="q-mx-sm" clearable
           v-model="idNotario" :options="allNotarios" OptionLabel="nombre_completo" OptionValue="id" />
       <q-input placeholder="Buscar" dense class="q-mx-sm"
           v-model="busqueda" clearable>

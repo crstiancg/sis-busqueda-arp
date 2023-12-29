@@ -1,6 +1,6 @@
 <template>
   <q-select use-input fill-input hide-selected
-      debounce="200" clearable input-debounce="0"
+      debounce="200" input-debounce="0"
       :label="label"
       v-model="model"
       @update:model-value="emitir(model)"
