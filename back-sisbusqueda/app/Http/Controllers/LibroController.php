@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreLibroRequest;
 use App\Models\Libro;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -40,7 +41,14 @@ class LibroController extends Controller2
     public function store(StoreLibroRequest $request)
     {
         // return $request->all();
-        return response(Libro::create($request->all()),201);
+        // $request->get('update_at')->now();
+        return response(Libro::create([
+            'nombre' => $request->nombre,
+            'fecha' => $request->fecha,
+            'protocolo' => $request->protocolo,
+            'notario_id' => $request->notario_id,
+            'updated_at' => Carbon::now()
+        ]),201);
     }
 
     /**
@@ -65,7 +73,13 @@ class LibroController extends Controller2
      */
     public function update(StoreLibroRequest $request, Libro $libro)
     {
-        return response($libro->update($request->all()),201);
+        return response($libro->update([
+            'nombre' => $request->nombre,
+            'fecha' => $request->fecha,
+            'protocolo' => $request->protocolo,
+            'notario_id' => $request->notario_id,
+            'updated_at' => Carbon::now()
+        ]),201);
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,6 +21,7 @@ class Libro extends Model
         'fecha',
         'protocolo',
         'notario_id',
+        'updated_at',
     ];
     public function notario()
     {
