@@ -10,6 +10,8 @@ class Solicitud extends Model
     use HasFactory;
     protected $table = 'solicituds';
     protected $with = ['solicitante','ubigeo','notario','SubSerie'];
+
+    public $timestamps = false;
     protected $fillable = [
         'notario_id',
         'subserie_id',
@@ -28,6 +30,7 @@ class Solicitud extends Model
         'precio_id',
         'estado',
         'user_id',
+        'updated_at'
     ];
     public function notario()
     {

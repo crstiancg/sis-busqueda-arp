@@ -15,7 +15,7 @@ class SolicitudController extends Controller
      */
     public function index(Request $request)
     {
-        $solicitudesConUbigeos = Solicitud::join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
+        $solicitudesConUbigeos = Solicitud::orderBy('updated_at', 'desc')->join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
             ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
             ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario','precio'); // Incluir relaciones adicionales si es necesario
 
@@ -77,6 +77,7 @@ class SolicitudController extends Controller
             'precio_id'=> $id_precio->id,
             'estado'=> 'Buscando',              // ojo con los estados
             'user_id' =>auth()->user()->id,
+            'updated_at'=> now(),
         ]);
 
         return response($this->RegistrarABusqueda($solicitud),201);
