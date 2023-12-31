@@ -17,7 +17,6 @@ class Libro extends Model
 
     protected $fillable = [
         'nombre',
-        'fecha',
         'protocolo',
         'notario_id',
     ];

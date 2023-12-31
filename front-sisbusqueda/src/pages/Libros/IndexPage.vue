@@ -50,23 +50,6 @@
                   v-model="v.notario_id" :options="allNotarios" OptionLabel="nombre_completo" OptionValue="id"
                   :readonly="tipoAccion[k]==='list'"
                   :error-message="errores[k]?errores[k].notario_id?errores[k].notario_id[0]:'':''" :error="errores[k] && errores[k].notario_id != null" />
-                <div v-show="false">{{ v.fecha = convertDate(v.fecha,"yyyy/MM/dd") }}</div>
-              <q-input label="Fecha" dense clearable  class="q-my-sm"
-                  v-model="v.fecha" :readonly="tipoAccion[k]==='list'" mask="date" :rules="['date']"
-                  :error-message="errores[k]?errores[k].fecha?errores[k].fecha[0]:'':''" :error="errores[k] && errores[k].fecha != null">
-                <template v-slot:prepend>
-                  <q-icon icon name="event" class="cursor-pointer">
-                    <q-popup-proxy v-if="tipoAccion[k]!=='list'" cover transition-show="scale" transition-hide="scale">
-                      <q-date v-model="v.fecha">
-                        <div class="row items-center justify-end">
-                          <q-btn v-close-popup label="Close" color="primary" flat />
-                        </div>
-                      </q-date>
-                    </q-popup-proxy>
-                  </q-icon>
-                </template>
-              </q-input>
-
             </q-form>
           </q-card-section>
 

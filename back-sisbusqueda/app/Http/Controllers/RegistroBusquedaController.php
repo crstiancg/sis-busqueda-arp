@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class RegistroBusquedaController extends Controller
 {
-    
+
     public function index(Request $request)
     {
         // return $this->generateViewSetList(
@@ -18,9 +18,13 @@ class RegistroBusquedaController extends Controller
         //     ['id', 'nombre'],
         //     ['id', 'nombre']
         // );
+
+        $queryRegistro = RegistroBusqueda::select('registro_busquedas.*')
+            ->leftJoin('solicituds', 'registro_busquedas.solicitud_id', '=', 'solicituds.id')->where('solicituds.estado','Buscando');
+
         return $this->generateViewSetList(
             $request,
-            RegistroBusqueda::with('solicitud'),
+            $queryRegistro,
             [],
             ['id', 'nombre'],
             ['id', 'nombre']
@@ -48,7 +52,7 @@ class RegistroBusquedaController extends Controller
         return response()->json($solicitude);
     }
 
-  
+
     public function edit(RegistroBusqueda $registroBusqueda)
     {
         //

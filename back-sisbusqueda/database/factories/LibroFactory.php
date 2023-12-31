@@ -19,7 +19,6 @@ class LibroFactory extends Factory
     {
         return [
             'nombre' => fake()->name().' '.fake()->lastName(),
-            'fecha' => fake()->date(),
             'protocolo' => 'P-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT),
             'notario_id' => fake()->numberBetween(1,10),
         ];

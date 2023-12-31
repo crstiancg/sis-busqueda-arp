@@ -25,6 +25,7 @@ class EscrituraFactory extends Factory
             'cod_folioInicial' => 'FI-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT),
             'cod_folioFinal' => 'FF-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT),
             'libro_id' => fake()->numberBetween(1,30),
+            'observaciones' => fake()->text(),
         ];
     }
 }

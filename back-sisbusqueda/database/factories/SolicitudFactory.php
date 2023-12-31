@@ -29,7 +29,7 @@ class SolicitudFactory extends Factory
             'cantidad_copia' => fake()->numberBetween(1,3),
             'precio_id' => 1,
             'ubigeo_cod' => fake()->randomElement(array('210101','210102','210103','210104','210105','210106')),
-            'estado' => fake()->randomElement(array('En Busquueda','En verificación','Aceptado','Imprimido','Finalizado')),
+            'estado' => fake()->randomElement(array('Buscando','Encontrado','Verificado','Pagado','Finalizado')),
             'user_id' => 1,
         ];
     }

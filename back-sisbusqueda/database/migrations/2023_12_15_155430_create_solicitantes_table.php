@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('solicitantes', function (Blueprint $table) {
             $table->id();
-            $table->string('nombres');
-            $table->string('apellido_paterno');
-            $table->string('apellido_materno');
-            $table->string('nombre_completo');
-            $table->string('tipo_documento');
+            $table->string('nombres')->nullable();
+            $table->string('apellido_paterno')->nullable();
+            $table->string('apellido_materno')->nullable();
+            $table->string('nombre_completo')->nullable();
+            $table->string('asunto')->nullable();
+            $table->string('tipo_documento');//DNI o RUC
             $table->string('num_documento');
-            $table->string('direccion');
+            $table->string('direccion')->nullable();
             $table->string('correo')->nullable();
             $table->string('celular')->nullable();
             $table->char('ubigeo_cod', 6)->nullable();

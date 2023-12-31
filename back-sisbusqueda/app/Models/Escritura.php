@@ -12,11 +12,15 @@ class Escritura extends Model
     protected $fillable = [
         'bien',
         'subserie_id',
+        'anio',
+        'mes',
+        'dia',
         'fecha',
         'cod_escritura',
         'cod_folioInicial',
         'cod_folioFinal',
         'libro_id',
+        'observaciones',
     ];
     public function subSerie()
     {

@@ -117,14 +117,14 @@ const columns = [
     sortable_: true,
     search: true,
   },
-  {
-    field: (row) => row.solicitante.nombre_completo,
-    name: "solicitante.nombre_completo",
-    label: "Solicitante",
-    align: "left",
-    sortable_: true,
-    search: true,
-  },
+  // {
+  //   field: (row) => row.solicitante.nombre_completo,
+  //   name: "solicitante.nombre_completo",
+  //   label: "Solicitante",
+  //   align: "left",
+  //   sortable_: true,
+  //   search: true,
+  // },
   // {
   //   field: (row) => row.tipo_copia,
   //   name: "tipo_copia",
@@ -142,7 +142,14 @@ const columns = [
   //   search: true,
   // },
   {
-    field: (row) => row.estado,
+    field: (row) => row.solicitud.id,
+    name: "solicitud.id",
+    label: "ID Solicitud",
+    align: "center",
+    sortable_: true,
+  },
+  {
+    field: (row) => row.solicitud.estado,
     name: "estado",
     label: "Estado",
     align: "center",

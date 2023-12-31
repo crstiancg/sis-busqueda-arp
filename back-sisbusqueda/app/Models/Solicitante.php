@@ -14,6 +14,7 @@ class Solicitante extends Model
         'apellido_paterno',
         'apellido_materno',
         'nombre_completo',
+        'asunto',
         'tipo_documento',
         'num_documento',
         'direccion',

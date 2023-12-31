@@ -75,7 +75,7 @@ class SolicitudController extends Controller
             'tipo_copia'=> $request->tipo_copia,
             'cantidad_copia'=> $request->cantidad_copia,
             'precio_id'=> $id_precio->id,
-            'estado'=> 'En busqueda',
+            'estado'=> 'Buscando',              // ojo con los estados
             'user_id' =>auth()->user()->id,
         ]);
 
