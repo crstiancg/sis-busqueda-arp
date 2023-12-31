@@ -9,6 +9,12 @@ class Libro extends Model
 {
     use HasFactory;
     protected $table = 'libros';
+    // protected $casts = [
+    //     'created_at' => 'datetime:d.m.Y H:i',
+    //     'updated_at' => 'datetime:d.m.Y H:i',
+    // ];
+    public $timestamps = false;
+
     protected $fillable = [
         'nombre',
         'fecha',

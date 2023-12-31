@@ -3,61 +3,65 @@
 namespace App\Http\Controllers;
 
 use App\Models\RegistroBusqueda;
+use App\Models\Solicitud;
 use Illuminate\Http\Request;
 
 class RegistroBusquedaController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    
+    public function index(Request $request)
     {
-        return RegistroBusqueda::with('solicitud','user','registroVerificacion')->get();
+        // return $this->generateViewSetList(
+        //     $request,
+        //     Solicitud::where('estado','En Busquueda'),
+        //     [],
+        //     ['id', 'nombre'],
+        //     ['id', 'nombre']
+        // );
+        return $this->generateViewSetList(
+            $request,
+            RegistroBusqueda::with('solicitud'),
+            [],
+            ['id', 'nombre'],
+            ['id', 'nombre']
+        );
+
+        // return Solicitud::where('estado','Finalizado')->get();
+
+        // return RegistroBusqueda::with('solicitud','user','registroVerificacion')->get();
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
         //
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(RegistroBusqueda $registroBusqueda)
+
+    public function show($id)
     {
-        //
+        $solicitude = Solicitud::find($id);
+        return response()->json($solicitude);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
+  
     public function edit(RegistroBusqueda $registroBusqueda)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, RegistroBusqueda $registroBusqueda)
+
+    public function update(Request $request, $id)
     {
-        //
+        $solicitude = Solicitud::find($id);
+        return response()->json([$solicitude]);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
+
     public function destroy(RegistroBusqueda $registroBusqueda)
     {
         //

@@ -9,6 +9,7 @@ class RegistroBusqueda extends Model
 {
     use HasFactory;
     protected $table = 'registro_busquedas';
+    protected $with = 'solicitud';
     protected $fillable = [
         'solicitud_id',
         'user_id',
