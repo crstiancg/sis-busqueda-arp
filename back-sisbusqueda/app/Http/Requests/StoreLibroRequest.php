@@ -23,7 +23,6 @@ class StoreLibroRequest extends FormRequest
     {
         return [
             'nombre'=>'required',
-            'fecha'=>'required',
             'protocolo'=>'required',
             'notario_id'=>'required',
         ];
