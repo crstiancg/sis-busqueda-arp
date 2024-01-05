@@ -45,7 +45,7 @@
               v-model="escritura.observaciones" />
           </div>
         </q-step>
-        <q-step :name="2" title="Datos de los Otorgantes" caption="Optional" icon="create_new_folder" :done="step > 2"
+        <q-step :name="2" title="Otorgante(s)" caption="" icon="create_new_folder" :done="step > 2"
           :header-nav="step > 2">
           <q-option-group inline v-model="tipoPersonaOtorgante" :options="[
             { label: 'Natural', value: 'Natural' },
@@ -59,7 +59,7 @@
                   <q-btn color="primary" label="Añadir"></q-btn>
                 </template>
               </q-select> -->
-              <SelectInput label="Otorgantes" dense lazy-rules
+              <SelectInput label="Otorgante(s)" dense lazy-rules
                 :rules="[val => (val !== '' && val !== null) || 'Seleccione Otorgantes']" v-model="otorgante"
                 :options="OtorganteService" OptionLabel="nombre_completo" OptionValue="id"
                 :ValueMulti="['id', 'nombre_completo']" />
@@ -94,7 +94,7 @@
           </q-tab-panels>
         </q-step>
 
-        <q-step :name="3" title="Create an ad group" caption="Optional" icon="create_new_folder" :done="step > 3"
+        <q-step :name="3" title="Favorecidos(s)" caption="" icon="create_new_folder" :done="step > 3"
           :header-nav="step > 3">
           <q-option-group inline v-model="tipoPersonaFavorecido" :options="[
             { label: 'Natural', value: 'Natural' },
