@@ -17,6 +17,10 @@ class AreaController extends Controller
             ['id', 'nombre'],
             ['id', 'nombre']
         );
+
+        // $dato = env('PAGO');
+
+        // return $dato;
     }
 
     
