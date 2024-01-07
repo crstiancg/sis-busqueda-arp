@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class Precio extends Model
 {
     use HasFactory;
-    protected $table = 'precios';
+    // protected $table = 'precios';
     protected $fillable = [
         'monto',
         'vigente',
     ];
-    public function solicitud()
-    {
-        return $this->hasMany(Solicitud::class, 'precio_id');
-    }
+    // public function solicitud()
+    // {
+    //     return $this->hasMany(Solicitud::class, 'precio_id');
+    // }
 }

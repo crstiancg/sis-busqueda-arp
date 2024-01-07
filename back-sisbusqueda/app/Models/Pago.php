@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class Pago extends Model
 {
     use HasFactory;
+
+
+    static function busqueda()
+    {
+        
+    }
 }

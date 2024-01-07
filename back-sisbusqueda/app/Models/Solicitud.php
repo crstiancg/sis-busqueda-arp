@@ -27,8 +27,8 @@ class Solicitud extends Model
         'mas_datos',
         'tipo_copia',
         'cantidad_copia',
-        'precio_id',
         'estado',
+        'precio',
         'user_id',
         'updated_at'
     ];
@@ -52,10 +52,10 @@ class Solicitud extends Model
     {
         return $this->belongsTo(Ubigeo::class, 'ubigeo_cod','codigo');
     }
-    public function precio()
-    {
-        return $this->belongsTo(Precio::class, 'precio_id');
-    }
+    // public function precio()
+    // {
+    //     return $this->belongsTo(Precio::class, 'precio_id');
+    // }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

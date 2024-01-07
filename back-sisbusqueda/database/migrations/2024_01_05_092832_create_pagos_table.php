@@ -14,13 +14,13 @@ return new class extends Migration
         Schema::create('pagos', function (Blueprint $table) {
             $table->id();
             $table->foreignId('solicitud_id')->constrained('solicituds')->restrictOnDelete();
-            $table->double('pago_busqueda',4,2);
-            $table->double('pago_verificacion',4,2);
+            $table->decimal('pago_busqueda',8,2);
+            $table->decimal('pago_verificacion',8,2);
             $table->unsignedSmallInteger('cantidad_folio');
-            $table->double('pago_folio',4,2);
+            $table->decimal('pago_folio',8,2);
             $table->unsignedSmallInteger('cantidad_fotocopia');
-            $table->double('pago_fotocopia',4,2);
-            $table->double('total',4,2);
+            $table->decimal('pago_fotocopia',8,2);
+            $table->decimal('total',8,2);
             $table->timestamps();
         });
     }

@@ -60,8 +60,10 @@ class SolicitudController extends Controller
                 'ubigeo_cod' => $request->ubigeo_cod,
             ]);
         // }
+        $uit = \env('PAGO');
+        
         $id_solicitabte = $solicitante->id;
-        $id_precio = Precio::where('vigente',1)->first();
+        // $id_precio = Precio::where('vigente',1)->first();
         $solicitud = Solicitud::create([
             'notario_id' => 1,  // ojo tenr que agregar
             'subserie_id'=> 1,  // ojo tenr que agregar
@@ -74,7 +76,6 @@ class SolicitudController extends Controller
             'mas_datos'=> $request->mas_datos,
             'tipo_copia'=> $request->tipo_copia,
             'cantidad_copia'=> $request->cantidad_copia,
-            'precio_id'=> $id_precio->id,
             'estado'=> 'Buscando',              // ojo con los estados
             'user_id' =>auth()->user()->id,
             'updated_at'=> now(),

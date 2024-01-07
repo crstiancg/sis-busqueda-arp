@@ -16,7 +16,8 @@ return new class extends Migration
             $table->string('code');
             $table->string('sub_code');
             $table->string('denominacion');
-            $table->double('derecho_pago');
+            $table->decimal('derecho_pago',10,6);
+            $table->decimal('costo',8,2)->nullable();
             $table->timestamps();
         });
     }
