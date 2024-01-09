@@ -24,7 +24,7 @@
           </q-avatar>
         </div>
         <div class="text-center text-subtitle1 text-white q-mb-xs">
-          {{ name }}
+          {{ name }} <p class="q-ma-none bg-blue">{{ area }}</p>
         </div>
       </div>
 
@@ -60,6 +60,7 @@ const nombre = ref(null);
 const userStore = useUserStore();
 const router = useRouter();
 const name = ref("");
+const area = ref("");
 const initialsMayus = computed(() => {
   // Divide la frase por espacios en palabras
   const words = name.value.split(" ");
@@ -76,6 +77,7 @@ const initialsMayus = computed(() => {
 onMounted(async () => {
   await userStore.getUser();
   name.value = userStore.getName;
+  area.value = userStore.getArea;
 });
 const logout = async () => {
   await userStore.logout();

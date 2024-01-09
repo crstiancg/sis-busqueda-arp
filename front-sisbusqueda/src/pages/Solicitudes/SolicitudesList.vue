@@ -116,6 +116,9 @@
   import SolicitudesForm from "src/pages/Solicitudes/SolicitudesForm.vue";
   import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
   import { convertDate } from "src/utils/ConvertDate";
+  import { useUserStore } from "src/stores/user-store";
+
+  const userStore = useUserStore();
   const $q = useQuasar();
 
 async function verDat(){
@@ -161,7 +164,7 @@ const columns = [
     const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
     const order_by = descending ? "-" + sortBy : sortBy;
     const { data, total = 0 } = await SolicitudService.getData({
-      params: { rowsPerPage: fetchCount, page, search: filter, order_by},
+      params: { area_id: userStore.getAreaId, rowsPerPage: fetchCount, page, search: filter, order_by,},
     });
     // clear out existing data and add new
     rows.value.splice(0, rows.value.length, ...data);

@@ -15,15 +15,15 @@ class SolicitudController extends Controller
      */
     public function index(Request $request)
     {
-        $solicitudesConUbigeos = Solicitud::orderBy('updated_at', 'desc')->join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
-            ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
-            ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario','precio'); // Incluir relaciones adicionales si es necesario
+        // $solicitudesConUbigeos = Solicitud::orderBy('updated_at', 'desc')->join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
+        //     ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
+        //     ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario'); // Incluir relaciones adicionales si es necesario
 
         // return $solicitudesConUbigeos;//Solicitud::with('solicitante')->get();
         return $this->generateViewSetList(
             $request,
-            $solicitudesConUbigeos,
-            [],
+            Solicitud::query(),
+            ['area_id','estado'],
             ['id'],
             ['id']
         );

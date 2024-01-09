@@ -26,9 +26,8 @@ class Solicitud extends Model
         'bien',
         'mas_datos',
         'tipo_copia',
-        'cantidad_copia',
         'estado',
-        'precio',
+        'pago',
         'user_id',
         'updated_at'
     ];
@@ -46,7 +45,7 @@ class Solicitud extends Model
     }
     public function registroBusqueda()
     {
-        return $this->hasOne(RegistroBusqueda::class, 'solicitud_id');
+        return $this->hasOne(RegistroBusqueda::class, 'registro_id');
     }
     public function ubigeo()
     {
@@ -59,5 +58,10 @@ class Solicitud extends Model
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
     }
 }
