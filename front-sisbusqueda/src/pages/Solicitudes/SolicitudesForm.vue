@@ -229,6 +229,7 @@ const solicitudForm = ref({
     tipo_copia:'Copia Simple',
     cantidad_copia:'',
     estado:'',
+    area_id: 2,
     //datos para generar PDF **********
     notario:null,
     subserie:null,

@@ -42,6 +42,7 @@ class SolicitudController extends Controller
      */
     public function store(Request $request)
     {
+        
         // $existeSolicitante = Solicitante::where('num_documento',$request->num_documento)->first();
         // $id_solicitabte = null;
         // if($existeSolicitante){
@@ -76,6 +77,8 @@ class SolicitudController extends Controller
             'mas_datos'=> $request->mas_datos,
             'tipo_copia'=> $request->tipo_copia,
             'cantidad_copia'=> $request->cantidad_copia,
+            'pago' => 9,
+            'area_id' => $request->area_id,
             'estado'=> 'Buscando',              // ojo con los estados
             'user_id' =>auth()->user()->id,
             'updated_at'=> now(),

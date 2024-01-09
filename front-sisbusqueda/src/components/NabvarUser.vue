@@ -26,12 +26,14 @@
         <div class="text-center text-subtitle1 text-white q-mb-xs">
           {{ name }} <p class="q-ma-none bg-blue">{{ area }}</p>
         </div>
+
       </div>
+
 
       <q-separator />
 
       <q-list dense style="min-width: 250px">
-        <q-item v-if="userStore?.roles?.[0] === 'Administrador'" clickable v-close-popup @click="editar(userStore.getId)">
+        <q-item v-if="userStore.roles[0] === 'Administrador'" clickable v-close-popup @click="editar(userStore.getId)">
           <q-item-section class="text-blue text-weight-medium text-center">Editar</q-item-section>
         </q-item>
         <q-separator />
@@ -85,10 +87,9 @@ const logout = async () => {
 };
 
 async function editar(id) {
-  // usuariosformRef.value.show = true;
-  // const row = await UsuarioService.get(id);
-  // usuariosformRef.value.setValue(row);
-  console.log(id);
+  usuariosformRef.value.show = true;
+  const row = await UsuarioService.get(id);
+  usuariosformRef.value.setValue(row);
 }
 async function save() {
   usuariosformRef.value.loading = true;

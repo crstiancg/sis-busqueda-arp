@@ -28,6 +28,7 @@ class Solicitud extends Model
         'tipo_copia',
         'estado',
         'pago',
+        'area_id',
         'user_id',
         'updated_at'
     ];
