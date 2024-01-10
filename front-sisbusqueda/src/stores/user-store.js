@@ -8,8 +8,10 @@ export const useUserStore = defineStore("user", {
     id: null,
     name: null,
     email: null,
+    area_id: null,
     roles: null,
     permisos: null,
+    area: null,
   }),
   getters: {
     getId: (state) => state.id,
@@ -17,6 +19,8 @@ export const useUserStore = defineStore("user", {
     getEmail: (state) => state.email,
     getRoles: (state) => state.roles,
     getPermisos: (state) => state.permisos,
+    getArea: (state) => state.area,
+    getAreaId: (state) => state.area_id
   },
   actions: {
     async login(email, password) {
@@ -64,16 +68,20 @@ export const useUserStore = defineStore("user", {
       if (payload.user.id) this.id = payload.user.id;
       if (payload.user.name) this.name = payload.user.name;
       if (payload.user.email) this.email = payload.user.email;
+      if (payload.user.area_id) this.area_id = payload.user.area_id;
       if (payload.permisos) this.permisos = payload.permisos;
       if (payload.roles) this.roles = payload.roles;
+      if (payload.user.area.nombre) this.area = payload.user.area.nombre;
     },
 
     clearUser() {
       this.id = null;
       this.name = null;
       this.email = null;
+      this.area_id = null;
       this.permisos = null;
       this.roles = null;
+      this.area = null;
     },
     hasPermission(permission) {
       return this.permisos?.includes(permission);

@@ -15,15 +15,15 @@ class SolicitudController extends Controller
      */
     public function index(Request $request)
     {
-        $solicitudesConUbigeos = Solicitud::orderBy('updated_at', 'desc')->join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
-            ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
-            ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario','precio'); // Incluir relaciones adicionales si es necesario
+        // $solicitudesConUbigeos = Solicitud::orderBy('updated_at', 'desc')->join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
+        //     ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
+        //     ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario'); // Incluir relaciones adicionales si es necesario
 
         // return $solicitudesConUbigeos;//Solicitud::with('solicitante')->get();
         return $this->generateViewSetList(
             $request,
-            $solicitudesConUbigeos,
-            [],
+            Solicitud::query(),
+            ['area_id','estado'],
             ['id'],
             ['id']
         );
@@ -42,6 +42,7 @@ class SolicitudController extends Controller
      */
     public function store(Request $request)
     {
+        
         // $existeSolicitante = Solicitante::where('num_documento',$request->num_documento)->first();
         // $id_solicitabte = null;
         // if($existeSolicitante){
@@ -60,8 +61,10 @@ class SolicitudController extends Controller
                 'ubigeo_cod' => $request->ubigeo_cod,
             ]);
         // }
+        $uit = \env('PAGO');
+        
         $id_solicitabte = $solicitante->id;
-        $id_precio = Precio::where('vigente',1)->first();
+        // $id_precio = Precio::where('vigente',1)->first();
         $solicitud = Solicitud::create([
             'notario_id' => 1,  // ojo tenr que agregar
             'subserie_id'=> 1,  // ojo tenr que agregar
@@ -74,7 +77,8 @@ class SolicitudController extends Controller
             'mas_datos'=> $request->mas_datos,
             'tipo_copia'=> $request->tipo_copia,
             'cantidad_copia'=> $request->cantidad_copia,
-            'precio_id'=> $id_precio->id,
+            'pago' => 9,
+            'area_id' => $request->area_id,
             'estado'=> 'Buscando',              // ojo con los estados
             'user_id' =>auth()->user()->id,
             'updated_at'=> now(),

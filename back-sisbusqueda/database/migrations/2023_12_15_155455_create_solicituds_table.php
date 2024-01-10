@@ -30,9 +30,10 @@ return new class extends Migration
             $table->string('bien')->nullable();
             $table->text('mas_datos')->nullable();
             $table->string('tipo_copia')->nullable();
-            $table->unsignedInteger('cantidad_copia')->nullable();
-            $table->unsignedBigInteger('precio_id')->nullable();
-            $table->foreign('precio_id')->references('id')->on('precios')->nullOnDelete();
+            $table->unsignedInteger('pago')->nullable();
+            $table->foreignId('area_id')->constrained();
+            // $table->unsignedBigInteger('area_id')->nullable();
+            // $table->foreign('area_id')->references('id')->on('areas')->nullOnDelete();
             $table->string('estado');
             $table->unsignedBigInteger('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();

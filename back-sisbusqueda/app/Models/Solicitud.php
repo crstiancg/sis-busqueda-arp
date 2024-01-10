@@ -26,9 +26,9 @@ class Solicitud extends Model
         'bien',
         'mas_datos',
         'tipo_copia',
-        'cantidad_copia',
-        'precio_id',
         'estado',
+        'pago',
+        'area_id',
         'user_id',
         'updated_at'
     ];
@@ -46,18 +46,23 @@ class Solicitud extends Model
     }
     public function registroBusqueda()
     {
-        return $this->hasOne(RegistroBusqueda::class, 'solicitud_id');
+        return $this->hasOne(RegistroBusqueda::class, 'registro_id');
     }
     public function ubigeo()
     {
         return $this->belongsTo(Ubigeo::class, 'ubigeo_cod','codigo');
     }
-    public function precio()
-    {
-        return $this->belongsTo(Precio::class, 'precio_id');
-    }
+    // public function precio()
+    // {
+    //     return $this->belongsTo(Precio::class, 'precio_id');
+    // }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
     }
 }

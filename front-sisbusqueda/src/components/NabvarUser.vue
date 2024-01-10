@@ -24,14 +24,16 @@
           </q-avatar>
         </div>
         <div class="text-center text-subtitle1 text-white q-mb-xs">
-          {{ name }}
+          {{ name }} <p class="q-ma-none bg-blue">{{ area }}</p>
         </div>
+
       </div>
+
 
       <q-separator />
 
       <q-list dense style="min-width: 250px">
-        <q-item v-if="userStore?.roles?.[0] === 'Administrador'" clickable v-close-popup @click="editar(userStore.getId)">
+        <q-item v-if="userStore.roles[0] === 'Administrador'" clickable v-close-popup @click="editar(userStore.getId)">
           <q-item-section class="text-blue text-weight-medium text-center">Editar</q-item-section>
         </q-item>
         <q-separator />
@@ -60,6 +62,7 @@ const nombre = ref(null);
 const userStore = useUserStore();
 const router = useRouter();
 const name = ref("");
+const area = ref("");
 const initialsMayus = computed(() => {
   // Divide la frase por espacios en palabras
   const words = name.value.split(" ");
@@ -76,6 +79,7 @@ const initialsMayus = computed(() => {
 onMounted(async () => {
   await userStore.getUser();
   name.value = userStore.getName;
+  area.value = userStore.getArea;
 });
 const logout = async () => {
   await userStore.logout();
@@ -83,10 +87,9 @@ const logout = async () => {
 };
 
 async function editar(id) {
-  // usuariosformRef.value.show = true;
-  // const row = await UsuarioService.get(id);
-  // usuariosformRef.value.setValue(row);
-  console.log(id);
+  usuariosformRef.value.show = true;
+  const row = await UsuarioService.get(id);
+  usuariosformRef.value.setValue(row);
 }
 async function save() {
   usuariosformRef.value.loading = true;

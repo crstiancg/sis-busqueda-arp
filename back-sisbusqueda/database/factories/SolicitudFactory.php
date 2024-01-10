@@ -26,11 +26,14 @@ class SolicitudFactory extends Factory
             'bien' => fake()->colorName(),
             'mas_datos' => fake()->text(),
             'tipo_copia' => fake()->randomElement(array('Testimonio','Copia Certificada','Copia Simple')),
-            'cantidad_copia' => fake()->numberBetween(1,3),
-            'precio_id' => 1,
+            // 'cantidad_copia' => fake()->numberBetween(1,3),
+            'pago' => 9,
+            'area_id' => fake()->numberBetween(1,4),
             'ubigeo_cod' => fake()->randomElement(array('210101','210102','210103','210104','210105','210106')),
             'estado' => fake()->randomElement(array('Buscando','Encontrado','Verificado','Pagado','Finalizado')),
             'user_id' => 1,
+            'created_at' => \now(),
+            'updated_at' => \now(),
         ];
     }
 }
