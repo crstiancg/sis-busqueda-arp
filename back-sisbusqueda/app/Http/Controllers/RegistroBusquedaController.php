@@ -19,12 +19,12 @@ class RegistroBusquedaController extends Controller
         //     ['id', 'nombre']
         // );
 
-        $queryRegistro = RegistroBusqueda::select('registro_busquedas.*')
-            ->leftJoin('solicituds', 'registro_busquedas.solicitud_id', '=', 'solicituds.id')->where('solicituds.estado','Buscando');
+        // $queryRegistro = RegistroBusqueda::select('registro_busquedas.*')
+        //     ->leftJoin('solicituds', 'registro_busquedas.solicitud_id', '=', 'solicituds.id')->where('solicituds.estado','Buscando');
 
         return $this->generateViewSetList(
             $request,
-            $queryRegistro,
+            RegistroBusqueda::query(),
             [],
             ['id', 'nombre'],
             ['id', 'nombre']

@@ -8,11 +8,17 @@
         @save="save"
       ></SolicitudesForm>
     </q-dialog>
+
+    <q-dialog v-model="busquedaForm">
+      <BusquedasFormVue
+      ref="busquedaformRef"
+      ></BusquedasFormVue>
+    </q-dialog>
     <q-page>
       <div class="q-pa-md q-gutter-sm">
         <q-breadcrumbs>
           <q-breadcrumbs-el icon="home" />
-
+          
           <q-breadcrumbs-el label="Solicitudes" icon="mdi-key" />
         </q-breadcrumbs>
       </div>
@@ -31,6 +37,8 @@
             }
           "
         />
+
+        <!-- <q-btn label="Alert" color="primary" @click="alert = true" /> -->
       </div>
 
       <q-table
@@ -102,6 +110,15 @@
                 @click="eliminar(props.row.id)"
                 icon="delete"
               /> -->
+              <q-btn
+                size="sm"
+                outline
+                color="blue"
+                round
+                @click="busqueda(props.row.id)"
+                icon="search"
+                class="q-mr-xs"
+              /> 
             </q-td>
           </q-tr>
         </template>
@@ -114,6 +131,7 @@
   import SolicitudService from "src/services/SolicitudService";
   import { useQuasar } from "quasar";
   import SolicitudesForm from "src/pages/Solicitudes/SolicitudesForm.vue";
+  import BusquedasFormVue from "./Registros/BusquedasForm.vue";
   import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
   import { convertDate } from "src/utils/ConvertDate";
   import { useUserStore } from "src/stores/user-store";
@@ -139,6 +157,9 @@ const columns = [
   { field: (row) => row.updated_at , name: "updated_at", label: "Fecha actualizacion", align: "center", sortable_: true, },
 ];
 
+  const busquedaForm = ref(false);
+  const busquedaId = ref();
+  const busquedaformRef = ref();
   const tableRef = ref();
   const formPermisos = ref(false);
   const solicitudesformRef = ref();
@@ -222,6 +243,15 @@ const columns = [
     solicitudesformRef.value.setValue(row);
     // solicitudesformRef.value.setValue(row);
     // solicitudesformRef.value.setValue(row);
+  }
+
+  async function busqueda(id){
+    busquedaForm.value = true;
+    busquedaId.value = id;
+
+    const row = await SolicitudService.get(id);
+    console.log(row);
+    busquedaformRef.value.setValue(row);
   }
 
   async function eliminar(id) {

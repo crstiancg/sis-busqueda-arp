@@ -9,6 +9,7 @@
         <q-card-section class="q-pa-md">
           <div class="q-gutter-md q-mb-md">
             <div class="row">
+              {{ busquedaForm }}
              <q-input class="col-12 col-md-6 q-pa-sm"
              dense
              outlined
@@ -131,8 +132,10 @@
     edit: {
       type: Boolean,
       default: false,
-    },
+    }
   });
+
+  const busquedaForm = ref();
   
   let form;
   if (props.edit) {
@@ -168,6 +171,10 @@
         // alert("An error occurred.");
       });
   };
+
+  function setValue(values){
+    busquedaForm.value = values;
+  }
   
   onMounted(() => {
     // setData();
@@ -178,6 +185,7 @@
   
   defineExpose({
     // setData,
+    setValue,
     form,
   });
   </script>

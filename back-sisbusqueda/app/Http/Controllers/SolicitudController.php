@@ -86,7 +86,9 @@ class SolicitudController extends Controller
             'updated_at'=> now(),
         ]);
 
-        return response($this->RegistrarABusqueda($solicitud),201);
+        // return response($this->RegistrarABusqueda($solicitud),201);
+
+        return response([$request],200);
     }
 
     /**
