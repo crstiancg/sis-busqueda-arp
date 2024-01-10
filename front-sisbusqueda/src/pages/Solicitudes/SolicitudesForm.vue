@@ -108,9 +108,9 @@
                     <GenerarPDFSolicitud :datosSolicitud="solicitudForm" label="Pre Generar PDF" class="q-ml-sm"/>
                   </div>
                   <div class="row full-width">
-                    <q-toggle v-model="solicitudForm.tipo_copia" color="pink" true-value="Testimonio" label="Testimonio"/>
+                    <!-- <q-toggle v-model="solicitudForm.tipo_copia" color="pink" true-value="Testimonio" label="Testimonio"/>
                     <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Certificada" true-value="Copia Certificada" color="green" />
-                    <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Simple" true-value="Copia Simple" color="red" />
+                    <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Simple" true-value="Copia Simple" color="red" /> -->
                     <q-space/>
                     <div class="row items-center">Precio por Copia: {{ formatNumberToSoles(precioVigente) }}</div>
                   </div>
@@ -181,7 +181,7 @@
 import { ref, computed, watch, onMounted } from "vue";
 import DniService from "src/services/DniService";
 import SolicitudService from "src/services/SolicitudService";
-import PrecioService from "src/services/PrecioService";
+import TupaService from "src/services/TupaService";
 import SelectUbigeoPuno from "src/components/SelectUbigeoPuno.vue";
 import SelectUbigeoPlus from "src/components/SelectUbigeoPlus.vue"
 import SelectInput from "src/components/SelectInput.vue";
@@ -227,7 +227,7 @@ const solicitudForm = ref({
     bien: "",
     mas_datos: "",
     tipo_copia:'Copia Simple',
-    cantidad_copia:'',
+    cantidad_copia:1,
     estado:'',
     area_id: 2,
     //datos para generar PDF **********
@@ -243,9 +243,9 @@ const solicitudForm = ref({
   });
 
 async function getPrecioVigente(){
-  precioVigente.value = (await PrecioService.getData({params: {vigencia:1}}))[0].monto;
+  precioVigente.value = (await TupaService.getData({params: {code:'01'}})).data[0].costo;
   solicitudForm.value.precio = precioVigente.value;
-  // console.log(precioVigente.value);
+  console.log(precioVigente.value);
 }
 
 onMounted(()=>{

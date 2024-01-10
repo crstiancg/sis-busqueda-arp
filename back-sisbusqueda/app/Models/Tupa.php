@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Tupa extends Model
 {
     use HasFactory;
+
+     public function solicituds()
+    {
+        return $this->hasMany(Solicitud::class);
+    }
 }

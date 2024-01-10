@@ -6,6 +6,7 @@ use App\Models\Precio;
 use App\Models\RegistroBusqueda;
 use App\Models\Solicitante;
 use App\Models\Solicitud;
+use App\Models\Tupa;
 use Illuminate\Http\Request;
 
 class SolicitudController extends Controller
@@ -15,17 +16,18 @@ class SolicitudController extends Controller
      */
     public function index(Request $request)
     {
-        // $solicitudesConUbigeos = Solicitud::orderBy('updated_at', 'desc')->join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
-        //     ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
-        //     ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario'); // Incluir relaciones adicionales si es necesario
+        $solicitudesConUbigeos = Solicitud::orderBy('updated_at', 'desc')->join('ubigeos', 'solicituds.ubigeo_cod', '=', 'ubigeos.codigo')
+            ->select('solicituds.*', 'ubigeos.nombre as ubigeo_nombre')
+            ->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario'); // Incluir relaciones adicionales si es necesario
 
         // return $solicitudesConUbigeos;//Solicitud::with('solicitante')->get();
         return $this->generateViewSetList(
             $request,
-            Solicitud::query(),
+            Solicitud::orderBy('updated_at', 'desc')->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario','tupa'),
             ['area_id','estado'],
             ['id'],
-            ['id']
+            ['id'],
+            // $solicitudesConUbigeos,
         );
     }
 
@@ -64,7 +66,7 @@ class SolicitudController extends Controller
         $uit = \env('PAGO');
         
         $id_solicitabte = $solicitante->id;
-        // $id_precio = Precio::where('vigente',1)->first();
+        $id_precio = Tupa::first();
         $solicitud = Solicitud::create([
             'notario_id' => 1,  // ojo tenr que agregar
             'subserie_id'=> 1,  // ojo tenr que agregar
@@ -77,7 +79,7 @@ class SolicitudController extends Controller
             'mas_datos'=> $request->mas_datos,
             'tipo_copia'=> $request->tipo_copia,
             'cantidad_copia'=> $request->cantidad_copia,
-            'pago' => 9,
+            'pago_busqueda' => $request->precio,
             'area_id' => $request->area_id,
             'estado'=> 'Buscando',              // ojo con los estados
             'user_id' =>auth()->user()->id,
