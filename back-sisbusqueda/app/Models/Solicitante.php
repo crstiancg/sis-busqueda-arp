@@ -22,6 +22,7 @@ class Solicitante extends Model
         'celular',
         'ubigeo_cod',
     ];
+    protected $with = ['ubigeo'];
     public function solicitudes()
     {
         return $this->hasMany(Solicitud::class, 'solicitante_id');

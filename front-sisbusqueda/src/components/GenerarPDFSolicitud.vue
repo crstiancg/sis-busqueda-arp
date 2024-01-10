@@ -131,7 +131,7 @@ function VerificaDatos(){
       otorgantes: props.datosSolicitudRow.otorgantes,
       favorecidos: props.datosSolicitudRow.favorecidos,
       fecha:props.datosSolicitudRow.fecha,
-      ubigeo_soli:props.datosSolicitudRow.ubigeo_nombre,
+      ubigeo_soli: props.datosSolicitudRow?.ubigeo? props.datosSolicitudRow.ubigeo.nombre:'',
       bien: props.datosSolicitudRow.bien,
       mas_datos: props.datosSolicitudRow.mas_datos,
       notario:props.datosSolicitudRow.notario?props.datosSolicitudRow.notario.nombre_completo:'',
