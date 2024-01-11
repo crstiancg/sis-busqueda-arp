@@ -48,9 +48,9 @@
         <q-step :name="2" title="Otorgante(s)" caption="" icon="create_new_folder" :done="step > 2"
           :header-nav="step > 2">
           <q-option-group inline v-model="tipoPersonaOtorgante" :options="[
-            { label: 'Natural', value: 'Natural' },
-            { label: 'Jurico', value: 'Jurico' },
-          ]" />
+              { label: 'Natural', value: 'Natural' },
+              { label: 'Jurico', value: 'Jurico' },
+            ]" />
           <q-tab-panels v-model="tipoPersonaOtorgante">
             <q-tab-panel name="Natural">
               <div class="text-subtitle1">Persona Natural</div>
@@ -63,7 +63,15 @@
                 :rules="[val => (val !== '' && val !== null) || 'Seleccione Otorgantes']" v-model="otorgante"
                 :options="OtorganteService" OptionLabel="nombre_completo" OptionValue="id"
                 :ValueMulti="['id', 'nombre_completo']" />
-              <q-btn label="Nuevo" color="positive"></q-btn>
+              <div class="row">
+                <q-input label="Nombres" autogrow dense class="col-12 col-md-4 col-sm-6 q-pa-sm"
+                  v-model="formOtorgante.nombre" />
+                <q-input label="Primer Apellido" autogrow dense class="col-12 col-md-4 col-sm-6 q-pa-sm"
+                  v-model="formOtorgante.apellido_paterno" />
+                <q-input label="Segundo Apellido" autogrow dense class="col-12 col-md-4 col-sm-6 q-pa-sm"
+                  v-model="formOtorgante.apellido_materno" />
+              </div>
+              <q-btn label="Agregar Otorgante" color="positive" @click="AñadirOtorgante"></q-btn>
 
               <q-markup-table flat class="q-mt-sm">
                 <thead>
@@ -112,7 +120,15 @@
                 :rules="[val => (val !== '' && val !== null) || 'Seleccione Favorecidos']" v-model="favorecido"
                 :options="FavorecidoService" OptionLabel="nombre_completo" OptionValue="id"
                 :ValueMulti="['id', 'nombre_completo']" />
-              <q-btn label="Nuevo" color="positive"></q-btn>
+              <div class="row">
+                <q-input label="Nombres" autogrow dense class="col-12 col-md-4 col-sm-6 q-pa-sm"
+                  v-model="formFavorecido.nombre" />
+                <q-input label="Primer Apellido" autogrow dense class="col-12 col-md-4 col-sm-6 q-pa-sm"
+                  v-model="formFavorecido.apellido_paterno" />
+                <q-input label="Segundo Apellido" autogrow dense class="col-12 col-md-4 col-sm-6 q-pa-sm"
+                  v-model="formFavorecido.apellido_materno" />
+              </div>
+              <q-btn label="Agregar Favorecido" color="positive" @click="AñadirFavorecido"></q-btn>
 
               <q-markup-table flat class="q-mt-sm">
                 <thead>
@@ -187,6 +203,19 @@ const escritura = ref({
   n_folios: 1,
   otorgantes: [],
   favorecidos: [],
+});
+
+const formOtorgante = ref({
+  nombre: "",
+  apellido_paterno: "",
+  apellido_materno: "",
+  nombre_completo: "",
+});
+const formFavorecido = ref({
+  nombre: "",
+  apellido_paterno: "",
+  apellido_materno: "",
+  nombre_completo: "",
 });
 
 const otorgante = ref(null);
@@ -288,6 +317,39 @@ function ValidaSuccess(event, step) {
   } else {
     Save();
   }
+}
+function AñadirOtorgante(){
+  formOtorgante.value.nombre_completo= `${formOtorgante.value.nombre} ${formOtorgante.value.apellido_paterno} ${formOtorgante.value.apellido_materno}`;
+  console.log(formOtorgante.value);
+  $q.dialog({
+    title: "Agregar Otorgante",
+    message: "¿Estas seguro de agregar a " + formOtorgante.value.nombre_completo + " ?",
+    cancel: true,
+    persistent: true,
+  }).onOk(async () => {
+    try {
+      errores.value[index] = null;
+      const resp = await LibroService.save(object);
+      console.log(resp);
+      paginacion.value.pagina = 1;
+      await CargarData(paginacion.value);
+      $q.notify({
+        type: 'positive',
+        message: 'Guardado con Exito.',
+        position: 'top-right',
+        progress: true,
+        timeout: 1000,
+      });
+
+    } catch (error) {
+      console.log(error.response.data.errors);
+      errores.value[index] = error.response.data.errors;
+    }
+
+  });
+}
+function AñadirFavorecido(){
+  console.log(formFavorecido.value);
 }
 </script>
 <style lang="sass" scoped>
