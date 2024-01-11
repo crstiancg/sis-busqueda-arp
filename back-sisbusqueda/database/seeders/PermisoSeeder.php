@@ -40,6 +40,24 @@ class PermisoSeeder extends Seeder
             'password' => bcrypt('password'),
             'area_id'=> 1,
         ]);
+        User::create([
+            'name' => 'Juan Busqueda',
+            'email' => 'busqueda@gmail.com',
+            'password' => bcrypt('busqueda'),
+            'area_id'=> 2,
+        ]);
+        User::create([
+            'name' => 'Juan Verificacion',
+            'email' => 'verificacion@gmail.com',
+            'password' => bcrypt('verificacion'),
+            'area_id'=> 3,
+        ]);
+        User::create([
+            'name' => 'Juan Direccion',
+            'email' => 'direccion@gmail.com',
+            'password' => bcrypt('direccion'),
+            'area_id'=> 4,
+        ]);
         $user->assignRole('Administrador');
     }
 }

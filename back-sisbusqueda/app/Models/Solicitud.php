@@ -9,7 +9,7 @@ class Solicitud extends Model
 {
     use HasFactory;
     protected $table = 'solicituds';
-    protected $with = ['solicitante','ubigeo','notario','SubSerie'];
+    protected $with = ['solicitante','ubigeo','notario','SubSerie','tupa'];
 
     public $timestamps = false;
     protected $fillable = [
@@ -27,7 +27,7 @@ class Solicitud extends Model
         'mas_datos',
         'tipo_copia',
         'estado',
-        'pago',
+        'pago_busqueda',
         'area_id',
         'user_id',
         'updated_at'
@@ -52,10 +52,10 @@ class Solicitud extends Model
     {
         return $this->belongsTo(Ubigeo::class, 'ubigeo_cod','codigo');
     }
-    // public function precio()
-    // {
-    //     return $this->belongsTo(Precio::class, 'precio_id');
-    // }
+    public function tupa()
+    {
+        return $this->belongsTo(Tupa::class);
+    }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

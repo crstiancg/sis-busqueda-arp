@@ -21,4 +21,7 @@ Route::get('/', function () {
 
 
 Route::resource('libros', LibroController::class);
+Route::get('/reporte', function () {
+    return view('reporte');
+});
 

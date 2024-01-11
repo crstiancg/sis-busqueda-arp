@@ -86,7 +86,7 @@ function generarPDF(datos) {
 
   doc.line(40, 180, 90, 180); // firma del solicitante
   doc.text('FIRMA DEL SOLICITANTE', 40, 184);
-  doc.text('IMPORTE: '+formatNumberToSoles(datos.cantidad_copia*datos.precio), 120, 175);
+  doc.text('IMPORTE: '+formatNumberToSoles(datos.pago_busqueda), 120, 175);
   doc.text('Puno, '+convertDate(datos?.created_at?datos.created_at:new Date,"EEEE d 'de' MMMM y"), 120, 183);
 
   doc.text("FASE DE BUSQUEDA:", 20, 190);
@@ -117,7 +117,7 @@ function VerificaDatos(){
     generarPDF(props.datosSolicitud)
     // console.log(props.datosSolicitud);
   }else if(props.datosSolicitudRow){
-    // console.log(props.datosSolicitudRow);
+    console.log(props.datosSolicitudRow);
     const datosSolici = {
       nombres: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.nombres:'',
       apellido_paterno: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.apellido_paterno:'',
@@ -139,7 +139,7 @@ function VerificaDatos(){
       tipo_copia:props.datosSolicitudRow.tipo_copia,
       cantidad_copia:props.datosSolicitudRow.cantidad_copia,
       created_at:props.datosSolicitudRow.created_at,
-      precio:props.datosSolicitudRow.precio?props.datosSolicitudRow.precio.monto:0.0,
+      pago_busqueda:props.datosSolicitudRow.pago_busqueda,
       testimonio: "",
       copiaCertificada: "",
       copiaSimple: "",

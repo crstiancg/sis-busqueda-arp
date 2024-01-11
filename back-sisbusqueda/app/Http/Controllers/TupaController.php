@@ -10,9 +10,21 @@ class TupaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        if ($request->filled('vigencia')) {
+            return Tupa::where('code',$request->vigencia)->get();
+        }else{
+            $precios = Tupa::query();
+            $columnas = $precios->getModel()->getFillable();
+            return  $this->generateViewSetList(
+                $request,
+                $precios,
+                $columnas, //para el filtrado
+                $columnas,  //para la busqueda
+                $columnas //para el odenamiento
+            );
+        }
     }
 
     /**

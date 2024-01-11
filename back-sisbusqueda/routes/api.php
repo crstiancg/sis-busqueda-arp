@@ -25,6 +25,7 @@ use App\Http\Controllers\RegistroVerificacionController;
 use App\Http\Controllers\SolicitanteController;
 use App\Http\Controllers\SolicitudController;
 use App\Http\Controllers\SubSerieController;
+use App\Http\Controllers\TupaController;
 use App\Http\Controllers\UbigeoController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -87,7 +88,7 @@ Route::apiResource('/favorecidos', FavorecidoController::class)->middleware([Han
 Route::apiResource('/solicitantes', SolicitanteController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/solicitantes/dni/{dni}', [SolicitanteController::class, 'getSolicitanteDni']);
 
-Route::apiResource('/precios', PrecioController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/tupas', TupaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/solicitudes', SolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 Route::apiResource('/registro_busquedas', RegistroBusquedaController::class)->middleware([HandlePrecognitiveRequests::class]);
