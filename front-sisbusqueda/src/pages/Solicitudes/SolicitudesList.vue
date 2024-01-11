@@ -240,7 +240,7 @@ const columns = [
       
     // });
 
-    solicitudesformRef.value.setValue(row);
+    // solicitudesformRef.value.setValue(row);
     // solicitudesformRef.value.setValue(row);
     // solicitudesformRef.value.setValue(row);
   }
@@ -250,8 +250,8 @@ const columns = [
     busquedaId.value = id;
 
     const row = await SolicitudService.get(id);
-    console.log(row);
-    busquedaformRef.value.setValue(row);
+    console.log(row.id);
+    busquedaformRef.value.setValue(row.id);
   }
 
   async function eliminar(id) {

@@ -8,8 +8,8 @@
       <q-form @submit.prevent="submit">
         <q-card-section class="q-pa-md">
           <div class="q-gutter-md q-mb-md">
+            <!-- {{ busquedaForm }} -->
             <div class="row">
-              {{ busquedaForm }}
              <q-input class="col-12 col-md-6 q-pa-sm"
              dense
              outlined
@@ -126,6 +126,8 @@
   // const isPwd = ref(true);
   // const roles = ref(false);
   const emits = defineEmits(["save"]);
+  const formBusqueda = ref();
+  
   const props = defineProps({
     title: String,
     id: Number,
@@ -135,20 +137,27 @@
     }
   });
 
-  const busquedaForm = ref();
+  let busquedaForm = 15;
   
   let form;
   if (props.edit) {
-    form = useForm("put", "api/areas/" + props.id, {
+    form = useForm("put", "api/registro_busquedas/" + props.id, {
       id: "",
       nombre: "",
+      
   
     });
   } else {
-    form = useForm("post", "api/areas", {
-      id: "",
-      nombre: "",
+    form = useForm("post", "api/registro_busquedas", {
+      solicitud_id: busquedaForm,
+      protocolo: "",
+      cod_escritura: "",
+      cod_folioInicial: "",
+      cod_folioFinal: "",
+      observaciones: "",
     });
+
+    console.log(form);
   }
   // async function cargar() {
   //   const { data } = await RoleService.getData({
@@ -173,7 +182,9 @@
   };
 
   function setValue(values){
-    busquedaForm.value = values;
+    busquedaForm = values;
+
+    console.log(busquedaForm);
   }
   
   onMounted(() => {

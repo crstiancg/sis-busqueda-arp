@@ -42,7 +42,16 @@ class RegistroBusquedaController extends Controller
 
     public function store(Request $request)
     {
-        //
+        return response(RegistroBusqueda::create([
+            'solicitud_id' => $request->solicitud_id,
+            'user_id' => auth()->user()->id,
+            'estado' => 0,
+            'cod_protocolo' =>  $request->protocolo,
+            'cod_escritura' => $request->cod_escritura,
+            'cod_folioInicial' => $request->cod_folioInicial,
+            'cod_folioFinal' => $request->cod_folioFinal,
+            'observaciones' => $request->observaciones,
+        ]), 201);
     }
 
 
