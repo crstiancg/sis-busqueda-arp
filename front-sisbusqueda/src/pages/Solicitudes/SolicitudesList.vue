@@ -11,7 +11,10 @@
 
     <q-dialog v-model="busquedaForm">
       <BusquedasFormVue
-      ref="busquedaformRef"
+        title="Registro de Resultados de Busqueda"
+        :solici_id="SolicitudID"
+        ref="busquedaformRef"
+        @save="save($event)"
       ></BusquedasFormVue>
     </q-dialog>
     <q-page>
@@ -93,23 +96,6 @@
             <q-td auto-width>
               <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
                 :datosSolicitudRow="props.row"/>
-              <!-- <q-btn
-                size="sm"
-                outline
-                color="green"
-                round
-                @click="editar(props.row.id)"
-                icon="edit"
-                class="q-mr-xs"
-              /> -->
-              <!-- <q-btn
-                size="sm"
-                outline
-                color="red"
-                round
-                @click="eliminar(props.row.id)"
-                icon="delete"
-              /> -->
               <q-btn
                 size="sm"
                 outline
@@ -149,7 +135,7 @@ async function verDat(){
 // verDat();
 
 const columns = [
-  // { field: (row) => row.id, name: "id", label: "ID", align: "left", sortable_: true, search: true },
+  { field: (row) => row.id, name: "id", label: "ID", align: "left", sortable_: true, search: true },
   { field: (row) => row.solicitante.nombre_completo, name: "solicitante.nombre_completo", label: "Solicitante", align: "left", sortable_: true, search: true },
   // { field: (row) => row.tipo_copia, name: "tipo_copia", label: "Tipo de Copia", align: "center", sortable_: true, search: true },
   // { field: (row) => row.cantidad_copia, name: "cantidad_copia", label: "CAntidad de Copia", align: "center", sortable_: true, search: true },
@@ -158,7 +144,7 @@ const columns = [
 ];
 
   const busquedaForm = ref(false);
-  const busquedaId = ref();
+  const SolicitudID = ref();
   const busquedaformRef = ref();
   const tableRef = ref();
   const formPermisos = ref(false);
@@ -211,12 +197,14 @@ const columns = [
 
   onMounted(async() => {
     await userStore.getUser();
-    console.log(userStore.getAreaId);
+    console.log('Area:',userStore.getAreaId);
     tableRef.value.requestServerInteraction();
   });
 
-  const save = () => {
-    formPermisos.value = false;
+  const save = (tipo_dialog) => {
+    console.log(tipo_dialog);
+    if (tipo_dialog === 'busqueda') busquedaForm.value = false;
+    else formPermisos.value = false;
     tableRef.value.requestServerInteraction();
     $q.notify({
       type: "positive",
@@ -247,11 +235,7 @@ const columns = [
 
   async function busqueda(id){
     busquedaForm.value = true;
-    busquedaId.value = id;
-
-    const row = await SolicitudService.get(id);
-    console.log(row.id);
-    busquedaformRef.value.setValue(row.id);
+    SolicitudID.value = id;
   }
 
   async function eliminar(id) {

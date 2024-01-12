@@ -36,7 +36,7 @@ class OtorganteController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Otorgante::create($request->all());
     }
 
     /**

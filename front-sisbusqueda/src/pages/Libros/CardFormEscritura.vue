@@ -227,7 +227,6 @@ const tipoPersonaFavorecido = ref("Natural");
 
 onBeforeMount(() => {
   if (props.Editar) {
-    console.log(props.Editar);
     let patron = /\d+/;
     let folioIni = props.Editar.cod_folioInicial.match(patron);
     let folioFin = props.Editar.cod_folioFinal.match(patron);
@@ -244,7 +243,7 @@ onBeforeMount(() => {
     escritura.value.n_folios = folioIni && folioFin ? parseInt(folioFin[0], 10) - parseInt(folioIni[0], 10) + 1 : 1;
     escritura.value.otorgantes = props.Editar.otorgantes;
     escritura.value.favorecidos = props.Editar.favorecidos;
-    console.log(escritura.value);
+    
     otorgante.value = escritura.value.otorgantes.length !== 0 ? escritura.value.otorgantes[0] : null;
     favorecido.value = escritura.value.favorecidos.length !== 0 ? escritura.value.favorecidos[0] : null;
   }
@@ -318,38 +317,21 @@ function ValidaSuccess(event, step) {
     Save();
   }
 }
-function AñadirOtorgante(){
+async function AñadirOtorgante(){
   formOtorgante.value.nombre_completo= `${formOtorgante.value.nombre} ${formOtorgante.value.apellido_paterno} ${formOtorgante.value.apellido_materno}`;
-  console.log(formOtorgante.value);
-  $q.dialog({
-    title: "Agregar Otorgante",
-    message: "¿Estas seguro de agregar a " + formOtorgante.value.nombre_completo + " ?",
-    cancel: true,
-    persistent: true,
-  }).onOk(async () => {
-    try {
-      errores.value[index] = null;
-      const resp = await LibroService.save(object);
-      console.log(resp);
-      paginacion.value.pagina = 1;
-      await CargarData(paginacion.value);
-      $q.notify({
-        type: 'positive',
-        message: 'Guardado con Exito.',
-        position: 'top-right',
-        progress: true,
-        timeout: 1000,
-      });
-
+  try {
+      otorgante.value = await OtorganteService.save(formOtorgante.value);
     } catch (error) {
       console.log(error.response.data.errors);
-      errores.value[index] = error.response.data.errors;
     }
-
-  });
 }
-function AñadirFavorecido(){
-  console.log(formFavorecido.value);
+async function AñadirFavorecido(){
+  formFavorecido.value.nombre_completo= `${formFavorecido.value.nombre} ${formFavorecido.value.apellido_paterno} ${formFavorecido.value.apellido_materno}`;
+  try {
+      favorecido.value = await FavorecidoService.save(formFavorecido.value);
+    } catch (error) {
+      console.log(error.response.data.errors);
+    }
 }
 </script>
 <style lang="sass" scoped>

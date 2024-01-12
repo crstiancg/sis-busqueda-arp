@@ -1,5 +1,9 @@
 <template>
-    <q-btn color="negative" :label="$q.screen.lt.sm || vericon? '' : label" :icon-right="vericon?'':'picture_as_pdf'" @click="VerificaDatos"/>
+    <q-btn :color="$q.dark.isActive? 'red-6':'negative'" :label="$q.screen.lt.sm || vericon? '' : label" :icon-right="vericon?'':'picture_as_pdf'" @click="VerificaDatos">
+      <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
+          Ver en PDF
+        </q-tooltip>
+    </q-btn>
     <!-- <img src="src/assets/img/logo_ARP.png" alt=""> -->
 </template>
 
@@ -8,6 +12,8 @@ import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { convertDate } from "src/utils/ConvertDate";
 import { formatNumberToSoles } from "src/utils/ConvertMoney";
+import { useQuasar } from "quasar";
+const $q = useQuasar();
 const props = defineProps({
   datosSolicitud:{default:null},
   datosSolicitudRow:{default:null},

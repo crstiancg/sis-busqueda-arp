@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRegistroBusquedaRequest;
 use App\Models\RegistroBusqueda;
 use App\Models\Solicitud;
 use Illuminate\Http\Request;
@@ -40,13 +41,17 @@ class RegistroBusquedaController extends Controller
         //
     }
 
-    public function store(Request $request)
+    public function store(StoreRegistroBusquedaRequest $request)
     {
+        Solicitud::find($request->solicitud_id)->update([
+            "estado" => "Verificación",
+            "area_id" => 3,
+        ]);
         return response(RegistroBusqueda::create([
             'solicitud_id' => $request->solicitud_id,
             'user_id' => auth()->user()->id,
             'estado' => 0,
-            'cod_protocolo' =>  $request->protocolo,
+            'cod_protocolo' =>  $request->cod_protocolo,
             'cod_escritura' => $request->cod_escritura,
             'cod_folioInicial' => $request->cod_folioInicial,
             'cod_folioFinal' => $request->cod_folioFinal,

@@ -35,7 +35,7 @@ class FavorecidoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        return Favorecido::create($request->all());
     }
 
     /**

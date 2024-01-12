@@ -1,30 +1,31 @@
 <template>
     <!-- content -->
     <q-card class="my-card" style="width: 1400px; max-width: 80vw">
-      <q-card-section class="bg-primary text-white">
-        <div class="text-h6">{{ title }}</div>
-        <!-- <div class="text-subtitle2">Usuario</div> -->
+      <q-card-section class="bg-primary text-white row">
+        <div class="text-h6">{{ title + ' ' + solici_id }}</div>
+        <q-space />
+        <q-btn icon="close" color="negative" round  v-close-popup />
       </q-card-section>
+      <div>{{ form?.validate }} - {{ form }}</div>
       <q-form @submit.prevent="submit">
         <q-card-section class="q-pa-md">
           <div class="q-gutter-md q-mb-md">
-            <!-- {{ busquedaForm }} -->
             <div class="row">
              <q-input class="col-12 col-md-6 q-pa-sm"
              dense
              outlined
-             v-model="form.protocolo"
+             v-model="form.cod_protocolo"
              :loading="form.validating"
              label="Protocolo *"
-             @change="form.validate('protocolo')"
-             :error="form.invalid('protocolo')"
-             :class="form.invalid('protocolo') ? 'q-mb-sm' : ''"
+             @change="form.validate('cod_protocolo')"
+             :error="form.invalid('cod_protocolo')"
+             :class="form.invalid('cod_protocolo') ? 'q-mb-sm' : ''"
              ><template v-slot:prepend>
                <q-icon name="mdi-key" />
              </template>
              <template v-slot:error>
                <div>
-                 {{ form.errors.protocolo }}
+                 {{ form.errors.cod_protocolo }}
                </div>
              </template>
            </q-input>
@@ -122,81 +123,38 @@
   <script setup>
   import { useForm } from "laravel-precognition-vue";
   import { onMounted, ref } from "vue";
-  // import RoleService from "src/services/RoleService"
-  // const isPwd = ref(true);
-  // const roles = ref(false);
+
   const emits = defineEmits(["save"]);
-  const formBusqueda = ref();
-  
   const props = defineProps({
     title: String,
-    id: Number,
-    edit: {
-      type: Boolean,
-      default: false,
-    }
+    solici_id: {type:Number,default:null},
+    edit: {type: Boolean,default: false,},
   });
-
-  let busquedaForm = 15;
-  
-  let form;
-  if (props.edit) {
-    form = useForm("put", "api/registro_busquedas/" + props.id, {
-      id: "",
-      nombre: "",
-      
-  
-    });
-  } else {
-    form = useForm("post", "api/registro_busquedas", {
-      solicitud_id: busquedaForm,
-      protocolo: "",
+  let form = useForm("post", "api/registro_busquedas", {
+      solicitud_id: props.solici_id,
+      cod_protocolo: "",
       cod_escritura: "",
       cod_folioInicial: "",
       cod_folioFinal: "",
       observaciones: "",
     });
-
-    console.log(form);
-  }
-  // async function cargar() {
-  //   const { data } = await RoleService.getData({
-  //     params: { rowsPerPage: 0, order_by: "id" },
-  //   });
-  //   roles.value = data;
-  //   console.log(roles.value);
-  // }
-  
+  onMounted(() => {
+    console.log(props.solici_id);
+  });
   const submit = () => {
     form
       .submit()
       .then((response) => {
         form.reset();
         // form.setData()
-  
-        emits("save");
+        console.log(response);
+        emits("save",'busqueda');
       })
       .catch((error) => {
-        // alert("An error occurred.");
+        // alert(error);
       });
   };
-
-  function setValue(values){
-    busquedaForm = values;
-
-    console.log(busquedaForm);
-  }
-  
-  onMounted(() => {
-    // setData();
-    console.log(props.edit);
-    // cargar();
-    // console.log(form);
-  });
-  
   defineExpose({
-    // setData,
-    setValue,
     form,
   });
   </script>
