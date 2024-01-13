@@ -54,13 +54,7 @@
           <q-tab-panels v-model="tipoPersonaOtorgante">
             <q-tab-panel name="Natural">
               <div class="text-subtitle1">Persona Natural</div>
-              <!-- <q-select label="Apellidos y Nombres" dense>
-                <template v-slot:after>
-                  <q-btn color="primary" label="Añadir"></q-btn>
-                </template>
-              </q-select> -->
-              <SelectInput label="Otorgante(s)" dense lazy-rules
-                :rules="[val => (val !== '' && val !== null) || 'Seleccione Otorgantes']" v-model="otorgante"
+              <SelectInput label="Otorgante(s)" dense v-model="otorgante"
                 :options="OtorganteService" OptionLabel="nombre_completo" OptionValue="id"
                 :ValueMulti="['id', 'nombre_completo']" />
               <div class="row">
@@ -72,27 +66,6 @@
                   v-model="formOtorgante.apellido_materno" />
               </div>
               <q-btn label="Agregar Otorgante" color="positive" @click="AñadirOtorgante"></q-btn>
-
-              <q-markup-table flat class="q-mt-sm">
-                <thead>
-                  <tr>
-                    <th class="text-left">#</th>
-                    <th class="text-right">ID</th>
-                    <th class="text-right">Apellidos y Nombres</th>
-                    <th class="text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(v, i) in escritura.otorgantes" :key="i">
-                    <td>{{ i + 1 }}</td>
-                    <td class="text-right">{{ v.id }}</td>
-                    <td class="text-right">{{ v.nombre_completo }}</td>
-                    <td class="text-right">
-                      <q-btn size="sm" outline color="red" round icon="delete" @click="removeOtorgante(i)" />
-                    </td>
-                  </tr>
-                </tbody>
-              </q-markup-table>
             </q-tab-panel>
 
             <q-tab-panel name="Jurico">
@@ -100,6 +73,22 @@
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </q-tab-panel>
           </q-tab-panels>
+          <div> 
+            <q-table :rows="escritura.otorgantes" :columns="columns" row-key="id" :rows-per-page-options="[0]">
+              <template v-slot:body="props">
+                <q-tr :props="props">
+                  <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                    <template v-if="col.name === '#'"> {{ props.rowIndex + 1 }} </template>
+                    <template v-else-if="col.name === 'acciones'">
+                      <q-btn size="sm" outline color="red" round icon="delete" @click="removeOtorgante(props.rowIndex)" />
+                    </template>
+                    <template v-else> {{ col.value }} </template>
+                  </q-td>
+                </q-tr>
+              </template>
+            </q-table>
+            <div v-if="errorOtorgante" class="text-red-10">Agregue Otorgante(s)</div>
+          </div>
         </q-step>
 
         <q-step :name="3" title="Favorecidos(s)" caption="" icon="create_new_folder" :done="step > 3"
@@ -111,13 +100,7 @@
           <q-tab-panels v-model="tipoPersonaFavorecido">
             <q-tab-panel name="Natural">
               <div class="text-subtitle1">Persona Natural</div>
-              <!-- <q-select label="Apellidos y Nombres" dense>
-                <template v-slot:after>
-                  <q-btn color="primary" label="Añadir"></q-btn>
-                </template>
-              </q-select> -->
-              <SelectInput label="Favorecidos" dense lazy-rules
-                :rules="[val => (val !== '' && val !== null) || 'Seleccione Favorecidos']" v-model="favorecido"
+              <SelectInput label="Favorecidos" dense v-model="favorecido"
                 :options="FavorecidoService" OptionLabel="nombre_completo" OptionValue="id"
                 :ValueMulti="['id', 'nombre_completo']" />
               <div class="row">
@@ -129,27 +112,6 @@
                   v-model="formFavorecido.apellido_materno" />
               </div>
               <q-btn label="Agregar Favorecido" color="positive" @click="AñadirFavorecido"></q-btn>
-
-              <q-markup-table flat class="q-mt-sm">
-                <thead>
-                  <tr>
-                    <th class="text-left">#</th>
-                    <th class="text-right">ID</th>
-                    <th class="text-right">Apellidos y Nombres</th>
-                    <th class="text-right">Acciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr v-for="(v, i) in escritura.favorecidos" :key="i">
-                    <td>{{ i + 1 }}</td>
-                    <td class="text-right">{{ v.id }}</td>
-                    <td class="text-right">{{ v.nombre_completo }}</td>
-                    <td class="text-right">
-                      <q-btn size="sm" outline color="red" round icon="delete" @click="removeFavorecido(i)" />
-                    </td>
-                  </tr>
-                </tbody>
-              </q-markup-table>
             </q-tab-panel>
 
             <q-tab-panel name="Jurico">
@@ -157,6 +119,22 @@
               Lorem ipsum dolor sit amet consectetur adipisicing elit.
             </q-tab-panel>
           </q-tab-panels>
+          <div> 
+            <q-table :rows="escritura.favorecidos" :columns="columns" row-key="id" :rows-per-page-options="[0]">
+              <template v-slot:body="props">
+                <q-tr :props="props">
+                  <q-td v-for="col in props.cols" :key="col.name" :props="props">
+                    <template v-if="col.name === '#'"> {{ props.rowIndex + 1 }} </template>
+                    <template v-else-if="col.name === 'acciones'">
+                      <q-btn size="sm" outline color="red" round icon="delete" @click="removeFavorecido(props.rowIndex)" />
+                    </template>
+                    <template v-else> {{ col.value }} </template>
+                  </q-td>
+                </q-tr>
+              </template>
+            </q-table>
+            <div v-if="errorFavorecido" class="text-red-10">Agregue Favorecido(s)</div>
+          </div>
         </q-step>
         <template v-slot:navigation>
           <q-stepper-navigation>
@@ -224,6 +202,15 @@ const step = ref(1);
 
 const tipoPersonaOtorgante = ref("Natural");
 const tipoPersonaFavorecido = ref("Natural");
+const errorOtorgante = ref(false);
+const errorFavorecido = ref(false);
+
+const columns = [
+  { field: '', name: "#", label: "#", align: "center"},
+  { field: (row) => row.id, name: "id", label: "ID", align: "center"},
+  { field: (row) => row.nombre_completo, name: "nombre_completo", label: "Nombres y Apellidos", align: "center"},
+  { field: '', name: "acciones", label: "Acciones", align: "center"},
+];
 
 onBeforeMount(() => {
   if (props.Editar) {
@@ -241,39 +228,44 @@ onBeforeMount(() => {
     escritura.value.libro_id = props.Editar.libro_id;
     escritura.value.observaciones = props.Editar.observaciones;
     escritura.value.n_folios = folioIni && folioFin ? parseInt(folioFin[0], 10) - parseInt(folioIni[0], 10) + 1 : 1;
-    escritura.value.otorgantes = props.Editar.otorgantes;
-    escritura.value.favorecidos = props.Editar.favorecidos;
-    
-    otorgante.value = escritura.value.otorgantes.length !== 0 ? escritura.value.otorgantes[0] : null;
-    favorecido.value = escritura.value.favorecidos.length !== 0 ? escritura.value.favorecidos[0] : null;
+    props.Editar.otorgantes.map(item => {
+      otorgante.value = item;
+      addOtorgante();
+    });
+    props.Editar.favorecidos.map(item => {
+      favorecido.value = item;
+      addFavorecido();
+    });
   }
 });
 const addOtorgante = () => {
   let permitir = escritura.value.otorgantes && escritura.value.otorgantes.length !== 0 ?
     !escritura.value.otorgantes.some(item => {
-      return item.id === otorgante.value.id;
+      return item.id === otorgante.value?.id;
     }) : true;
-  if (permitir && otorgante.value) escritura.value.otorgantes.push({ ...otorgante.value });
-  // otorgante.value = null;
+  if (permitir && otorgante.value){
+    escritura.value.otorgantes.push({ ...otorgante.value });
+    errorOtorgante.value = false;
+  }
 };
 const removeOtorgante = (i) => {
-  if (escritura.value.otorgantes.length != 0) {
-    escritura.value.otorgantes.splice(i, 1);
-  }
+  escritura.value.otorgantes.splice(i, 1);
+  otorgante.value = null;
 };
 
 const addFavorecido = () => {
   let permitir = escritura.value.favorecidos && escritura.value.favorecidos.length !== 0 ?
     !escritura.value.favorecidos.some(item => {
-      return item.id === favorecido.value.id;
+      return item.id === favorecido.value?.id;
     }) : true;
-  if (permitir && favorecido.value) escritura.value.favorecidos.push({ ...favorecido.value });
-  // favorecido.value = null;
+  if (permitir && favorecido.value){
+    escritura.value.favorecidos.push({ ...favorecido.value });
+    errorFavorecido.value = false;
+  } 
 };
 const removeFavorecido = (i) => {
-  if (escritura.value.favorecidos.length != 0) {
-    escritura.value.favorecidos.splice(i, 1);
-  }
+  escritura.value.favorecidos.splice(i, 1);
+  favorecido.value = null;
 };
 watch(() => otorgante.value, (newVal, oldVal) => {
   addOtorgante();
@@ -295,9 +287,7 @@ const Save = async () => {
     escritura.value.favorecidos = escritura.value.favorecidos.map((f) => {
       return f.id;
     });
-    console.log(escritura.value);
     let res = await EscrituraService.save(escritura.value);
-    console.log(res);
     emits("save"); //28/12/2023 23:11:01
   } catch (error) {
     console.log(error);
@@ -311,16 +301,23 @@ function ValidaError(step) {
   console.log('error stepper: ', step);
 }
 function ValidaSuccess(event, step) {
-  if (event && step < 3) {
+  if (step === 3) {
+    if(escritura.value.otorgantes.length >0) Save();
+    else errorFavorecido.value = true;
+  } else if(step === 2) {
+    if(escritura.value.otorgantes.length >0) event.next();
+    else errorOtorgante.value = true;
+  }else {
     event.next();
-  } else {
-    Save();
   }
 }
 async function AñadirOtorgante(){
   formOtorgante.value.nombre_completo= `${formOtorgante.value.nombre} ${formOtorgante.value.apellido_paterno} ${formOtorgante.value.apellido_materno}`;
   try {
       otorgante.value = await OtorganteService.save(formOtorgante.value);
+      formOtorgante.value.nombre = "";
+      formOtorgante.value.apellido_paterno = "";
+      formOtorgante.value.apellido_materno = "";
     } catch (error) {
       console.log(error.response.data.errors);
     }
@@ -329,6 +326,9 @@ async function AñadirFavorecido(){
   formFavorecido.value.nombre_completo= `${formFavorecido.value.nombre} ${formFavorecido.value.apellido_paterno} ${formFavorecido.value.apellido_materno}`;
   try {
       favorecido.value = await FavorecidoService.save(formFavorecido.value);
+      formFavorecido.value.nombre = "";
+      formFavorecido.value.apellido_paterno = "";
+      formFavorecido.value.apellido_materno = "";
     } catch (error) {
       console.log(error.response.data.errors);
     }

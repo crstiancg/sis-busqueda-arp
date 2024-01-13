@@ -4,7 +4,7 @@
       v-model="model" :class="Class"
       @update:model-value="emitir(model)">
     </q-input>
-    <div v-if="show" class="posicion">
+    <div v-if="show" class="posicion shadow-box shadow-6">
       <div v-for="val, index in filterOptions" :key="index" @click="SelectItem(val)" :class="$q.dark.isActive ? 'select-dark':'select'" class="cursor-pointer q-px-md q-py-sm">
         <span>
           {{ typeof val === 'object'? val[op_label] : val }}
@@ -21,6 +21,9 @@ const props = defineProps({
   modelValue: {default:null},
   options: {default:null},
   OptionLabel:{default:'nombre'},
+  OptionValue:{default:'id'},
+  ValueMulti:{default:null},
+  ValueAll:{default:false},
   GenerateList :{default:null},
 // aprtir de aqui son los estilos para definir
   Class :{default:''},
@@ -30,6 +33,7 @@ const props = defineProps({
 });
 let array = [];
 const op_label = ref('');
+const op_value = ref('');
 const model = ref('');
 
 const show = ref(false);
@@ -37,15 +41,29 @@ const loading = ref(false);
 
 const recomendacion = ref(null);
 
+
 onMounted(async () => {
   loading.value=true;
   op_label.value = props.GenerateList ? props.GenerateList.column : props.OptionLabel;
+  op_value.value = props.GenerateList ? props.GenerateList.column : props.OptionValue;
   array = await ExtraerDatos(props.options);
   loading.value=false;
   document.addEventListener('click', ClickFueraDelRef);
 });
 function emitir(_model){
-  emit('update:modelValue', _model? typeof _model === 'object'?_model[op_label.value]:_model :_model);
+  if (_model && typeof _model === 'object') {
+    let value = null;
+    if(props.ValueMulti && typeof props.ValueMulti === 'object'){
+      value = {};
+      props.ValueMulti.forEach(element => {
+        if (_model?.[element])
+        value[element] = _model[element];
+      });
+    }else if(props.ValueAll){ value = _model;}
+    else {value = _model[op_value.value]};
+    emit('update:modelValue', value);
+  }else
+    emit('update:modelValue', _model);
 }
 function SelectItem(item){
   show.value=false;
@@ -96,7 +114,7 @@ const ClickFueraDelRef = (event) => {
 </script>
 <style lang="sass" scoped>
 .select
-  background-color: $grey-3
+  background-color: $grey-1
 
 .select-dark
   background-color: $grey-10
@@ -113,5 +131,6 @@ const ClickFueraDelRef = (event) => {
   max-height: 7em
   overflow-y: auto
   width: 100%
+  border-radius: 0px 0px 10px 10px
 
 </style>
