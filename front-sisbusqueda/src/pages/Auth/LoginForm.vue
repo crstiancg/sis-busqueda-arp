@@ -37,7 +37,7 @@
         lazy-rules
         :rules="[
           (val) =>
-            (val !== null && val !== '') || 'Ingrese una Constraseña valida',
+            (val !== null && val !== '') || 'Ingrese una contraseña valida',
         ]"
       >
         <template v-slot:prepend>

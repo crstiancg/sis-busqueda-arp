@@ -1,14 +1,21 @@
 <template>
   <q-page padding class="row justify-center">
-    <div class="col-12 col-sm-6 col-md-4 col-lg-2 self-center text-center">
-      <img
-        alt="Quasar logo"
-        src="https://cdn.quasar.dev/logo-v2/svg/logo.svg"
-        style="width: 50px; height: 50px"
-        class="q-mb-md"
-      />
-      <h4 class="q-my-none">Login</h4>
-      <LoginForm @logued="onLogued"></LoginForm>
+    <div class="col-12 col-sm-6 col-md-4 col-lg-3 self-center text-center">
+      <q-card class="q-pa-xs shadow-4" bordered>
+        <q-img src="https://cdn.quasar.dev/img/parallax1.jpg">
+          <div class="absolute-bottom text-subtitle2 text-center">
+            <div class="text-h6 text-weight-bold">Archivo Regional Puno</div>
+          </div>
+        </q-img>
+        <!-- <img
+          alt="Quasar logo"
+          src="https://cdn.quasar.dev/logo-v2/svg/logo.svg"
+          style="width: 50px; height: 50px;"
+          class="q-mb-md"
+        /> -->
+        <!-- <h4 class="q-my-none">Login</h4> -->
+        <LoginForm @logued="onLogued"></LoginForm>
+      </q-card>
     </div>
   </q-page>
 </template>
