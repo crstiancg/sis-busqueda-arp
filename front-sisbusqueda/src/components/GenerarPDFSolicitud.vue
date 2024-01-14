@@ -55,8 +55,7 @@ function generarPDF(datos) {
   doc.setLineWidth(0.5);
   doc.line(20, 24, 190, 24); // Línea separadora
 
-
-  doc.text("N° Solicitud: {id_solicitud}", 120, 30);
+  doc.text("N° Solicitud: S-"+datos.id.toString().padStart(5, '0'), 120, 30);
   const parrafo1 = `        Yo, ${ datos.nombres } ${ datos.apellido_paterno } ${ datos.apellido_materno } natural de ${ datos.ubigeo_pers } identificado con D.N.I. ${ datos.num_documento } y con domicilio en ${ datos.direccion } del distrito ${ datos.ubigeo_pers }, ante Usted con el debido respeto me presento y expongo:`;
   // const lineas = doc.splitTextToSize(parrafo1, maxWidth);
   doc.text(parrafo1, 20, 40, { align: "justify" , maxWidth: maxWidth});
@@ -92,7 +91,7 @@ function generarPDF(datos) {
 
   doc.line(40, 180, 90, 180); // firma del solicitante
   doc.text('FIRMA DEL SOLICITANTE', 40, 184);
-  doc.text('IMPORTE: '+formatNumberToSoles(datos.pago_busqueda), 120, 175);
+  doc.text('IMPORTE BUSQUEDA: '+formatNumberToSoles(datos.pago_busqueda), 120, 175);
   doc.text('Puno, '+convertDate(datos?.created_at?datos.created_at:new Date,"EEEE d 'de' MMMM y"), 120, 183);
 
   doc.text("FASE DE BUSQUEDA:", 20, 190);
@@ -107,7 +106,7 @@ function generarPDF(datos) {
   doc.text("Verificado por:_______________________________", 25, 241);    doc.text("Firma:_______________", 135, 241);
   doc.text("Derecho N° Copias:________", 25, 248);    doc.text("N° de hojas:_____________", 80, 248);    doc.text("s/:_________", 135, 248);
   doc.text("Verificación:_________________________________", 25, 255);    doc.text("s/:_____________", 135, 255);
-  doc.text("N° de copias: "+datos.cantidad_copia, 80, 262);    doc.text("s/:"+formatNumberToSoles(datos.cantidad_copia*datos.precio), 135, 262);
+  doc.text("N° de copias: __________", 80, 262);    doc.text("s/:_________", 135, 262);
   doc.text("Observaciones:{oBserva}____________________________________________________________________________________________________________", 25, 269,{align: "justify" , maxWidth: maxWidth-10});
 
   window.open(doc.output("bloburl"), "_blank");
@@ -134,6 +133,7 @@ function VerificaDatos(){
       celular: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.celular:'',
       ubigeo_pers:props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.ubigeo?props.datosSolicitudRow.solicitante.ubigeo.nombre:'':'',
 
+      id: props.datosSolicitudRow.id,
       otorgantes: props.datosSolicitudRow.otorgantes,
       favorecidos: props.datosSolicitudRow.favorecidos,
       fecha:props.datosSolicitudRow.fecha,
@@ -146,9 +146,6 @@ function VerificaDatos(){
       cantidad_copia:props.datosSolicitudRow.cantidad_copia,
       created_at:props.datosSolicitudRow.created_at,
       pago_busqueda:props.datosSolicitudRow.pago_busqueda,
-      testimonio: "",
-      copiaCertificada: "",
-      copiaSimple: "",
     };
     generarPDF(datosSolici);
   }

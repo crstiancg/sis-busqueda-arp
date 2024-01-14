@@ -13,7 +13,7 @@
             <q-stepper v-model="step" ref="stepper" color="primary" header-nav animated flat bordered>
               <q-step :name="1" title="Registro Solicitante" icon="settings"
                 :done="step > 1" :header-nav="step > 1">
-                <q-option-group
+                <q-option-group disable
                   v-model="solicitudForm.tipo_documento" inline @update:model-value="onReset"
                   :options="[ { label: 'PERSONA', value: 'PERSONA' }, { label: 'EMPRESA', value: 'EMPRESA' },]"
                 />
@@ -71,10 +71,12 @@
                     </div>
                     <!-- <SelectUbigeoPuno ref="solicitudUbigeoRef" :ubigeo_cod="solicitudForm.ubigeo_cod_soli"
                         @selectedItem="updateUbigeoSoli($event)" Class="col-12 col-md-6 q-pa-sm"/> -->
-                    <SelectInput class="col-12 col-md-6 q-pa-sm" label="Notarios" v-model="solicitudForm.notario" :options="GenerateListService"
-                        :GenerateList="{ column: 'notario', table: 'all' }" />
-                    <SelectInput class="col-12 col-md-6 q-pa-sm" label="Subserie" v-model="solicitudForm.subserie" :options="GenerateListService"
-                        :GenerateList="{ column: 'subserie', table: 'all' }" />
+                    <SelectInput class="col-12 col-md-6 q-pa-sm" label="Notarios" dense outlined clearable
+                        v-model="solicitudForm.notario_id" 
+                        :options="NotarioServive" OptionLabel="nombre_completo" OptionValue="id"/>
+                    <SelectInput class="col-12 col-md-6 q-pa-sm" label="Subserie" dense outlined clearable
+                        v-model="solicitudForm.subserie_id" 
+                        :options="SubSerieService" OptionLabel="nombre" OptionValue="id"/>
                     <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
                         v-model="solicitudForm.otorgantes" label="Otorgante"/>
                     <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
@@ -103,10 +105,6 @@
               </q-step>
               <q-step :name="3" title="Registro Caja" icon="point_of_sale"
                 :done="step > 3" :header-nav="step > 3" >
-                  <div class="row">
-                    <p>Seleccione el Tipo de Documento:</p> <q-space />
-                    <GenerarPDFSolicitud :datosSolicitud="solicitudForm" label="Pre Generar PDF" class="q-ml-sm"/>
-                  </div>
                   <div class="row full-width">
                     <!-- <q-toggle v-model="solicitudForm.tipo_copia" color="pink" true-value="Testimonio" label="Testimonio"/>
                     <q-toggle v-model="solicitudForm.tipo_copia" label="Copia Certificada" true-value="Copia Certificada" color="green" />
@@ -116,9 +114,7 @@
                   </div>
                   <div class="row">
                     <div class="col-12 col-md-6">
-                      <q-input class="q-pa-sm" type="number" suffix="Copia(s)" dense outlined clearable
-                          v-model="solicitudForm.cantidad_copia" label="Cantidad de copias"/>
-                      <q-input class="q-pa-sm" type="number" prefix="s/" dense outlined clearable
+                      <q-input class="q-pa-sm" mask="###" prefix="s/" dense outlined clearable
                           v-model="montoEntregado" label="Monto entregado"/>
                     </div>
                     <div class="col-12 col-md-6 row">
@@ -128,9 +124,10 @@
                         <div class="q-ma-sm text-right text-weight-bold text-subtitle1">Monto de Cambio (vuelto) :</div>
                       </div>
                       <div class="col-5">
-                        <div class="q-ma-sm text-green-13 text-weight-bold text-subtitle1">{{ solicitudForm.cantidad_copia?formatNumberToSoles(precioVigente*solicitudForm.cantidad_copia):'' }}</div>
+                        <div class="q-ma-sm text-green-13 text-weight-bold text-subtitle1">{{ 
+                          formatNumberToSoles(precioVigente)}}</div>
                         <div class="q-ma-sm text-subtitle1">{{ montoEntregado?formatNumberToSoles(montoEntregado):'' }}</div>
-                        <div class="q-ma-sm text-yellow-6 text-subtitle1">{{ montoEntregado?formatNumberToSoles(montoEntregado-(precioVigente*solicitudForm.cantidad_copia)):'' }}</div>
+                        <div class="q-ma-sm text-yellow-6 text-subtitle1">{{ montoEntregado?formatNumberToSoles(montoEntregado-(precioVigente)):'' }}</div>
                       </div>
                     </div>
                   </div>
@@ -181,12 +178,11 @@
 import { ref, computed, watch, onMounted } from "vue";
 import DniService from "src/services/DniService";
 import SolicitudService from "src/services/SolicitudService";
+import NotarioServive from "src/services/NotarioService";
+import SubSerieService from "src/services/SubSerieService";
 import TupaService from "src/services/TupaService";
-import SelectUbigeoPuno from "src/components/SelectUbigeoPuno.vue";
 import SelectUbigeoPlus from "src/components/SelectUbigeoPlus.vue"
 import SelectInput from "src/components/SelectInput.vue";
-import GenerateListService from "src/services/arp_v1/GenerateListService"
-import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
 import { formatNumberToSoles } from "src/utils/ConvertMoney"
 import { useQuasar } from "quasar";
 
@@ -202,8 +198,6 @@ const precioVigente = ref();
 const props = defineProps ({
   title: String,
 });
-const usuarioUbigeoRef = ref("");
-const solicitudUbigeoRef = ref("");
 const solicitudForm = ref({
     //parte de solicitante ************
     id:null,
@@ -227,19 +221,10 @@ const solicitudForm = ref({
     bien: "",
     mas_datos: "",
     tipo_copia:'Copia Simple',
-    cantidad_copia:1,
     estado:'',
     area_id: 2,
     //datos para generar PDF **********
-    notario:null,
-    subserie:null,
-    ubigeo_soli:'',
-    ubigeo_pers:'',
     precio:'',
-    /******************* */
-    testimonio: "",
-    copiaCertificada: "",
-    copiaSimple: "",
   });
 
 async function getPrecioVigente(){
@@ -252,14 +237,6 @@ onMounted(()=>{
   getPrecioVigente();
 });
 
-function updateUbigeo(event) {
-  solicitudForm.value.ubigeo_cod = event.ubigeo_cod;
-  solicitudForm.value.ubigeo_pers = event.nombre;
-}
-function updateUbigeoSoli(event) {
-  solicitudForm.value.ubigeo_cod_soli = event.ubigeo_cod;
-  solicitudForm.value.ubigeo_soli = event.nombre;
-}
 function SiguienteStepper(val){
   val.next();regla_DNI.value=false;
 }
@@ -331,19 +308,7 @@ function onReset(n_documento = true) {
 const onSubmit = async () => {
     solicitudForm.value.nombre_completo = nombreCompleto.value;
     const request = await SolicitudService.save(solicitudForm.value);
-    console.log("enviado!",request);
     emit("save");
-};
-const save = () => {
-    formTrabajadores.value = false;
-    // tableRef.value.requestServerInteraction();
-    $q.notify({
-      type: "positive",
-      message: "Guardado con Exito.",
-      position: "top-right",
-      progress: true,
-      timeout: 1000,
-    });
 };
 
 // function setValue(values) {

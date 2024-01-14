@@ -302,7 +302,7 @@ function ValidaError(step) {
 }
 function ValidaSuccess(event, step) {
   if (step === 3) {
-    if(escritura.value.otorgantes.length >0) Save();
+    if(escritura.value.favorecidos.length >0) Save();
     else errorFavorecido.value = true;
   } else if(step === 2) {
     if(escritura.value.otorgantes.length >0) event.next();

@@ -24,7 +24,7 @@ class SolicitudController extends Controller
         return $this->generateViewSetList(
             $request,
             Solicitud::orderBy('updated_at', 'desc')->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario','tupa'),
-            ['area_id','estado'],
+            ['area_id','estado','user_id'],
             ['id'],
             ['id'],
             // $solicitudesConUbigeos,
@@ -68,8 +68,8 @@ class SolicitudController extends Controller
         $id_solicitabte = $solicitante->id;
         $id_precio = Tupa::first();
         $solicitud = Solicitud::create([
-            'notario_id' => 1,  // ojo tenr que agregar
-            'subserie_id'=> 1,  // ojo tenr que agregar
+            'notario_id' => $request->notario_id, 
+            'subserie_id'=> $request->subserie_id,
             'solicitante_id'=> $id_solicitabte,
             'otorgantes'=> $request->otorgantes,
             'favorecidos'=> $request->favorecidos,
@@ -77,12 +77,11 @@ class SolicitudController extends Controller
             'ubigeo_cod'=> $request->ubigeo_cod_soli,
             'bien'=> $request->bien,
             'mas_datos'=> $request->mas_datos,
-            'tipo_copia'=> $request->tipo_copia,
-            'cantidad_copia'=> $request->cantidad_copia,
             'pago_busqueda' => $request->precio,
             'area_id' => $request->area_id,
             'estado'=> 'Buscando',              // ojo con los estados
             'user_id' =>auth()->user()->id,
+            'created_at'=> now(),
             'updated_at'=> now(),
         ]);
 

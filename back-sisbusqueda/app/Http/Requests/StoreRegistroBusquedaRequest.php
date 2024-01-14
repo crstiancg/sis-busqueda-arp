@@ -23,7 +23,6 @@ class StoreRegistroBusquedaRequest extends FormRequest
     {
         return [
             'solicitud_id' => 'required',
-            'user_id'=> 'required',
             'cod_protocolo'=> 'required',
             'cod_escritura'=> 'required',
             'cod_folioInicial'=> 'required',

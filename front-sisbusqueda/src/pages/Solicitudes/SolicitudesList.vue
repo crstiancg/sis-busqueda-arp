@@ -73,15 +73,6 @@
             </template>
           </q-input>
         </template>
-        <template v-slot:header="props">
-          <q-tr :props="props">
-            <q-th v-for="col in props.cols" :key="col.name" :props="props">
-              {{ col.label }}
-            </q-th>
-            <q-th auto-width> Acciones </q-th>
-          </q-tr>
-        </template>
-
         <template v-slot:body="props">
           <q-tr :props="props">
             <q-td v-for="col in props.cols" :key="col.name" :props="props">
@@ -91,20 +82,20 @@
                   {{ col.value }}
                 </q-badge>
               </span>
+              <div v-else-if="col.name === 'acciones'">
+                <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
+                  :datosSolicitudRow="props.row"/>
+                  <q-btn v-if="Area === 2"
+                    size="sm"
+                    outline
+                    color="blue"
+                    round
+                    @click="busqueda(props.row.id)"
+                    icon="search"
+                    class="q-mr-xs"
+                  /> 
+              </div>
               <span v-else>{{ col.value }}</span>
-            </q-td>
-            <q-td auto-width>
-              <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
-                :datosSolicitudRow="props.row"/>
-              <q-btn
-                size="sm"
-                outline
-                color="blue"
-                round
-                @click="busqueda(props.row.id)"
-                icon="search"
-                class="q-mr-xs"
-              /> 
             </q-td>
           </q-tr>
         </template>
@@ -123,6 +114,9 @@
   import { useUserStore } from "src/stores/user-store";
 
   const userStore = useUserStore();
+
+  const Area = ref(userStore.getAreaId);
+  console.log(userStore.id);
   const $q = useQuasar();
 
 async function verDat(){
@@ -141,6 +135,7 @@ const columns = [
   // { field: (row) => row.cantidad_copia, name: "cantidad_copia", label: "CAntidad de Copia", align: "center", sortable_: true, search: true },
   { field: (row) => row.estado, name: "estado", label: "Estado", align: "center", sortable_: true, },
   { field: (row) => row.updated_at , name: "updated_at", label: "Fecha actualizacion", align: "center", sortable_: true, },
+  { field: '' , name: "acciones", label: "Acciones", align: "center" },
 ];
 
   const busquedaForm = ref(false);
@@ -173,7 +168,8 @@ const columns = [
     const order_by = descending ? "-" + sortBy : sortBy;
     const { data, total = 0 } = await SolicitudService.getData({
       params: { 
-        area_id: userStore.getAreaId, 
+        area_id: userStore.getAreaId!==1?userStore.getAreaId:"", 
+        user_id: userStore.getAreaId===1?userStore.id:"", 
         estado: "",
         rowsPerPage: fetchCount, 
         page, 
