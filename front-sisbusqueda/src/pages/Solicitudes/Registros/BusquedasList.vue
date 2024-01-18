@@ -62,22 +62,31 @@
           </template>
         </q-input>
       </template>
-      <!-- <template v-slot:header="props">
+      <template v-slot:header="props">
         <q-tr :props="props">
           <q-th v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.label }}
           </q-th>
           <q-th auto-width> Acciones </q-th>
         </q-tr>
-      </template> -->
+      </template>
 
-      <!-- <template v-slot:body="props">
+      <template v-slot:body="props">
         <q-tr :props="props">
           <q-td v-for="col in props.cols" :key="col.name" :props="props">
             {{ col.value }}
           </q-td>
           <q-td auto-width>
             <q-btn
+              size="sm"
+              outline
+              color="cyan-4"
+              round
+              @click="show(props.row.id)"
+              icon="visibility"
+              class="q-mr-xs"
+            />
+            <!-- <q-btn
               size="sm"
               outline
               color="green"
@@ -93,10 +102,10 @@
               round
               @click="eliminar(props.row.id)"
               icon="delete"
-            />
+            /> -->
           </q-td>
         </q-tr>
-      </template> -->
+      </template>
     </q-table>
   </q-page>
 </template>
@@ -106,8 +115,11 @@ import { ref, onMounted } from "vue";
 import BusquedaService from "src/services/BusquedaService";
 import { useQuasar } from "quasar";
 import BusquedasForm from "src/pages/Solicitudes/Registros/BusquedasForm.vue";
+import { useRouter } from "vue-router";
 
 const $q = useQuasar();
+const router = useRouter();
+
 const columns = [
   {
     field: (row) => row.id,
@@ -244,6 +256,14 @@ const save = () => {
     timeout: 1000,
   });
 };
+
+async function show(id) {
+  router.push({
+    name: "Busquedashow",
+    params: { id: id },
+  });
+}
+
 async function editar(id) {
   title.value = "Editar Sub ";
   formPermisos.value = true;

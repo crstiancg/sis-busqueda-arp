@@ -60,11 +60,17 @@ class RegistroBusquedaController extends Controller
     }
 
 
-    public function show($id)
+    public function show(RegistroBusqueda $registroBusqueda)
     {
-        $solicitude = Solicitud::find($id);
-        return response()->json($solicitude);
+        // $solicitude = Solicitud::find($id);
+        return response()->json($registroBusqueda);
     }
+
+    // public function show($id)
+    // {
+    //     $solicitude = Solicitud::find($id);
+    //     return response()->json($solicitude);
+    // }
 
 
     public function edit(RegistroBusqueda $registroBusqueda)
