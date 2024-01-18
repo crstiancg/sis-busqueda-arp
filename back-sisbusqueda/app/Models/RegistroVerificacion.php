@@ -9,6 +9,7 @@ class RegistroVerificacion extends Model
 {
     use HasFactory;
     protected $table = 'registro_verificacions';
+    protected $with = ['registroBusqueda','user'];
     protected $fillable = [
         'RB_id_derivado',
         'user_id',
