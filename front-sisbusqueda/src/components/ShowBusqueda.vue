@@ -1,4 +1,22 @@
 <template>
+  <div class="q-px-md q-py-md">
+    <div class="row justify-between">
+        <div>
+            <span class="text-h4 text-weight-bold">Historial de Busqueda</span>
+            <div class="row q-mb-xs">
+                <q-breadcrumbs>
+                    <q-breadcrumbs-el label="Busqueda" icon="list" to="/busqueda" />
+                    <q-breadcrumbs-el :label="stringid" icon="visibility" />
+                </q-breadcrumbs>
+            </div>
+        </div>
+        <div>
+            <!-- <q-btn v-if="!periodoCerrado" color="negative" label="Eliminar" @click="eliminar(props.periodoId)"
+                class="q-mr-sm" /> -->
+            <q-btn color="warning" label="Volver"  @click="$router.push('/busqueda')"/>
+        </div>
+    </div>
+</div>
     <q-card class="q-px-md q-mt-sm">
         <div class="row">
           <div class="q-pa-sm col-md-6 col-xs-12">
@@ -86,7 +104,7 @@
                         {{ form.solicitud.solicitante.nombre_completo }}
                       </p>
                     </div>
-                    <!-- <div class="col-12 col-md-12">
+                    <div class="col-12 col-md-12">
                       <span class="text-weight-bold text-uppercase">Registrado Por</span>
                       <p class="text-uppercase"
                         :class="
@@ -97,7 +115,7 @@
                       >
                         {{ form.solicitud.user.name }}
                       </p>
-                    </div> -->
+                    </div>
                   </div>
                 </div>
               </q-card-section>
