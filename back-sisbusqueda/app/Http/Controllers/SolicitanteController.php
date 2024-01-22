@@ -26,12 +26,10 @@ class SolicitanteController extends Controller
         return response(Solicitante::create($request->all()), 201);
 
     }
-
    
-    public function show(Solicitante $solicitude)
+    public function show(Int $id)
     {
-        return response()->json($solicitude);
-
+        return response()->json(Solicitante::find($id));
     }
    
     public function update(Request $request, Solicitante $solicitude)
@@ -49,10 +47,9 @@ class SolicitanteController extends Controller
 
     public function getSolicitanteDni(string $dni)
     {
-        // Persona::where('dni',$dni);
         $persona = Solicitante::where('num_documento', $dni)->first();
-
         if ($persona) {
+            $persona->existe = true;
             return response()->json($persona);
         } else {
             $token = 'apis-token-6807.Z1QDuGGlyyYJEtNrFCo1TmgDHOx54FNE';

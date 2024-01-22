@@ -7,10 +7,13 @@
 -->
 <template>
   <q-select v-if="cod_departamento === null || show_departamento"
-      borderless dense debounce="300" outlined use-input hide-selected fill-input input-debounce="0" clearable
-      v-model="model_depa" label="Departamento" :class="Class"
+      use-input hide-selected fill-input input-debounce="0" 
+      :clearable="clearable" :dense="dense" :outlined="outlined" 
+      v-model="model_depa" label="Departamento" :class="Class" lazy-rules
+      :rules="requerido?[(val) => (val!==null) || 'Por favor seleccione departamento',]:[]"
       :options="optionsDepartamentos" option-label="nombre" option-value="cod_dep"
-      @filter="filterDepartamentos" :loading="loading" :disable="loading || props.cod_departamento !== null">
+      @filter="filterDepartamentos" :loading="cargarComponent || loading" :disable="cargarComponent || props.cod_departamento !== null">
+      <template v-slot:label> Departamento <span v-if="requerido" class="text-red-7 text-weight-bold">(*)</span></template>
       <template v-slot:no-option>
           <q-item>
               <q-item-section class="text-grey">
@@ -20,10 +23,13 @@
       </template>
   </q-select>
   <q-select v-if="cod_provincia === null || show_provincia"
-      borderless dense debounce="300" outlined use-input hide-selected fill-input input-debounce="0" clearable
-      v-model="model_prov" label="Provincia" :class="Class"
-      :options="optionsProvincias"  option-label="nombre" option-value="cod_prov"
-      @filter="filterProvincias" :loading="loading" :disable="loading || props.cod_provincia !== null">
+      use-input hide-selected fill-input input-debounce="0" 
+      :clearable="clearable" :dense="dense" :outlined="outlined" 
+      v-model="model_prov" label="Provincia" :class="Class" lazy-rules
+      :rules="requerido?[(val) => (val!==null) || 'Por favor seleccione provincia',]:[]"
+      :options="optionsProvincias"  option-label="nombre" option-value="cod_prov" :readonly="model_depa===null"
+      @filter="filterProvincias" :loading="cargarComponent || loading" :disable="cargarComponent || props.cod_provincia !== null">
+      <template v-slot:label> Provincia <span v-if="requerido" class="text-red-7 text-weight-bold">(*)</span></template>
       <template v-slot:no-option>
           <q-item>
               <q-item-section class="text-grey">
@@ -32,10 +38,13 @@
           </q-item>
       </template>
   </q-select>
-  <q-select borderless dense debounce="300" outlined use-input hide-selected fill-input input-debounce="0" clearable
-      v-model="model_dist" label="Distrito" :class="Class"
-      :options="optionsDistritos"  option-label="nombre" option-value="cod_dist"
-      @filter="filterDistritos" :loading="loading" :disable="loading">
+  <q-select use-input hide-selected fill-input input-debounce="0" 
+      :clearable="clearable" :dense="dense" :outlined="outlined" 
+      v-model="model_dist" label="Distrito" :class="Class" lazy-rules
+      :rules="requerido?[(val) => (val!==null) || 'Por favor seleccione distrito',]:[]"
+      :options="optionsDistritos"  option-label="nombre" option-value="cod_dist" :readonly="model_prov===null"
+      @filter="filterDistritos" :loading="cargarComponent || loading" :disable="cargarComponent" >
+      <template v-slot:label> Distrito <span v-if="requerido" class="text-red-7 text-weight-bold">(*)</span></template>
       <template v-slot:no-option>
           <q-item>
               <q-item-section class="text-grey">
@@ -47,21 +56,27 @@
 </template>
 <script setup>
 import UbigeosService from 'src/services/UbigeoService';
-import { onMounted, ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 const emit = defineEmits(['update:modelValue']);
 const props = defineProps({
     modelValue: {default:null},
-    Class: {default:''},
     cod_departamento: {type:String,default:null},
     cod_provincia: {type:String,default:null},
     show_departamento: {default:false},
     show_provincia: {default:false},
+    requerido: {default:false},
+    /**** estilos******* */
+    Class: {default:''},
+    loading: {default:false},
+    dense: {default:false},
+    outlined: {default:false},
+    clearable: {default:false},
 });
-const loading = ref(false);
+const cargarComponent = ref(false);
 
-const model_depa = ref();
-const model_prov = ref();
-const model_dist = ref();
+const model_depa = ref(null);
+const model_prov = ref(null);
+const model_dist = ref(null);
 
 // let allDepartamentos = [];
 let allProvincias = [];
@@ -71,70 +86,80 @@ let stringDepartamentos = [];
 let stringProvincias = [];
 let stringDistritos = [];
 
-let banderaModelValue = props.modelValue !== null;
-let banderaCodDeparta = props.cod_departamento !== null;
-
-let num_ban = 0;
-
 function emitir(_model){
   emit('update:modelValue', _model? typeof _model === 'object'? _model.cod_dep+_model.cod_prov+_model.cod_dist:_model:null);
 }
-onMounted(async () => {
-  loading.value = true;
+let auxi_dep = null; let auxi_pro = null; let auxi_dis = null;
+// onBeforeMount
+onBeforeMount(async () => {
+  cargarComponent.value = true;
   [stringDepartamentos, allProvincias, allDistritos] = await UbigeosService.getAllUbigeo();
-  await CargarModel();
-  loading.value = false;
+  [auxi_dep,auxi_pro,auxi_dis] = separarCadena(props.modelValue);
+  if(auxi_dep) { getProvincias(auxi_dep); CargarModelDep(auxi_dep);};
+  if(auxi_pro) { getDistritos(auxi_dep, auxi_pro); CargarModelPro(auxi_pro);};
+  if(auxi_dis) CargarModelDis(auxi_dis);
+  cargarComponent.value = false;
 });
-
 /* *** metodos Get ************* */
-async function getProvincias(cod_dep) {
-  stringProvincias = allProvincias.filter(v => v.cod_dep === cod_dep);
+function getProvincias(cod_dep) {
+  if(cod_dep) stringProvincias = allProvincias.filter(v => v.cod_dep === cod_dep);
 }
-async function getDistritos(cod_dep, cod_prov) {
-  stringDistritos = allDistritos.filter(v => v.cod_dep === cod_dep && v.cod_prov === cod_prov);
+function getDistritos(cod_dep, cod_prov) {
+  if(cod_dep && cod_prov) stringDistritos = allDistritos.filter(v => v.cod_dep === cod_dep && v.cod_prov === cod_prov);
 }
-
 /******* revisar cambios de valor ************************ */
-watch(model_depa,(newval,oldval)=>{
-  if(banderaModelValue) return;
-  model_prov.value = null;
-  if(newval) getProvincias(newval.cod_dep);
+watch(()=>model_depa.value,(newval,oldval)=>{
+  if(newval && auxi_dep!==newval.cod_dep) {
+    model_prov.value = null; model_dist.value = null;
+    getProvincias(newval.cod_dep); 
+    auxi_dep=newval.cod_dep;
+  }else if(newval === null) model_prov.value = null;
 });
-watch(model_prov,(newval,oldval)=>{
-  if(banderaCodDeparta && !banderaModelValue) banderaModelValue = false;
-  if(banderaModelValue)  return;
-  model_dist.value = null;
-  if(newval) getDistritos(newval.cod_dep,newval.cod_prov);
+watch(()=>model_prov.value,(newval,oldval)=>{
+  if(newval && auxi_pro!==newval.cod_prov) {
+    model_dist.value = null;
+    getDistritos(newval.cod_dep, newval.cod_prov); 
+    auxi_pro=newval.cod_prov;
+  } else if(newval === null) model_dist.value = null;;
 });
-watch(model_dist,(newval,oldval)=>{
-  if(banderaModelValue) banderaModelValue = false;
+watch(()=>model_dist.value,(newval,oldval)=>{
+  if(newval && auxi_dis!==newval.cod_dist)
+    auxi_dis=newval.cod_dist;
   emitir(newval);
 });
-
-watch(()=>props.modelValue,async (newval,oldval)=>{
-  if(num_ban<=2) await CargarModel();
+watch(()=>props.modelValue,(newval,oldval)=>{
+  let [_dep_, _pro_, _dis_] = separarCadena(newval);
+  if(_dep_ && auxi_dep!==_dep_) {
+    getProvincias(_dep_);
+    auxi_dep = _dep_; auxi_pro = null;
+    CargarModelDep(_dep_);
+  }
+  if(_pro_ && auxi_pro!==_pro_) {
+    getDistritos(auxi_dep, _pro_);
+    auxi_pro = _pro_; auxi_dis = null;
+    CargarModelPro(_pro_);
+  }
+  if(_dis_ && auxi_dis!==_dis_) {
+    auxi_dis = _dis_;
+    CargarModelDis(_dis_);
+  }
 });
 /*** ********************************************************************* */
 function separarCadena(cadena) {
-  return cadena.match(/.{1,2}/g) || [];
-}
-async function CargarModel(){
-  num_ban++;
-  if(num_ban<=1) banderaModelValue = props.modelValue !== null;
-  let codigo_array = banderaModelValue ? separarCadena(props.modelValue):[null,null,null];
+  let codigo_array = cadena && cadena !=="" && cadena.length === 6? cadena.match(/.{1,2}/g) || [null,null,null]:[null,null,null];
   if (props.cod_departamento) codigo_array[0] = props.cod_departamento;
-  if(props.cod_departamento && props.cod_provincia) codigo_array[1] = props.cod_provincia;
-  if(codigo_array[0]){
-    model_depa.value = stringDepartamentos.find(v => v.cod_dep === codigo_array[0]);
-    await getProvincias(codigo_array[0]);
-  }
-  if(codigo_array[0] && codigo_array[1]){
-    model_prov.value = stringProvincias.find(v => v.cod_prov === codigo_array[1]);
-    await getDistritos(codigo_array[0], codigo_array[1]);
-  }
-  if (banderaModelValue) model_dist.value = stringDistritos.find(v => v.cod_dist === codigo_array[2]);
+  if (props.cod_departamento && props.cod_provincia) codigo_array[1] = props.cod_provincia;
+  return codigo_array;
 }
-
+function CargarModelDep(_dep){
+  model_depa.value = _dep ? stringDepartamentos.find(v => v.cod_dep === _dep) : _dep;
+}
+function CargarModelPro(_pro){
+  model_prov.value = _pro ? stringProvincias.find(v => v.cod_prov === _pro) : _pro;
+}
+function CargarModelDis(_dis){
+  model_dist.value = _dis ? stringDistritos.find(v => v.cod_dist === _dis) : _dis;
+}
 /*******  para los filtros *********************************************************** */
 const optionsDepartamentos = ref(stringDepartamentos);
 const optionsProvincias = ref(stringProvincias);

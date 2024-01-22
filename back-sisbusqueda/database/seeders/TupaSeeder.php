@@ -45,7 +45,7 @@ class TupaSeeder extends Seeder
             'code' => '05',
             'sub_code' => '0501',
             'denominacion' => 'Fotocopia para usuarios',
-            'derecho_pago' => '0.005',
+            'derecho_pago' => '0.00005',
             'costo' => '0.20',
         ]);
         Tupa::updateOrCreate([
@@ -96,6 +96,13 @@ class TupaSeeder extends Seeder
             'denominacion' => 'Transcripcion mecanografia',
             'derecho_pago' => '0.00293',
             'costo' => '11.78',
+        ]);
+        Tupa::updateOrCreate([
+            'code' => '00',
+            'sub_code' => '0000',
+            'denominacion' => 'UIT',
+            'derecho_pago' => '0.0',
+            'costo' => '4950',
         ]);
     }
 }

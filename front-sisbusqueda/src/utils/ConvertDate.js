@@ -9,6 +9,7 @@ const supportedDateFormats = [
     "dd/MM/yy",          // Ejemplo: "04/11/23"
     "dd/MMM/yy",         // Ejemplo: "04/nov/23"
     "MM/dd/yyyy",        // Ejemplo: "11/04/2023"
+    "yyyy/MM",           // Ejemplo: "2023/11"
     "yyyy/MM/dd",        // Ejemplo: "2023/11/04"
     "yyyy-MM-dd",        // Ejemplo: "2023-11-04"
     "MMMM d, yyyy",      // Ejemplo: "Noviembre 4, 2023"

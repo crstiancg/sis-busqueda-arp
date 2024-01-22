@@ -290,8 +290,7 @@ const Save = async () => {
     let res = await EscrituraService.save(escritura.value);
     emits("save"); //28/12/2023 23:11:01
   } catch (error) {
-    console.log(error);
-    window.alert(error);
+    console.log(error.response.data.errors);
   }
 };
 function Submit() {

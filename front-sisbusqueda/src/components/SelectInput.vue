@@ -11,6 +11,7 @@
       :loading="loading"
       :disable="loading"
       >
+      <template v-slot:label> {{label}} <span v-if="requerido" class="text-red-7 text-weight-bold">(*)</span></template>
       <template v-slot:prepend>
         <slot name="prepend"></slot>
       </template>
@@ -64,6 +65,7 @@ const props = defineProps({
   ValueAll:{default:false},
 /********************************************** */
   GenerateList :{default:null},
+  requerido:{default:false},
   active_before:{default:false}, /* agregar activadores de slots** */
 });
 let stringOptions = null;

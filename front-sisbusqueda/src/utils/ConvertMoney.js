@@ -11,3 +11,8 @@ export function formatNumberToSoles(number) {
   });
   return formatter.format(number);
 }
+
+export function redondearConDecimales(numero, decimales=1) {
+  const factor = Math.pow(10, decimales);
+  return Math.round(numero * factor) / factor;
+}

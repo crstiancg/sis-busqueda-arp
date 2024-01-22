@@ -4,7 +4,6 @@
           Ver en PDF
         </q-tooltip>
     </q-btn>
-    <!-- <img src="src/assets/img/logo_ARP.png" alt=""> -->
 </template>
 
 <script setup>
@@ -56,7 +55,8 @@ function generarPDF(datos) {
   doc.line(20, 24, 190, 24); // Línea separadora
 
   doc.text("N° Solicitud: S-"+datos.id.toString().padStart(5, '0'), 120, 30);
-  const parrafo1 = `        Yo, ${ datos.nombres } ${ datos.apellido_paterno } ${ datos.apellido_materno } natural de ${ datos.ubigeo_pers } identificado con D.N.I. ${ datos.num_documento } y con domicilio en ${ datos.direccion } del distrito ${ datos.ubigeo_pers }, ante Usted con el debido respeto me presento y expongo:`;
+  const nombre_asunto = datos.tipo_documento==='DNI'? datos.nombre_completo : datos.asunto;
+  const parrafo1 = `        Yo, ${ nombre_asunto } natural de ${ datos.ubigeo_pers } identificado con ${datos.tipo_documento} ${ datos.num_documento } y con domicilio en ${ datos.direccion } del distrito ${ datos.ubigeo_pers }, ante Usted con el debido respeto me presento y expongo:`;
   // const lineas = doc.splitTextToSize(parrafo1, maxWidth);
   doc.text(parrafo1, 20, 40, { align: "justify" , maxWidth: maxWidth});
   doc.text("Celular: "+datos.celular+'\t'+"Correo: "+datos.correo, 30, 60);
@@ -84,7 +84,9 @@ function generarPDF(datos) {
   doc.text("Otorgado por", 25, 108);      doc.text(": "+limitarLineas(doc,datos.otorgantes,120,2), 60, 108,{ align: "justify" , maxWidth: 130});
   doc.text("A Favor de", 25, 118);        doc.text(": "+limitarLineas(doc,datos.favorecidos ,120,2), 60, 118,{ align: "justify" , maxWidth: 130});
   doc.text("Notario Público", 25, 128);   doc.text(": "+limitarLineas(doc,datos.notario ,120,2), 60, 128,{ align: "justify" , maxWidth: 130});
-  doc.text("Lugar y Fecha", 25, 138);     doc.text(": "+datos.ubigeo_soli+", "+ convertDate(datos.fecha,"d 'de' MMMM, yyyy"), 60, 138,{ align: "justify" , maxWidth: 130});
+  const mes = datos.mes?datos.mes+', ':'';
+  const dia = datos.dia?datos.dia+' de ':'';
+  doc.text("Lugar y Fecha", 25, 138);     doc.text(": "+datos.ubigeo_soli+"; "+dia+mes+datos.anio, 60, 138,{ align: "justify" , maxWidth: 130});
   doc.text("Nombre del Bien", 25, 145);   doc.text(": "+limitarLineas(doc,datos.bien ,120,2), 60, 145,{ align: "justify" , maxWidth: 130});
   doc.text("Otros", 25, 155);             doc.text(": "+limitarLineas(doc,datos.mas_datos,120,2), 60, 155,{ align: "justify" , maxWidth: 130});
   doc.text("POR LO TANTO:  Ruego a Usted acceder a mi solicitud por ser justa y legal.", 20, 165);
@@ -122,12 +124,16 @@ function VerificaDatos(){
     generarPDF(props.datosSolicitud)
     // console.log(props.datosSolicitud);
   }else if(props.datosSolicitudRow){
-    console.log(props.datosSolicitudRow);
+    const listMes = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    // console.log(props.datosSolicitudRow);
     const datosSolici = {
       nombres: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.nombres:'',
       apellido_paterno: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.apellido_paterno:'',
       apellido_materno: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.apellido_materno:'',
+      nombre_completo: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.nombre_completo:'',
+      asunto: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.asunto:'',
       num_documento: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.num_documento:'',
+      tipo_documento: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.tipo_documento:'',
       direccion: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.direccion:'',
       correo: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.correo:'',
       celular: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.celular:'',
@@ -136,7 +142,10 @@ function VerificaDatos(){
       id: props.datosSolicitudRow.id,
       otorgantes: props.datosSolicitudRow.otorgantes,
       favorecidos: props.datosSolicitudRow.favorecidos,
-      fecha:props.datosSolicitudRow.fecha,
+      anio:props.datosSolicitudRow.anio,
+      mes:props.datosSolicitudRow.mes?listMes[parseInt(props.datosSolicitudRow.mes)-1]:null,
+      dia:props.datosSolicitudRow.dia,
+      // fecha:props.datosSolicitudRow.fecha,
       ubigeo_soli: props.datosSolicitudRow?.ubigeo? props.datosSolicitudRow.ubigeo.nombre:'',
       bien: props.datosSolicitudRow.bien,
       mas_datos: props.datosSolicitudRow.mas_datos,
@@ -163,27 +172,3 @@ function descargarPDF() {
 }
 // doc.save(nombrePDF);
 </script>
-
-<!-- function makePDF() {
-  window.htm12canvas = html2canvas;
-  let doc = new jsPDF("p","pt", "a4");
-  doc.html(document.querySelector("#documento"),{
-    callback: function(pdf){
-      let dataUri = pdf.output('datauristring');
-      let iframe = document.createElement('iframe');
-      iframe.src = dataUri;
-      let destinoDiv = document.querySelector("#ver");
-      iframe.style.width = "100%";
-      destinoDiv.appendChild(iframe);
-
-      let downloadButton = document.createElement('button');
-      downloadButton.textContent = 'Descargar PDF';
-      downloadButton.addEventListener('click', function() {
-        pdf.save('mypdf.pdf');
-      });
-      destinoDiv.appendChild(downloadButton);
-      // document.body.appendChild(iframe);
-    }
-  });
-
-} -->

@@ -1,8 +1,9 @@
 <template>
-  <div style="position: relative;" ref="recomendacion">
+  <div class="recomen" ref="recomendacion">
     <q-input :outlined="outlined" :dense="dense" :clearable="clearable" :label="label" :loading="loading"
-      v-model="model" :class="Class"
+      v-model="model" :class="Class" :rules="requerido?[val => (val && val !== '')|| 'Por favor ingrese '+label]:[]"
       @update:model-value="emitir(model)">
+      <template v-slot:label> {{label}} <span v-if="requerido" class="text-red-7 text-weight-bold">(*)</span></template>
     </q-input>
     <div v-if="show" class="posicion shadow-box shadow-6">
       <div v-for="val, index in filterOptions" :key="index" @click="SelectItem(val)" :class="$q.dark.isActive ? 'select-dark':'select'" class="cursor-pointer q-px-md q-py-sm">
@@ -26,6 +27,7 @@ const props = defineProps({
   ValueAll:{default:false},
   GenerateList :{default:null},
 // aprtir de aqui son los estilos para definir
+  requerido:{default:false},
   Class :{default:''},
   clearable :{default:false},
   outlined :{default:false},
@@ -40,7 +42,6 @@ const show = ref(false);
 const loading = ref(false);
 
 const recomendacion = ref(null);
-
 
 onMounted(async () => {
   loading.value=true;
@@ -132,5 +133,8 @@ const ClickFueraDelRef = (event) => {
   overflow-y: auto
   width: 100%
   border-radius: 0px 0px 10px 10px
-
+.recomen
+  position: relative
+.recomen .q-field--with-bottom
+  padding-bottom: 0px !important
 </style>

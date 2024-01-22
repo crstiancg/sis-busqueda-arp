@@ -30,6 +30,7 @@ class Solicitud extends Model
         'pago_busqueda',
         'area_id',
         'user_id',
+        'created_at',
         'updated_at'
     ];
     public function notario()

@@ -8,8 +8,8 @@ class DniService {
       },
     });
   }
-  static async getSolicitanteDni(dni) {
-    return (await api.get(`/api/solicitantes/dni/${dni}`)).data;
+  static async getSolicitanteDni(_dni) {
+    return (await api.get(`/api/solicitantes/dni/${_dni}`)).data;
   }
 }
 

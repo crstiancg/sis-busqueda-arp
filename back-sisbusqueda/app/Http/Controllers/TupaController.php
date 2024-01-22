@@ -12,8 +12,10 @@ class TupaController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->filled('vigencia')) {
-            return Tupa::where('code',$request->vigencia)->get();
+        if ($request->filled('precio_sub_code')) {
+            $derecho_pago  = Tupa::select('derecho_pago')->where('sub_code',$request->precio_sub_code)->first()['derecho_pago'];
+            $UIT = Tupa::select('costo')->where('code','00')->first()['costo'];
+            return $derecho_pago * $UIT;
         }else{
             $precios = Tupa::query();
             $columnas = $precios->getModel()->getFillable();
