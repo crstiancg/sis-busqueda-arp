@@ -13,7 +13,7 @@
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" />
 
-        <q-breadcrumbs-el label="Registro de Busqueda" icon="mdi-key" />
+        <q-breadcrumbs-el label="Historial de Registro de Busqueda" icon="mdi-key" />
       </q-breadcrumbs>
     </div>
     <q-separator />
@@ -36,7 +36,7 @@
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
-      title="Registro de Busqueda"
+      title="Historial de Registro de Busqueda"
       ref="tableRef"
       :rows="rows"
       :columns="columns"
@@ -80,6 +80,15 @@
             <q-btn
               size="sm"
               outline
+              color="cyan-4"
+              round
+              @click="show(props.row.id)"
+              icon="visibility"
+              class="q-mr-xs"
+            />
+            <!-- <q-btn
+              size="sm"
+              outline
               color="green"
               round
               @click="editar(props.row.id)"
@@ -93,7 +102,7 @@
               round
               @click="eliminar(props.row.id)"
               icon="delete"
-            />
+            /> -->
           </q-td>
         </q-tr>
       </template>
@@ -106,8 +115,11 @@ import { ref, onMounted } from "vue";
 import BusquedaService from "src/services/BusquedaService";
 import { useQuasar } from "quasar";
 import BusquedasForm from "src/pages/Solicitudes/Registros/BusquedasForm.vue";
+import { useRouter } from "vue-router";
 
 const $q = useQuasar();
+const router = useRouter();
+
 const columns = [
   {
     field: (row) => row.id,
@@ -117,22 +129,45 @@ const columns = [
     sortable_: true,
     search: true,
   },
-  // {
-  //   field: (row) => row.solicitante.nombre_completo,
-  //   name: "solicitante.nombre_completo",
-  //   label: "Solicitante",
-  //   align: "left",
-  //   sortable_: true,
-  //   search: true,
-  // },
-  // {
-  //   field: (row) => row.tipo_copia,
-  //   name: "tipo_copia",
-  //   label: "Tipo de Copia",
-  //   align: "center",
-  //   sortable_: true,
-  //   search: true,
-  // },
+  {
+    field: (row) => row.solicitud.id.toString().padStart(5, '0'),
+    name: "solicitud.id",
+    label: "Numero de solicitud",
+    align: "center",
+    sortable_: true,
+  },
+  {
+    field: (row) => row.solicitud.otorgantes,
+    name: "solicitud.otorgantes",
+    label: "S-Otoragante",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.solicitud.favorecidos,
+    name: "solicitud.favorecidos",
+    label: "S-Favorecido",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.user.name,
+    name: "user.name",
+    label: "Usuario Registrado",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.observaciones,
+    name: "observaciones",
+    label: "Observaciones",
+    align: "center",
+    sortable_: true,
+    search: true,
+  },
   // {
   //   field: (row) => row.cantidad_copia,
   //   name: "cantidad_copia",
@@ -141,20 +176,13 @@ const columns = [
   //   sortable_: true,
   //   search: true,
   // },
-  {
-    field: (row) => row.solicitud.id,
-    name: "solicitud.id",
-    label: "ID Solicitud",
-    align: "center",
-    sortable_: true,
-  },
-  {
-    field: (row) => row.solicitud.estado,
-    name: "estado",
-    label: "Estado",
-    align: "center",
-    sortable_: true,
-  },
+  // {
+  //   field: (row) => row.solicitud.estado,
+  //   name: "estado",
+  //   label: "Estado",
+  //   align: "center",
+  //   sortable_: true,
+  // },
   {
     field: (row) => row.updated_at,
     name: "updated_at",
@@ -228,6 +256,14 @@ const save = () => {
     timeout: 1000,
   });
 };
+
+async function show(id) {
+  router.push({
+    name: "Busquedashow",
+    params: { id: id },
+  });
+}
+
 async function editar(id) {
   title.value = "Editar Sub ";
   formPermisos.value = true;

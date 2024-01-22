@@ -13,11 +13,11 @@
         <q-breadcrumbs>
           <q-breadcrumbs-el icon="home" />
   
-          <q-breadcrumbs-el label="Registro de Verificaciones" icon="mdi-key" />
+          <q-breadcrumbs-el label="Historial de Registro de Verificaciones" icon="mdi-key" />
         </q-breadcrumbs>
       </div>
       <q-separator />
-      <div class="q-gutter-xs q-pa-sm">
+      <!-- <div class="q-gutter-xs q-pa-sm">
         <q-btn
           color="primary"
           :disable="loading"
@@ -31,12 +31,12 @@
             }
           "
         />
-      </div>
+      </div> -->
   
       <q-table
         :rows-per-page-options="[7, 10, 15]"
         class="my-sticky-header-table htable q-ma-sm"
-        title="Registro de Verificaciones"
+        title="Historial de Registro de Verificaciones"
         ref="tableRef"
         :rows="rows"
         :columns="columns"
@@ -62,7 +62,7 @@
             </template>
           </q-input>
         </template>
-        <template v-slot:header="props">
+        <!-- <template v-slot:header="props">
           <q-tr :props="props">
             <q-th v-for="col in props.cols" :key="col.name" :props="props">
               {{ col.label }}
@@ -96,34 +96,97 @@
               />
             </q-td>
           </q-tr>
-        </template>
+        </template> -->
       </q-table>
     </q-page>
   </template>
   
   <script setup>
   import { ref, onMounted } from "vue";
-  import AreaService from "src/services/AreaService";
+  import VerificacionService from "src/services/VerificacionService";
   import { useQuasar } from "quasar";
   import Verificaciones from "src/pages/Solicitudes/Registros/VerificacionesForm.vue"
 
   const $q = useQuasar();
   const columns = [
-    {
-      name: "id",
-      label: "Id",
-      aling: "center",
-      field: (row) => row.id,
-      sortable: true,
-    },
-    {
-      name: "nombre",
-      label: "Nombre",
-      aling: "center",
-      field: (row) => row.nombre,
-      sortable: true,
-    },
-  ];
+  {
+    field: (row) => row.id,
+    name: "id",
+    label: "ID",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.registro_busqueda.solicitud.id.toString().padStart(5, '0'),
+    name: "registro_busqueda.solicitud.id",
+    label: "Numero de Solicitud - Busqueda",
+    align: "center",
+    sortable_: true,
+  },
+  {
+    field: (row) => row.registro_busqueda.solicitud.otorgantes,
+    name: "registro_busqueda.solicitud.otorgantes",
+    label: "S-Otoragante",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.registro_busqueda.solicitud.favorecidos,
+    name: "registro_busqueda.solicitud.favorecidos",
+    label: "S-Favorecido",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.registro_busqueda.user.name,
+    name: "registro_busqueda.user.name",
+    label: "Busqueda Realizada",
+    align: "center",
+    sortable_: true,
+  },
+  // {
+  //   field: (row) => row.solicitud.otorgantes,
+  //   name: "solicitud.otorgantes",
+  //   label: "S-Otoragante",
+  //   align: "left",
+  //   sortable_: true,
+  //   search: true,
+  // },
+  // {
+  //   field: (row) => row.solicitud.favorecidos,
+  //   name: "solicitud.favorecidos",
+  //   label: "S-Favorecido",
+  //   align: "left",
+  //   sortable_: true,
+  //   search: true,
+  // },
+  {
+    field: (row) => row.user.name,
+    name: "user.name",
+    label: "Usuario Registrado",
+    align: "left",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.observaciones,
+    name: "observaciones",
+    label: "Observaciones",
+    align: "center",
+    sortable_: true,
+    search: true,
+  },
+  {
+    field: (row) => row.updated_at,
+    name: "updated_at",
+    label: "Fecha actualizacion",
+    align: "center",
+    sortable_: true,
+  },
+];
   
   const tableRef = ref();
   const formPermisos = ref(false);
@@ -149,7 +212,7 @@
   
     const fetchCount = rowsPerPage === 0 ? 0 : rowsPerPage;
     const order_by = descending ? "-" + sortBy : sortBy;
-    const { data, total = 0 } = await AreaService.getData({
+    const { data, total = 0 } = await VerificacionService.getData({
       params: { rowsPerPage: fetchCount, page, search: filter, order_by },
     });
     console.log(data);
@@ -187,7 +250,7 @@
     formPermisos.value = true;
     edit.value = true;
     editId.value = id;
-    const row = await AreaService.get(id);
+    const row = await VerificacionService.get(id);
     console.log(row);
   
     verififormRef.value.form.setData({
@@ -203,7 +266,7 @@
       cancel: true,
       persistent: true,
     }).onOk(async () => {
-      await AreaService.delete(id);
+      await VerificacionService.delete(id);
       tableRef.value.requestServerInteraction();
       $q.notify({
         type: "positive",

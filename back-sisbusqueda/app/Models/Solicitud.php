@@ -9,7 +9,7 @@ class Solicitud extends Model
 {
     use HasFactory;
     protected $table = 'solicituds';
-    protected $with = ['solicitante','ubigeo','notario','SubSerie','tupa'];
+    protected $with = ['solicitante','ubigeo','notario','SubSerie','tupa','user'];
 
     public $timestamps = false;
     protected $fillable = [

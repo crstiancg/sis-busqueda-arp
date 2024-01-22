@@ -119,6 +119,11 @@ const routes = [
         name: "Verificacion",
         component: () => import("pages/Solicitudes/Registros/VerificacionesList.vue"),
       },
+      {
+        path: "/busqueda/:id",
+        name: "Busquedashow",
+        component: () => import("components/ShowBusqueda.vue"),
+      },
     ],
   },
 

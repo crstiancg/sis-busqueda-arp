@@ -15,7 +15,7 @@
       :mini="miniState"
       @mouseover="miniState = false"
       @mouseout="miniState = true"
-      :width="230"
+      :width="250"
       :breakpoint="500"
       bordered
       :class="$q.dark.isActive ? 'bg-grey-9' : 'bg-grey-2'"
@@ -99,6 +99,38 @@
             </q-item-section>
 
             <q-item-section> Areas </q-item-section>
+          </q-item>
+
+          <q-item
+            :to="{ name: 'Busqueda' }"
+            :active="link === 'Busqueda'"
+            @click="link = 'Busqueda'"
+            clickable
+            v-ripple
+            class="q-ma-xs rounded-borders"
+            active-class="my-menu-link"
+          >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Busqueda </q-item-section>
+          </q-item>
+
+          <q-item
+            :to="{ name: 'Verificacion' }"
+            :active="link === 'Verificacion'"
+            @click="link = 'Verificacion'"
+            clickable
+            v-ripple
+            class="q-ma-xs rounded-borders"
+            active-class="my-menu-link"
+          >
+            <q-item-section avatar>
+              <q-icon name="mdi-account" />
+            </q-item-section>
+
+            <q-item-section> Verificacion </q-item-section>
           </q-item>
 
           <!-- /**** panel de Escrituras*********************************************************** */ -->
