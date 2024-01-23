@@ -14,17 +14,18 @@ class SolicitanteFactory extends Factory
      *
      * @return array<string, mixed2
      */
-    protected $v=100;
+    protected $v=2561;
     public function definition(): array
     {
+        $tipoDoc = fake()->randomElement(array('DNI','RUC'));
         return [
             'nombres' => fake()->name(),
             'apellido_paterno' => fake()->lastName(),
             'apellido_materno' => fake()->lastName(),
             'nombre_completo' => fake()->name().' '.fake()->lastName(),
-            'asunto' => fake()->name().' '.fake()->lastName(),
-            'tipo_documento' => fake()->randomElement(array('DNI','RUC')),
-            'num_documento' => '57'.str_pad(++$this->v, 6, '0', STR_PAD_LEFT),
+            'asunto' => fake()->company().' '.fake()->lastName(),
+            'tipo_documento' => $tipoDoc,
+            'num_documento' => $tipoDoc==='DNI' ?'67'.str_pad(++$this->v, 6, '0', STR_PAD_LEFT):'10'.str_pad(++$this->v, 11, '0', STR_PAD_LEFT),
             'direccion' => fake()->address(),
             'correo' => fake()->email(),
             'celular' => fake()->phoneNumber(),

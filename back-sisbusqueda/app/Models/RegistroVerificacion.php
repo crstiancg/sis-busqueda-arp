@@ -15,6 +15,8 @@ class RegistroVerificacion extends Model
         'user_id',
         'estado',
         'observaciones',
+        'created_at',
+        'updated_at'
     ];
     public function registroBusqueda()
     {

@@ -12,28 +12,13 @@ class RegistroBusquedaController extends Controller
 
     public function index(Request $request)
     {
-        // return $this->generateViewSetList(
-        //     $request,
-        //     Solicitud::where('estado','En Busquueda'),
-        //     [],
-        //     ['id', 'nombre'],
-        //     ['id', 'nombre']
-        // );
-
-        // $queryRegistro = RegistroBusqueda::select('registro_busquedas.*')
-        //     ->leftJoin('solicituds', 'registro_busquedas.solicitud_id', '=', 'solicituds.id')->where('solicituds.estado','Buscando');
-
         return $this->generateViewSetList(
             $request,
             RegistroBusqueda::query(),
-            [],
+            RegistroBusqueda::getModel()->getFillable(),
             ['id', 'nombre'],
             ['id', 'nombre']
         );
-
-        // return Solicitud::where('estado','Finalizado')->get();
-
-        // return RegistroBusqueda::with('solicitud','user','registroVerificacion')->get();
     }
 
     public function create()
@@ -46,6 +31,7 @@ class RegistroBusquedaController extends Controller
         Solicitud::find($request->solicitud_id)->update([
             "estado" => "Verificación",
             "area_id" => 3,
+            'updated_at'=> now(),
         ]);
         return response(RegistroBusqueda::create([
             'solicitud_id' => $request->solicitud_id,
@@ -56,6 +42,8 @@ class RegistroBusquedaController extends Controller
             'cod_folioInicial' => $request->cod_folioInicial,
             'cod_folioFinal' => $request->cod_folioFinal,
             'observaciones' => $request->observaciones,
+            'created_at'=> now(),
+            'updated_at'=> now(),
         ]), 201);
     }
 

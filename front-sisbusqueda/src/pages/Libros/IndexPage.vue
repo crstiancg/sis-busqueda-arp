@@ -137,7 +137,7 @@ async function CargarData(pag) {
   paginacion.value.ultimo_pag = await res.last_page;
   paginacion.value.total_datos = await res.total;
   libros.value = await res.data;
-  console.log(libros.value);
+  // console.log(libros.value);
   CargarTipoAccion(libros.value.length);
   cargar.value = false;
 }

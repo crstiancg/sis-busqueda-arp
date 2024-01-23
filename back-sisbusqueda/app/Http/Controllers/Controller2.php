@@ -52,8 +52,19 @@ class Controller2 extends BaseController
             foreach ($request->filter_by as $index_colum => $val_filter) {
                 if ($val_filter and in_array($index_colum, $filterBy, true)) {
                     $querySet->where(
-                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($index_colum, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                            DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(".addOrSkipBaseTable($index_colum, $tableBaseName).", '[[:space:]]+', ' '))"),
                             $val_filter);
+                }
+            }
+        }
+        //fitro por rango de fechas, ejemplo: {filter_range:{anio:{from:2000,to:2015},cod_escritura:{from:5,to:20}}}
+        if ($request->filled('filter_range') and $request->filter_range) {
+            foreach ($request->filter_range as $index_colum => $val_colum) {
+                if ($val_colum and in_array($index_colum, $filterBy, true)
+                    and array_key_exists('from', $val_colum) and array_key_exists('to', $val_colum) 
+                    and $val_colum['from'] and $val_colum['to']) {
+                    $querySet->whereRaw("CAST(REGEXP_SUBSTR($index_colum, '[0-9]+') AS SIGNED) >= ?", [$val_colum['from']])
+                             ->whereRaw("CAST(REGEXP_SUBSTR($index_colum, '[0-9]+') AS SIGNED) <= ?", [$val_colum['to']]);
                 }
             }
         }
@@ -61,8 +72,10 @@ class Controller2 extends BaseController
         if ($request->filled('date_range') and $request->date_range) {
             foreach ($request->date_range as $index_colum => $val_colum) {
                 if ($val_colum and in_array($index_colum, $filterBy, true)
-                    and array_key_exists('from', $val_colum) and array_key_exists('to', $val_colum) and $val_colum['from'] and $val_colum['to']) {
-                    $querySet->whereDate('fecha', '>=', $val_colum['from'])->whereDate('fecha', '<=', $val_colum['to']);
+                    and array_key_exists('from', $val_colum) and array_key_exists('to', $val_colum) 
+                    and $val_colum['from'] and $val_colum['to']) {
+                    $querySet->whereDate($index_colum, '>=', $val_colum['from'])
+                             ->whereDate($index_colum, '<=', $val_colum['to']);
                 }
             }
         }
@@ -71,7 +84,7 @@ class Controller2 extends BaseController
             foreach ($request->search_by as $index_colum => $val_colum) {
                 if($val_colum and in_array($index_colum, $searchBy, true)){
                     $querySet->where(
-                        DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($index_colum, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                        DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(".addOrSkipBaseTable($index_colum, $tableBaseName).", '[[:space:]]+', ' '))"),
                         'like',
                         '%' . $val_colum . '%'
                     );
@@ -83,7 +96,7 @@ class Controller2 extends BaseController
             $querySet->where(function ($q) use ($searchBy, $request, $tableBaseName) {
                 foreach ($searchBy as $searchByCol) {
                     $q->orwhere(
-                        DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(CONCAT(' ', ".addOrSkipBaseTable($searchByCol, $tableBaseName).", ' '), '[[:space:]]+', ' '))"),
+                        DB::raw("TRIM(BOTH ' ' FROM REGEXP_REPLACE(".addOrSkipBaseTable($searchByCol, $tableBaseName).", '[[:space:]]+', ' '))"),
                         'like',
                         '%' . $request->input('search') . '%');
                 }

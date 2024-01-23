@@ -1,19 +1,14 @@
 <template>
-    <q-dialog v-model="formSolicitud" persistent>
-      <SolicitudesForm
-        title="Registrar una Solicitud"
-        @save="save"
-      ></SolicitudesForm>
+    <q-dialog v-if="userStore.getAreaId === 1" v-model="solicitudForm" persistent>
+      <SolicitudesForm title="Registrar una Solicitud" @save="save($event)"/>
     </q-dialog>
-
-    <q-dialog v-model="busquedaForm">
-      <BusquedasFormVue
-        title="Registro de Resultados de Busqueda"
-        :solici_id="SolicitudID"
-        :solicitud="_solicitud"
-        ref="busquedaformRef"
-        @save="save($event)"
-      ></BusquedasFormVue>
+    <q-dialog v-if="userStore.getAreaId === 2" v-model="busquedaForm" persistent>
+      <BusquedasForm title="Registro de Resultados de Busqueda"
+        :solici_id="SolicitudID" :solicitud="_solicitud" @save="save($event)" />
+    </q-dialog>
+    <q-dialog v-if="userStore.getAreaId === 3" v-model="verificaForm" persistent>
+      <VerificacionesForm title="Registro de Verificación de Busqueda"
+        :solici_id="SolicitudID" :solicitud="_solicitud" :regisBusqueda="_regisBusque" @save="save($event)" />
     </q-dialog>
     <q-page>
       <div class="q-pa-md q-gutter-sm">
@@ -25,7 +20,7 @@
       <q-separator />
       <div class="q-gutter-xs q-pa-sm">
         <q-btn v-if="userStore.getAreaId===1" color="primary" :label="$q.screen.lt.sm ? '' : 'Agregar'" icon-right="add"
-          @click="formSolicitud = true" :disable="loading"/>
+          @click="solicitudForm = true" :disable="loading"/>
       </div>
 
       <q-table
@@ -62,9 +57,12 @@
               <div v-else-if="col.name === 'acciones'">
                 <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
                   :datosSolicitudRow="props.row"/>
-                  <q-btn v-if="Area === 2"
-                     outline color="blue"  icon="search" size="sm" round class="q-mr-xs"
-                    @click="busqueda(props.row.id,props.row)" /> 
+                <q-btn v-if="userStore.getAreaId === 2" outline color="blue"  icon="search" size="sm" round class="q-mr-xs"
+                    @click="busqueda(props.row.id,props.row)" />
+                <q-btn v-if="userStore.getAreaId === 3" outline color="blue"  icon="rule" size="sm" round class="q-mr-xs"
+                    @click="verificacion(props.row.id,props.row)" /> 
+                <q-btn v-if="userStore.getAreaId===1 && props.row.area_id===1" outline color="blue"  icon="point_of_sale" size="sm" round class="q-mr-xs"
+                    @click="caja(props.row.id,props.row)" />
               </div>
               <span v-else>{{ col.value }}</span>
             </q-td>
@@ -72,34 +70,34 @@
         </template>
       </q-table>
     </q-page>
-  </template>
+</template>
 
-  <script setup>
+<script setup>
   import { ref, onMounted } from "vue";
   import SolicitudService from "src/services/SolicitudService";
+  import BusquedaService from "src/services/BusquedaService";
   import { useQuasar } from "quasar";
   import SolicitudesForm from "src/pages/Solicitudes/SolicitudesForm.vue";
-  import BusquedasFormVue from "./Registros/BusquedasForm.vue";
+  import BusquedasForm from "./Registros/BusquedasForm.vue";
+  import VerificacionesForm from "./Registros/VerificacionesForm.vue";
   import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
   import { convertDate } from "src/utils/ConvertDate";
   import { useUserStore } from "src/stores/user-store";
   const userStore = useUserStore();
-  const Area = ref(userStore.getAreaId);
   const $q = useQuasar();
 
 const columns = [
   { field: (row) => row.id, name: "id", label: "ID", align: "left", sortable_: true },
-  { field: (row) => row.solicitante.tipo_documento, name: "tipo_documento", label: "Tipo Documento", align: "left", sortable_: true},
   { field: (row) => row.solicitante.tipo_documento ==='DNI'?row.solicitante.nombre_completo:row.solicitante.asunto, name: "solicitante.nombre_completo", label: "Solicitante", align: "left", sortable_: true },
   { field: (row) => row.estado, name: "estado", label: "Estado", align: "center", sortable_: true, },
   { field: (row) => row.updated_at , name: "updated_at", label: "Fecha actualizacion", align: "center", sortable_: true, },
   { field: '' , name: "acciones", label: "Acciones", align: "center" },
 ];
 
-const formSolicitud = ref(false);
+const solicitudForm = ref(false);
 const busquedaForm = ref(false);
+const verificaForm = ref(false);
 const SolicitudID = ref();
-const busquedaformRef = ref();
 
 const tableRef = ref();
 const rows = ref([]);
@@ -131,7 +129,6 @@ async function onRequest(props) {
       order_by, 
     },
   });
-  console.log(data);
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
   // don't forget to update local pagination object
@@ -153,7 +150,8 @@ onMounted(async() => {
 const save = (tipo_dialog) => {
   console.log(tipo_dialog);
   if (tipo_dialog && tipo_dialog === 'busqueda') busquedaForm.value = false;
-  else formSolicitud.value = false;
+  if (tipo_dialog && tipo_dialog === 'verificacion') verificaForm.value = false;
+  if (tipo_dialog && tipo_dialog === 'solicitud') solicitudForm.value = false;
   tableRef.value.requestServerInteraction();
   $q.notify({
     type: "positive",
@@ -164,10 +162,25 @@ const save = (tipo_dialog) => {
   });
 };
 let _solicitud = ref(null);
-async function busqueda(id,_soli){
+function busqueda(id,_soli){
   busquedaForm.value = true;
   SolicitudID.value = id;
   _solicitud.value = _soli;
+}
+let _regisBusque = ref(null);
+async function verificacion(id,_soli){
+  const resBusqu = await BusquedaService.getData({params:{
+    rowsPerPage:0,
+    solicitud_id: id,
+  }});
+  if (resBusqu.data?.[0])
+    _regisBusque.value = resBusqu.data[0];
+  verificaForm.value = true;
+  SolicitudID.value = id;
+  _solicitud.value = _soli;
+}
+function caja(id,_soli){
+  console.log('caja para:',id);
 }
 
   // const title = ref("");
@@ -176,7 +189,7 @@ async function busqueda(id,_soli){
 
   // async function editar(id) {
   //   title.value = "Editar Solicitud";
-  //   formSolicitud.value = true;
+  //   solicitudForm.value = true;
   //   edit.value = true;
   //   editId.value = id;
     

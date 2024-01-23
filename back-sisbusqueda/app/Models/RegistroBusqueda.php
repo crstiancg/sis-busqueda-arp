@@ -19,6 +19,8 @@ class RegistroBusqueda extends Model
         'cod_folioInicial',
         'cod_folioFinal',
         'observaciones',
+        'created_at',
+        'updated_at'
     ];
     public function solicitud()
     {

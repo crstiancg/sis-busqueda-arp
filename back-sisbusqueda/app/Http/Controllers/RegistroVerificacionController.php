@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRegistroBusquedaRequest;
+use App\Models\RegistroBusqueda;
 use App\Models\RegistroVerificacion;
+use App\Models\Solicitud;
 use Illuminate\Http\Request;
 
 class RegistroVerificacionController extends Controller
@@ -32,9 +35,28 @@ class RegistroVerificacionController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreRegistroBusquedaRequest $request)
     {
-        //
+        Solicitud::find($request->solicitud_id)->update([
+            "estado" => "Verificado",
+            "area_id" => 1,
+            'updated_at'=> now(),
+        ]);
+        RegistroBusqueda::find($request->RB_id_derivado)->update([
+            'cod_protocolo' =>  $request->cod_protocolo,
+            'cod_escritura' => $request->cod_escritura,
+            'cod_folioInicial' => $request->cod_folioInicial,
+            'cod_folioFinal' => $request->cod_folioFinal,
+            'updated_at'=> now(),
+        ]);
+        return response(RegistroVerificacion::create([
+            'RB_id_derivado' => $request->RB_id_derivado,
+            'user_id' => auth()->user()->id,
+            'estado' => 0,
+            'observaciones' => $request->observaciones,
+            'created_at'=> now(),
+            'updated_at'=> now(),
+        ]), 201);
     }
 
     /**

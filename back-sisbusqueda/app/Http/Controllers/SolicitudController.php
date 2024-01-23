@@ -18,7 +18,7 @@ class SolicitudController extends Controller
     {
         return $this->generateViewSetList(
             $request,
-            Solicitud::orderBy('updated_at', 'desc')->with('solicitante','solicitante.ubigeo','subserie','ubigeo','notario','tupa'),
+            Solicitud::orderBy('updated_at', 'desc'),
             ['area_id','estado','user_id'],
             ['id'],
             ['id'],

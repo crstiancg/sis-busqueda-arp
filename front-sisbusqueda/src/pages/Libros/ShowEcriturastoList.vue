@@ -102,14 +102,16 @@ async function onRequest(props) {
   const order_by = descending ? "-" + sortBy : sortBy;
   const { data, total = 0 } = await EscrituraService.getData({
     params: {
-      libro_id: route.params.id,
+      filter_by: { libro_id: route.params.id, },
+      // filter_range:{cod_escritura:{from:10,to:20}},
+      // date_range:{fecha:{from:'2000/01/01',to:'2010/05/01'}},
       rowsPerPage: fetchCount,
       page,
       search: filter,
       order_by,
     },
   });
-  console.log(data);
+  // console.log(data);
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
   // don't forget to update local pagination object

@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Escritura;
 use Illuminate\Http\Request;
 
-class EscrituraController extends Controller
+class EscrituraController extends Controller2
 {
     /**
      * Display a listing of the resource.
@@ -21,7 +21,7 @@ class EscrituraController extends Controller
         return $this->generateViewSetList(
             $request,
             $datos,
-            ['libro_id'],
+            $datos->getModel()->getFillable(),
             ['bien'],
             ['id', 'bien']
         );
