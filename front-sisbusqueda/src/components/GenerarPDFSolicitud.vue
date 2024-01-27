@@ -1,5 +1,7 @@
 <template>
-    <q-btn :color="$q.dark.isActive? 'red-6':'negative'" :label="$q.screen.lt.sm || vericon? '' : label" :icon-right="vericon?'':'picture_as_pdf'" @click="VerificaDatos">
+    <iframe v-if="ver" :src="data" width="100%" height="100%"></iframe>
+    <q-btn v-else :color="$q.dark.isActive? 'red-6':'negative'" :label="$q.screen.lt.sm || vericon? '' : label" :icon-right="vericon?'':'picture_as_pdf'" 
+      @click="Evento" :loading="loading" :disable="loading">
       <q-tooltip anchor="top middle" self="bottom middle" :offset="[10, 10]">
           Ver en PDF
         </q-tooltip>
@@ -12,14 +14,25 @@ import jsPDF from "jspdf";
 import { convertDate } from "src/utils/ConvertDate";
 import { formatNumberToSoles } from "src/utils/ConvertMoney";
 import { useQuasar } from "quasar";
+import { onMounted, ref } from "vue";
 const $q = useQuasar();
+const emits = defineEmits(["clickPDF"]);
+
 const props = defineProps({
-  datosSolicitud:{default:null},
+  ver:{default:false},
   datosSolicitudRow:{default:null},
   datosBusqueda:{default:null},
   datosVerificacion:{default:null},
+  datosPagos:{default:null},
   label:{default:'Generar PDF'},
   vericon:{default:false},
+});
+const data = ref(null);
+const loading = ref(false);
+onMounted(()=>{
+  if (props.ver) {
+    VerificaDatos();
+  }
 });
 function limitarLineas(Doc,Text,maxWidth,num_lineas){
   const lineas = Doc.splitTextToSize(Text, maxWidth);
@@ -33,6 +46,7 @@ function limitarLineas(Doc,Text,maxWidth,num_lineas){
   return lin;
 }
 function generarPDF(datos) {
+  loading.value = false;
   const nombrePDF = "mi_pdf_nombre.pdf";
   // Crear un nuevo documento PDF
   const doc = new jsPDF("p", "mm", "a4");
@@ -67,11 +81,11 @@ function generarPDF(datos) {
   doc.rect(25, 76, 8, 5); doc.text("Testimonio", 35, 80);
   doc.rect(60, 76, 8, 5); doc.text("Copia Certificada", 70, 80);
   doc.rect(105, 76, 8, 5);  doc.text("Copia Simple", 115, 80);
-  if(datos.tipo_copia==='Testimonio')
+  if(datos.tipo_copia==='0701')
     doc.text("X", 28, 80);
-  else if(datos.tipo_copia==='Copia Certificada')
+  else if(datos.tipo_copia==='0702')
     doc.text("X", 63, 80);
-  else if(datos.tipo_copia==='Copia Simple')
+  else if(datos.tipo_copia==='0703')
     doc.text("X", 108, 80);
 
   doc.text("Otros:", 145, 77);
@@ -95,38 +109,34 @@ function generarPDF(datos) {
   doc.text('FIRMA DEL SOLICITANTE', 40, 184);
   doc.text('IMPORTE BUSQUEDA: '+formatNumberToSoles(datos.pago_busqueda), 120, 175);
   doc.text('Puno, '+convertDate(datos?.created_at?datos.created_at:new Date,"EEEE d 'de' MMMM y"), 120, 183);
-
+  /*** SECCION DE BUSQUEDA ****************************************************************************************************************************************************************************************** */
   doc.text("FASE DE BUSQUEDA:", 20, 190);
   doc.line(20, 192, 70, 192);
-  doc.text("Buscado por:________________________________", 25, 197);    doc.text("Firma:_______________", 135, 197);
-  doc.text("Protocolo:_______________", 25, 204);    doc.text("Registro N°:__________", 80, 204);    doc.text("Legajo N°:________", 135, 204);
-  doc.text(true?"Escritura N°:_____________":"Minuta N°:______", 25, 211);   doc.text("Folio, del:________", 80, 211);    doc.text("al:_________", 135, 211);
-  doc.text("Observaciones del Buscador:{oBserva}____________________________________________________________________________________________________________", 25, 218,{align: "justify" , maxWidth: maxWidth-10});
-
+  doc.text("Buscado por: "+(datos?.nombreBuscador?datos.nombreBuscador:'________________________________'), 25, 197);    doc.text("Firma:__________________", 135, 197);
+  doc.text("Protocolo: "+(datos?.cod_protocolo?datos.cod_protocolo:'_______________'), 25, 204);    doc.text("Registro N°: "+(datos?.id_busqueda?datos.id_busqueda:'__________'), 80, 204);    doc.text("Legajo N°:________", 135, 204);
+  doc.text(true?"Escritura N°: "+(datos?.cod_escritura?datos.cod_escritura:'_____________'):"Minuta N°:______", 25, 211);   doc.text("Folio, del: "+(datos?.cod_folioInicial?datos.cod_folioInicial:'________'), 80, 211);    doc.text("al: "+(datos?.cod_folioFinal?datos.cod_folioFinal:'_________'), 135, 211);
+  doc.text("Observaciones del Buscador: "+(datos?.observaciones?datos.observaciones:'____________________________________________________________________________________________________________'), 25, 218,{align: "justify" , maxWidth: maxWidth-10});
+  /***** SECCION DE VERIFICACIÓN *********************************************************************************************************************************************************************************** */
   doc.text("FASE DE VERIFICACIÓN:", 20, 232);
   doc.line(20, 234, 70, 234);
-  doc.text("Verificado por:_______________________________", 25, 241);    doc.text("Firma:_______________", 135, 241);
-  doc.text("Derecho N° Copias:________", 25, 248);    doc.text("N° de hojas:_____________", 80, 248);    doc.text("s/:_________", 135, 248);
-  doc.text("Verificación:_________________________________", 25, 255);    doc.text("s/:_____________", 135, 255);
-  doc.text("N° de copias: __________", 80, 262);    doc.text("s/:_________", 135, 262);
-  doc.text("Observaciones:{oBserva}____________________________________________________________________________________________________________", 25, 269,{align: "justify" , maxWidth: maxWidth-10});
-
-  window.open(doc.output("bloburl"), "_blank");
+  doc.text("Verificado por: "+(datos?.nombreVerificad?datos.nombreVerificad:'______________________________'), 25, 241);    doc.text("Firma:_________________", 135, 241);
+  /*** SECCION DE cAJA ********************************************************************************************************************************************************* */
+  doc.text("Derecho N° Copias:________", 25, 248);    doc.text("N° de hojas: "+(datos?.cantidad_folio?datos.cantidad_folio:'_____________'), 80, 248);    doc.text("s/: "+(datos?.pago_folio?datos.pago_folio:'_________'), 135, 248);
+  doc.text("Verificación:_________________________________", 25, 255);    doc.text("s/: "+(datos?.pago_verificacion?datos.pago_verificacion:'_____________'), 135, 255);
+  doc.text("N° de copias: "+(datos?.cantidad_hojas?datos.cantidad_hojas:'_____________'), 80, 262);    doc.text("s/: "+(datos?.pago_fotocopia?datos.pago_fotocopia:'_________'), 135, 262);
+  doc.text("Observaciones: "+(datos?.observacionesVeri?datos.observacionesVeri:'____________________________________________________________________________________________________________'), 25, 269,{align: "justify" , maxWidth: maxWidth-10});
+  if (props.ver)
+    data.value = URL.createObjectURL(new Blob([doc.output("blob")], { type: "application/pdf" })); //doc.output("datauristring");
+  else
+    window.open(doc.output("bloburl"), "_blank");
 }
 
-// lineas.forEach((linea) => {
-//   doc.text(linea, leftMargin, yPos,{ align: "justify" });
-//   yPos += 5; // Ajustar el espaciado entre líneas según sea necesario
-// });
-
 function VerificaDatos(){
-  if(props.datosSolicitud){
-    generarPDF(props.datosSolicitud)
-    // console.log(props.datosSolicitud);
-  }else if(props.datosSolicitudRow){
+  let datosEnPDF = null;
+  if(props.datosSolicitudRow){
     const listMes = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre'];
     // console.log(props.datosSolicitudRow);
-    const datosSolici = {
+    datosEnPDF = {
       nombres: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.nombres:'',
       apellido_paterno: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.apellido_paterno:'',
       apellido_materno: props.datosSolicitudRow.solicitante?props.datosSolicitudRow.solicitante.apellido_materno:'',
@@ -156,10 +166,43 @@ function VerificaDatos(){
       created_at:props.datosSolicitudRow.created_at,
       pago_busqueda:props.datosSolicitudRow.pago_busqueda,
     };
-    generarPDF(datosSolici);
+    
+  }
+  if(props.datosBusqueda){
+    datosEnPDF.nombreBuscador=props.datosBusqueda.user?props.datosBusqueda.user.name:'';
+    datosEnPDF.cod_protocolo=props.datosBusqueda.cod_protocolo;
+    datosEnPDF.id_busqueda=props.datosBusqueda.id;
+    datosEnPDF.cod_escritura=props.datosBusqueda.cod_escritura;
+    datosEnPDF.cod_folioInicial=props.datosBusqueda.cod_folioInicial;
+    datosEnPDF.cod_folioFinal=props.datosBusqueda.cod_folioFinal;
+    datosEnPDF.observaciones=props.datosBusqueda.observaciones;
+  }
+  if(props.datosVerificacion){
+    datosEnPDF.nombreVerificad=props.datosVerificacion.user?props.datosVerificacion.user.name:'';
+    datosEnPDF.observacionesVeri=props.datosVerificacion.observaciones;
+  }
+  if(props.datosPagos){
+    console.log(props.datosPagos);
+    datosEnPDF.pago_verificacion = props.datosPagos.pago_verificacion;
+    datosEnPDF.cantidad_folio = props.datosPagos.cantidad_folio;
+    datosEnPDF.pago_folio = props.datosPagos.pago_folio;
+    datosEnPDF.cantidad_hojas = props.datosPagos.cantidad_fotocopia * props.datosPagos.cantidad_folio;
+    datosEnPDF.pago_fotocopia = props.datosPagos.pago_fotocopia;
+  }
+  if(datosEnPDF)
+    generarPDF(datosEnPDF);
+}
+class eventos{
+  activarCargar(){
+    loading.value = true;
+  }
+  verificacion(){
+    VerificaDatos();
   }
 }
-
+function Evento(){
+  emits("clickPDF",new eventos());
+}
 function descargarPDF() {
   window.htm12canvas = html2canvas;
   let doc = new jsPDF("p", "pt", "a4");

@@ -18,7 +18,7 @@ class RegistroVerificacionController extends Controller
         return $this->generateViewSetList(
             $request,
             RegistroVerificacion::query(),
-            [],
+            RegistroVerificacion::getModel()->getFillable(),
             ['id', 'nombre'],
             ['id', 'nombre']
         );

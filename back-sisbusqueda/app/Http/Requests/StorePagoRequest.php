@@ -11,7 +11,7 @@ class StorePagoRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,13 @@ class StorePagoRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'solicitud_id'=>'required',
+            'pago_busqueda'=>'required',
+            // 'pago_verificacion'=>'required',
+            'cantidad_folio'=>'required',
+            'pago_folio'=>'required',
+            'cantidad_fotocopia'=>'required',
+            'pago_fotocopia'=>'required',
         ];
     }
 }

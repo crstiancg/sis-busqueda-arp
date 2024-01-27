@@ -47,6 +47,7 @@ onMounted(async () => {
   loading.value=true;
   op_label.value = props.GenerateList ? props.GenerateList.column : props.OptionLabel;
   op_value.value = props.GenerateList ? props.GenerateList.column : props.OptionValue;
+  if(props.modelValue) model.value = props.modelValue;
   array = await ExtraerDatos(props.options);
   loading.value=false;
   document.addEventListener('click', ClickFueraDelRef);
@@ -98,6 +99,9 @@ watch(model,(newtext,oldtext)=>{
   } else {
     show.value = false;
   }
+});
+watch(()=>props.modelValue,(newVal,oldVal)=>{
+    model.value = newVal;
 });
 const filterOptions = computed(()=> {
   if (model.value) {
