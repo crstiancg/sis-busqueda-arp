@@ -99,8 +99,12 @@
                   </div>
                   <q-input class="col-12 col-md-6 q-pa-sm" dense outlined clearable
                       v-model="solicitudForm.bien" label="Nombre del Bien"/>
-                  <q-input dense outlined clearable type="textarea" class="col-12 q-pa-sm"
-                      v-model="solicitudForm.mas_datos" label="Mas datos: Escritura -  Protocolo -  Folio" />
+                    <q-input dense outlined clearable class="col-12 col-md-4 q-pa-sm"
+                        v-model="solicitudForm.sescritura" label="Escritura" mask="E-######" />
+                    <q-input dense outlined clearable class="col-12 col-md-4 q-pa-sm"
+                        v-model="solicitudForm.sprotocolo" label="Protocolo" mask="P-######" />
+                    <q-input dense outlined clearable class="col-12 col-md-4 q-pa-sm"
+                        v-model="solicitudForm.sfolio" label="Folio" mask="F-######" />
                 </div>
               </q-step>
               <q-step :name="3" title="Registro Caja" icon="point_of_sale"
@@ -205,6 +209,9 @@ const solicitudForm = ref({
     mas_datos: "",
     //datos para generar PDF **********
     precio:'',
+    sfolio: '',
+    sprotocolo: '',
+    sescritura: '',
   });
 
 async function getPrecioVigente(){
@@ -235,6 +242,16 @@ const nombreCompleto = computed(() => {
     solicitudForm.value.apellido_paterno +
     " " +
     solicitudForm.value.apellido_materno
+  );
+});
+
+const masDatos = computed(() => {
+  return ( 
+    solicitudForm.value.sfolio +
+    " " +
+    solicitudForm.value.sescritura +
+    " " +
+    solicitudForm.value.sprotocolo 
   );
 });
 
@@ -294,6 +311,7 @@ async function ValidaSuccess(event, step) {
   if (step === 3) {
     try {
       solicitudForm.value.nombre_completo = nombreCompleto.value;
+      solicitudForm.value.mas_datos = masDatos.value;
       console.log(step,solicitudForm.value.nombre_completo);
       const request = await SolicitudService.save(solicitudForm.value);
       emit("save",'solicitud');
