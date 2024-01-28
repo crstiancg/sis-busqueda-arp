@@ -16,6 +16,7 @@ use App\Http\Controllers\FolioController;
 use App\Http\Controllers\LibroController;
 use App\Http\Controllers\NotarioController;
 use App\Http\Controllers\OtorganteController;
+use App\Http\Controllers\PagoController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermisoController;
@@ -84,15 +85,14 @@ Route::apiResource('/libros', LibroController::class)->middleware([HandlePrecogn
 Route::apiResource('/escrituras', EscrituraController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/otorgantes', OtorganteController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/favorecidos', FavorecidoController::class)->middleware([HandlePrecognitiveRequests::class]);
-
 Route::apiResource('/solicitantes', SolicitanteController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::get('/solicitantes/dni/{dni}', [SolicitanteController::class, 'getSolicitanteDni']);
 
 Route::apiResource('/tupas', TupaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/solicitudes', SolicitudController::class)->middleware([HandlePrecognitiveRequests::class]);
-
 Route::apiResource('/registro_busquedas', RegistroBusquedaController::class)->middleware([HandlePrecognitiveRequests::class]);
 Route::apiResource('/registro_verificaciones', RegistroVerificacionController::class)->middleware([HandlePrecognitiveRequests::class]);
+Route::apiResource('/pagos', PagoController::class)->middleware([HandlePrecognitiveRequests::class]);
 
 /** **************************************************************************** */
 Route::apiResource('/anteriores', AnteriorController::class)->middleware([HandlePrecognitiveRequests::class]);

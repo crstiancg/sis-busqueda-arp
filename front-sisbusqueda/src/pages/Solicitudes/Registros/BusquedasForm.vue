@@ -8,25 +8,32 @@
       </q-card-section>
       <q-form @submit.prevent="submit">
         <div class="row">
-          <q-card-section class="col-12 col-md-6 row q-pa-md">
-            <template v-for="(item) in [
-                { label: 'SOLICITANTE', value: solicitud?.solicitante.tipo_documento === 'DNI' ? 'Nombres:' : 'Asunto:', data: solicitud?.solicitante.tipo_documento === 'DNI' ? solicitud?.solicitante.nombre_completo : solicitud?.solicitante.asunto },
-                { label: 'DATOS DEL DOCUMENTO', value: 'Escritura Pública:', data: solicitud?.sub_serie.nombre },
-                { label: null, value: 'Notario:', data: solicitud?.notario.nombre_completo },
-                { label: null, value: 'Otorgantes:', data: solicitud?.otorgantes },
-                { label: null, value: 'Favorecidos:', data: solicitud?.favorecidos },
-                { label: null, value: 'Lugar y Fecha:', data: `${solicitud?.ubigeo.nombre}, Año:${solicitud?.anio} Mes:${solicitud?.mes} Día:${solicitud?.dia}` },
-                { label: null, value: 'Bien:', data: solicitud?.bien },
-                { label: null, value: 'Otros Datos:', data: solicitud?.mas_datos }
-              ]" :key="item">
-              <div v-if="item.label" class="col-12 q-py-sm text-weight-bold text-subtitle2">{{ item.label }}</div>
-              <div class="col-12 col-sm-3 items-center row q-py-sm q-pl-sm text-weight-bold">{{ item.value }}</div>
-              <div class="col-12 col-sm-9 items-center row q-py-sm q-pl-sm">{{ item.data }}</div>
-            </template>
+          <q-card-section class="col-12 col-lg-7 row q-pl-md">
+            <q-btn-toggle v-model="opcionVista" spread no-caps toggle-color="primary" color="white" text-color="grey" class="col-12"
+              :options="[ {label: 'Datos', value: 1}, {label: 'Ver en PDF', value: 2}]" />
+            <div v-if="opcionVista === 1" class="full-width row">
+              <template v-for="(item) in [
+                  { label: 'SOLICITANTE', value: D_solicitud?.solicitante.tipo_documento === 'DNI' ? 'Nombres:' : 'Asunto:', data: D_solicitud?.solicitante.tipo_documento === 'DNI' ? D_solicitud?.solicitante.nombre_completo : D_solicitud?.solicitante.asunto },
+                  { label: 'DATOS DEL DOCUMENTO', value: 'Escritura Pública:', data: D_solicitud?.sub_serie.nombre },
+                  { label: null, value: 'Notario:', data: D_solicitud?.notario.nombre_completo },
+                  { label: null, value: 'Otorgantes:', data: D_solicitud?.otorgantes },
+                  { label: null, value: 'Favorecidos:', data: D_solicitud?.favorecidos },
+                  { label: null, value: 'Lugar y Fecha:', data: `${D_solicitud?.ubigeo.nombre}, Año:${D_solicitud?.anio} Mes:${D_solicitud?.mes} Día:${D_solicitud?.dia}` },
+                  { label: null, value: 'Bien:', data: D_solicitud?.bien },
+                  { label: null, value: 'Otros Datos:', data: D_solicitud?.mas_datos }
+                ]" :key="item">
+                <div v-if="item.label" class="col-12 q-py-sm text-weight-bold text-subtitle2">{{ item.label }}</div>
+                <div class="col-12 col-sm-3 items-center row q-py-sm q-pl-sm text-weight-bold">{{ item.value }}</div>
+                <div class="col-12 col-sm-9 items-center row q-py-sm q-pl-sm">{{ item.data }}</div>
+              </template>
+            </div>
+            <div v-else class="full-width">
+              <GenerarPDFSolicitud :datosSolicitudRow="D_solicitud" :ver="true" height="450px"/>
+            </div>
           </q-card-section>
-          <q-card-section class="col-12 col-md-6 q-pa-md">
+          <q-card-section class="col-12 col-lg-5 q-pa-md">
             <div class="col-12 q-py-sm text-weight-bold text-subtitle1">Sugerencias Encontradas</div>
-            <SugerenciasIntersection :notario_id="solicitud.notario_id" @sugerencia="DarSugerencia($event)" style="max-height: 150px;"/>
+            <SugerenciasIntersection :notario_id="D_solicitud.notario_id" @sugerencia="DarSugerencia($event)" style="max-height: 150px;"/>
             <div class="col-12 q-py-sm text-weight-bold text-subtitle1">Registro de busqueda</div>
             <div class="row q-mb-md">
               <q-input class="col-12 col-sm-6 q-pa-sm" :class="form.invalid('cod_protocolo') ? 'q-mb-sm' : ''" dense outlined
@@ -79,19 +86,21 @@
 </template>
 <script setup>
 import { useForm } from "laravel-precognition-vue";
+import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
 import SugerenciasIntersection from "src/components/SugerenciasIntersection.vue";
 import { onMounted, ref, watch } from "vue";
 const emits = defineEmits(["save"]);
 const props = defineProps({
   title: String,
-  solici_id: {type:Number,default:null},
-  solicitud: {default: null,},
+  D_solicitud: {default: null,},
 });
+const opcionVista = ref(1);
+
 const vueltaFI = ref(false);
 const vueltaFF = ref(false);
 
 let form = useForm("post", "api/registro_busquedas", {
-    solicitud_id: props.solici_id,
+    solicitud_id: props.D_solicitud.id,
     cod_protocolo: "",
     cod_escritura: "",
     cod_folioInicial: "",
@@ -102,16 +111,15 @@ onMounted(async() => {
   // await DatosSugerencia();
 });
 const submit = () => {
-  if(vueltaFI.value) form.cod_folioInicial = form.cod_folioInicial+' V'
-  if(vueltaFF.value) form.cod_folioFinal = form.cod_folioFinal+' V'
+  if(vueltaFI.value) form.cod_folioInicial = CargaVueltaFolio(form.cod_folioInicial) ? form.cod_folioInicial : form.cod_folioInicial+' V';
+  if(vueltaFF.value) form.cod_folioFinal = CargaVueltaFolio(form.cod_folioFinal) ? form.cod_folioFinal : form.cod_folioFinal+' V';
   form.submit()
     .then((response) => {
-      form.reset();
+      // form.reset();
       // form.setData()
       // console.log(response);
       emits("save",'busqueda');
-    })
-    .catch((error) => {
+    }).catch((error) => {
       // alert(error);
     });
 };

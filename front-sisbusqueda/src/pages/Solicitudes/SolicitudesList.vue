@@ -3,12 +3,15 @@
       <SolicitudesForm title="Registrar una Solicitud" @save="save($event)"/>
     </q-dialog>
     <q-dialog v-if="userStore.getAreaId === 2" v-model="busquedaForm" persistent>
-      <BusquedasForm title="Registro de Resultados de Busqueda"
-        :solici_id="SolicitudID" :solicitud="_solicitud" @save="save($event)" />
+      <BusquedasForm title="Registro de Resultados de Busqueda" 
+        :D_solicitud="DatosSolicitu" @save="save($event)" />
     </q-dialog>
     <q-dialog v-if="userStore.getAreaId === 3" v-model="verificaForm" persistent>
       <VerificacionesForm title="Registro de Verificación de Busqueda"
-        :solici_id="SolicitudID" :solicitud="_solicitud" :regisBusqueda="_regisBusque" @save="save($event)" />
+        :D_solicitud="DatosSolicitu" :D_busqueda="DatosBusqueda" @save="save($event)" />
+    </q-dialog>
+    <q-dialog v-if="userStore.getAreaId === 1" v-model="cajaForm" persistent>
+      <CajaForm title="Caja" :D_solicitud="DatosSolicitu" :D_busqueda="DatosBusqueda" :D_verificacion="DatosVerifica" @save="save($event)"/>
     </q-dialog>
     <q-page>
       <div class="q-pa-md q-gutter-sm">
@@ -56,12 +59,13 @@
               </span>
               <div v-else-if="col.name === 'acciones'">
                 <GenerarPDFSolicitud :vericon="true" icon="picture_as_pdf" size="sm" outline round class="q-mr-xs"
-                  :datosSolicitudRow="props.row"/>
+                  :datosSolicitudRow="props.row" :datosBusqueda="DatosBusqueda" :datosVerificacion="DatosVerifica" 
+                  :datosPagos="DatosPagos" @clickPDF="generarPDF($event,props.row.id)"/>
                 <q-btn v-if="userStore.getAreaId === 2" outline color="blue"  icon="search" size="sm" round class="q-mr-xs"
-                    @click="busqueda(props.row.id,props.row)" />
+                    @click="busqueda(props.row)" />
                 <q-btn v-if="userStore.getAreaId === 3" outline color="blue"  icon="rule" size="sm" round class="q-mr-xs"
                     @click="verificacion(props.row.id,props.row)" /> 
-                <q-btn v-if="userStore.getAreaId===1 && props.row.area_id===1" outline color="blue"  icon="point_of_sale" size="sm" round class="q-mr-xs"
+                <q-btn v-if="userStore.getAreaId===1 && props.row.area_id===1 && props.row.estado!=='Finalizado'" outline color="blue"  icon="point_of_sale" size="sm" round class="q-mr-xs"
                     @click="caja(props.row.id,props.row)" />
               </div>
               <span v-else>{{ col.value }}</span>
@@ -73,18 +77,21 @@
 </template>
 
 <script setup>
-  import { ref, onMounted } from "vue";
-  import SolicitudService from "src/services/SolicitudService";
-  import BusquedaService from "src/services/BusquedaService";
-  import { useQuasar } from "quasar";
-  import SolicitudesForm from "src/pages/Solicitudes/SolicitudesForm.vue";
-  import BusquedasForm from "./Registros/BusquedasForm.vue";
-  import VerificacionesForm from "./Registros/VerificacionesForm.vue";
-  import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
-  import { convertDate } from "src/utils/ConvertDate";
-  import { useUserStore } from "src/stores/user-store";
-  const userStore = useUserStore();
-  const $q = useQuasar();
+import { ref, onMounted } from "vue";
+import SolicitudService from "src/services/SolicitudService";
+import BusquedaService from "src/services/BusquedaService";
+import PagoService from "src/services/PagoService.js"
+import VerificacionService from "src/services/VerificacionService";
+import { useQuasar } from "quasar";
+import SolicitudesForm from "src/pages/Solicitudes/SolicitudesForm.vue";
+import BusquedasForm from "./Registros/BusquedasForm.vue";
+import VerificacionesForm from "./Registros/VerificacionesForm.vue";
+import GenerarPDFSolicitud from "src/components/GenerarPDFSolicitud.vue";
+import { convertDate } from "src/utils/ConvertDate";
+import { useUserStore } from "src/stores/user-store";
+import CajaForm from "./Registros/CajaForm.vue";
+const userStore = useUserStore();
+const $q = useQuasar();
 
 const columns = [
   { field: (row) => row.id, name: "id", label: "ID", align: "left", sortable_: true },
@@ -97,7 +104,7 @@ const columns = [
 const solicitudForm = ref(false);
 const busquedaForm = ref(false);
 const verificaForm = ref(false);
-const SolicitudID = ref();
+const cajaForm = ref(false);
 
 const tableRef = ref();
 const rows = ref([]);
@@ -152,6 +159,7 @@ const save = (tipo_dialog) => {
   if (tipo_dialog && tipo_dialog === 'busqueda') busquedaForm.value = false;
   if (tipo_dialog && tipo_dialog === 'verificacion') verificaForm.value = false;
   if (tipo_dialog && tipo_dialog === 'solicitud') solicitudForm.value = false;
+  if (tipo_dialog && tipo_dialog === 'caja') cajaForm.value = false;
   tableRef.value.requestServerInteraction();
   $q.notify({
     type: "positive",
@@ -161,26 +169,50 @@ const save = (tipo_dialog) => {
     timeout: 1000,
   });
 };
-let _solicitud = ref(null);
-function busqueda(id,_soli){
+const DatosSolicitu = ref(null);
+const DatosBusqueda = ref(null);
+const DatosVerifica = ref(null);
+const DatosPagos = ref(null);
+async function CargarMasDatos(id_solicitud,verVeri,verCaja){
+  const res_busq = (await BusquedaService.getData({params:{ rowsPerPage:0, solicitud_id: id_solicitud}})).data;
+  // console.log(res_busq);
+  if (res_busq?.[0]){
+    DatosBusqueda.value = res_busq[0];
+    // console.log(DatosBusqueda.value);
+    const res_veri = verVeri?(await VerificacionService.getData({params:{ rowsPerPage:0, RB_id_derivado: DatosBusqueda.value.id}})).data:null;
+    if (res_veri?.[0]){
+      DatosVerifica.value = res_veri[0]
+      // console.log(DatosVerifica.value);
+    }else
+      DatosVerifica.value = null;
+  }else{
+    DatosBusqueda.value = null;
+    DatosVerifica.value = null;
+  }
+  const res_caja = verCaja?(await PagoService.getData({params:{ rowsPerPage:0, solicitud_id: id_solicitud}})).data:null;
+  if(res_caja?.[0])
+    DatosPagos.value = res_caja[0];
+  else
+    DatosPagos.value = null;
+}
+async function generarPDF(event,id){
+  event.activarCargar();
+  await CargarMasDatos(id,true,true);
+  event.verificacion();
+}
+function busqueda(_soli){
+  DatosSolicitu.value = _soli;
   busquedaForm.value = true;
-  SolicitudID.value = id;
-  _solicitud.value = _soli;
 }
-let _regisBusque = ref(null);
 async function verificacion(id,_soli){
-  const resBusqu = await BusquedaService.getData({params:{
-    rowsPerPage:0,
-    solicitud_id: id,
-  }});
-  if (resBusqu.data?.[0])
-    _regisBusque.value = resBusqu.data[0];
+  await CargarMasDatos(id,false,false);
+  DatosSolicitu.value = _soli;
   verificaForm.value = true;
-  SolicitudID.value = id;
-  _solicitud.value = _soli;
 }
-function caja(id,_soli){
-  console.log('caja para:',id);
+async function caja(id,_soli){
+  await CargarMasDatos(id,true,false);
+  DatosSolicitu.value = _soli;
+  cajaForm.value = true;
 }
 
   // const title = ref("");

@@ -97,7 +97,7 @@ class SolicitudController extends Controller
 
         // return response($this->RegistrarABusqueda($solicitud),201);
 
-        return response([$request],200);
+        return response([$request],201);
     }
 
     /**

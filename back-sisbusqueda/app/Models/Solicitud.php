@@ -47,7 +47,7 @@ class Solicitud extends Model
     }
     public function registroBusqueda()
     {
-        return $this->hasOne(RegistroBusqueda::class, 'registro_id');
+        return $this->hasOne(RegistroBusqueda::class, 'solicitud_id');
     }
     public function ubigeo()
     {
@@ -65,5 +65,9 @@ class Solicitud extends Model
     public function area()
     {
         return $this->belongsTo(Area::class);
+    }
+    public function pagos()
+    {
+        return $this->hasOne(Pago::class, 'solicitud_id');
     }
 }
