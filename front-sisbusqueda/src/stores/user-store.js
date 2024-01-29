@@ -52,7 +52,7 @@ export const useUserStore = defineStore("user", {
         secureStorage.setItem("user", user.data.user);
         // console.log(user.data);
         this.setUser(user.data);
-        // console.log(user.data.user);
+        console.log(user.data.user);
       } catch (e) {
         if (e) throw e;
       }

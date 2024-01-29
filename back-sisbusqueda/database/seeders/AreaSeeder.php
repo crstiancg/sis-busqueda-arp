@@ -25,5 +25,8 @@ class AreaSeeder extends Seeder
         Area::updateOrCreate([
             'nombre' => 'AREA DE DIRECCION',
         ]);
+        Area::updateOrCreate([
+            'nombre' => 'AREA DE SUPERVISION',
+        ]);
     }
 }

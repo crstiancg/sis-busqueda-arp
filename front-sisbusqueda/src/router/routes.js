@@ -124,6 +124,11 @@ const routes = [
         name: "Busquedashow",
         component: () => import("components/ShowBusqueda.vue"),
       },
+      {
+        path: "/verificacion/:id",
+        name: "Verificacioneshow",
+        component: () => import("components/ShowVerificacion.vue"),
+      },
     ],
   },
 

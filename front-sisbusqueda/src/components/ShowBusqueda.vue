@@ -17,10 +17,10 @@
         </div>
     </div>
 </div>
-    <q-card class="q-px-md q-mt-sm">
+    <!-- <q-card class="q-px-sm q-mt-sm" style="height: 80vh;"> -->
         <div class="row">
-          <div class="q-pa-sm col-md-6 col-xs-12">
-            <q-card flat bordered>
+          <div class="q-pa-sm col-md-8 col-xs-12">
+            <q-card>
               <q-card-section class="q-pt-sm">
                 <div class="col-xs-12 col-md-8">
                   <div class="text-h6 text-weight-bold text-uppercase text-center">
@@ -121,8 +121,8 @@
               </q-card-section>
             </q-card>
           </div>
-          <div class="q-pa-sm col-md-6 col-xs-12">
-            <q-card flat bordered>
+          <div class="q-pa-sm col-md-4 col-xs-12">
+            <q-card>
               <q-card-section class="q-pt-sm">
                 <div class="col-xs-12 col-md-8">
                   <div class="text-h6 text-weight-bold text-uppercase text-center">
@@ -130,7 +130,7 @@
                   </div>
                   <q-separator />
                   <div class="q-my-md row q-pa-md">
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-12">
                       <span class="text-weight-bold text-uppercase">Registrado Por</span>
                       <p
                         :class="
@@ -198,7 +198,7 @@
                         {{ form.cod_folioFinal }}
                       </p>
                     </div>
-                    <div class="col-12 col-md-6">
+                    <div class="col-12 col-md-12">
                       <span class="text-weight-bold text-uppercase"
                         >Observaciones</span
                       >
@@ -254,7 +254,7 @@
             </q-card>
           </div> -->
         </div>
-      </q-card>
+      <!-- </q-card> -->
 </template>
 
 <script setup>

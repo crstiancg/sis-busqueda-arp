@@ -62,9 +62,10 @@ class RegistroVerificacionController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(RegistroVerificacion $registroVerificacion)
+    public function show(RegistroVerificacion $registro_verificacione)
     {
-        //
+        return response()->json($registro_verificacione);
+
     }
 
     /**

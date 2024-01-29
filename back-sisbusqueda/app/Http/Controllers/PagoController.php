@@ -34,6 +34,7 @@ class PagoController extends Controller
             "estado" => "Finalizado",
             "tipo_copia" => $request->tipo_copia,
             'updated_at'=> now(),
+            'area_id' => 4,
         ]);
         return response(Pago::create([
             'solicitud_id'=> $request->solicitud_id,

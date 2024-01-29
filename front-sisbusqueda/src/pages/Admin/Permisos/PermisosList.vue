@@ -144,7 +144,7 @@ const pagination = ref({
   sortBy: "id",
   descending: false,
   page: 1,
-  rowsPerPage: 7,
+  rowsPerPage: 9,
   rowsNumber: 10,
 });
 
