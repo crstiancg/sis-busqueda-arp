@@ -18,8 +18,9 @@ class LibroFactory extends Factory
     public function definition(): array
     {
         return [
-            'nombre' => fake()->name().' '.fake()->lastName(),
-            'protocolo' => 'P-'.str_pad(++$this->v, 4, '0', STR_PAD_LEFT),
+            'protocolo' => 'P-'.str_pad(++$this->v, 6, '0', STR_PAD_LEFT),
+            'estado' => 0,
+            'user_id' => 1,
             'notario_id' => fake()->numberBetween(1,10),
         ];
     }

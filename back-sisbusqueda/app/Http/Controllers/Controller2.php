@@ -114,8 +114,58 @@ class Controller2 extends BaseController
                 }
             }
         }
+        // funciones de agregacion, ejemplo: {fun_agrega:[{column:'estado',fun:'COUNT',groupBy:'estado'},{column:'*',fun:'COUNT',groupBy:'user_id'},
+        //      {column:'*',fun:'COUNT',where:['user_id','=','1']}]}
+        $mas_datos = null;
+        if ($request->filled('fun_agrega') and $request->fun_agrega) {
+            $key_funcion = ['COUNT', 'SUM', 'AVG', 'MIN', 'MAX'];
+            $key_operaci = ['=', '!=', '<>', '<', '>', '<=', '>='];
+            foreach ($request->fun_agrega as $val) {
+                if (array_key_exists('fun', $val) and $val['fun'] and in_array($val['fun'], $key_funcion, true)
+                    and array_key_exists('column', $val) and $val['column'] and (in_array($val['column'], $filterBy, true) or $val['column']==='*')){
+                    $query_select = null;
+                    if (array_key_exists('groupBy', $val) and $val['groupBy'] and in_array($val['groupBy'], $filterBy, true)){
+                        $copia_query = $querySet->getModel()->newQuery(); //clone $querySet;
+                        $query_select = $copia_query->groupBy($val['groupBy'])
+                            ->selectRaw($val['groupBy'].', '.$val['fun'].'('.$val['column'].') as '.'result_'.$val['fun']);
+                    }else if ($val['fun']==='COUNT' or $val['column']!=='*'){
+                        $copia_query = $querySet->getModel()->newQuery(); //clone $querySet;
+                        $query_select = $copia_query
+                            ->selectRaw($val['fun'].'('.$val['column'].') as '.'result_'.$val['fun'].'_'.($val['column']==='*'?'all':$val['column']));
+                    }
+                    if ($query_select) {
+                        if (array_key_exists('where', $val) and $val['where'] and count($val['where'])===3 
+                            and in_array($val['where'][0], $filterBy, true) and in_array($val['where'][1], $key_operaci, true)) 
+                            $mas_datos[] = $query_select->whereRaw($val['where'][0].' '.$val['where'][1].' '.$val['where'][2])->get();
+                        else 
+                            $mas_datos[] = $query_select->get();
+                    }
+                }
+            }
+        }
         // return [$querySet->toSql(),$request->all()];
-        return $this->getPageSize() ? $querySet->paginate($this->getPageSize()) : response()->json(['data'=>$querySet->get()]);
+        if ($this->getPageSize()) {
+            $result = $querySet->paginate($this->getPageSize()?$this->getPageSize():10);
+            $json = [
+                'current_page' => $result->currentPage(),
+                'data' => $result->items(),
+                'first_page_url' => $result->url(1),
+                'from' => $result->firstItem(),
+                'last_page' => $result->lastPage(),
+                'last_page_url' => $result->url($result->lastPage()),
+                'next_page_url' => $result->nextPageUrl(),
+                'path' => $result->url($result->currentPage()),
+                'per_page' => $result->perPage(),
+                'prev_page_url' => $result->previousPageUrl(),
+                'to' => $result->lastItem(),
+                'total' => $result->total(),
+            ];
+            if ($mas_datos) $json['mas_datos'] = $mas_datos;
+            return response()->json($json);
+        }else{
+            return response()->json(['data'=>$querySet->get()]);
+        }
+        // return $this->getPageSize() ? $querySet->paginate($this->getPageSize()) : response()->json(['data'=>$querySet->get()]);
     }
 
     public function QueryGenerateViewSetList(Request $request, Builder $querySet, array $filterBy, array $searchBy, array $orderBy)

@@ -16,11 +16,13 @@ class EscrituraFactory extends Factory
      */
     private $v = 10;
     private $escr = 0;
+    private $lib = 1;
     public function definition(): array
     {
         $anio = fake()->numberBetween(1950,2015);
         $mes = fake()->numberBetween(1,12);
         $dia = fake()->numberBetween(1,28);
+        if($this->lib === 30) $this->lib = 1;
         return [
             'bien' => fake()->colorName(),
             'subserie_id' => fake()->numberBetween(1,10),
@@ -31,7 +33,7 @@ class EscrituraFactory extends Factory
             'cod_escritura' => 'E-'.strval(++$this->escr),
             'cod_folioInicial' => 'F-'.strval(++$this->v).fake()->randomElement(array(' V','')),
             'cod_folioFinal' => 'F-'.strval(++$this->v).fake()->randomElement(array(' V','')),
-            'libro_id' => fake()->numberBetween(1,30),
+            'libro_id' => $this->escr%3 === 0 ? ++$this->lib : $this->lib,
             // 'observaciones' => fake()->text(),
         ];
     }

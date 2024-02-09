@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('libros', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
             $table->string('protocolo');
+            $table->boolean('estado');
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->foreign('user_id')->references('id')->on('users')->nullOnDelete();
             $table->unsignedBigInteger('notario_id')->nullable();
             $table->foreign('notario_id')->references('id')->on('notarios')->nullOnDelete();
             $table->timestamps();
