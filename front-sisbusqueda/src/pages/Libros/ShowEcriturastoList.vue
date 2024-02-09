@@ -7,7 +7,7 @@
       <q-breadcrumbs>
         <q-breadcrumbs-el icon="home" />
         <q-breadcrumbs-el icon="book" label="Libros" :to="{ name: 'Libros' }" />
-        <q-breadcrumbs-el icon="receipt_long" :label="libro.nombre" />
+        <q-breadcrumbs-el icon="receipt_long" :label="libro.protocolo" />
       </q-breadcrumbs>
     </div>
     <q-separator />

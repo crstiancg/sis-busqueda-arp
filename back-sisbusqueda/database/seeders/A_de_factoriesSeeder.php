@@ -27,7 +27,7 @@ class A_de_factoriesSeeder extends Seeder
         Libro::factory(30)->create();
         // $this->call(TransSubserieSeeder::class);
         SubSerie::factory(10)->create();
-        Escritura::factory(30)->create();
+        Escritura::factory(100)->create();
         Favorecido::factory(60)->create();
         Otorgante::factory(60)->create();
 

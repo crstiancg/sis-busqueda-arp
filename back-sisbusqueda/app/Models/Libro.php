@@ -10,17 +10,14 @@ class Libro extends Model
 {
     use HasFactory;
     protected $table = 'libros';
-    // protected $casts = [
-    //     'created_at' => 'datetime:d.m.Y H:i',
-    //     'updated_at' => 'datetime:d.m.Y H:i',
-    // ];
     public $timestamps = false;
-
     protected $fillable = [
-        'nombre',
         'protocolo',
         'notario_id',
-        'updated_at',
+        'estado',
+        'user_id',
+        'created_at',
+        'updated_at'
     ];
     public function notario()
     {
@@ -28,6 +25,10 @@ class Libro extends Model
     }
     public function escrituras()
     {
-        return $this->belongsTo(Escritura::class, 'libro_id');
+        return $this->hasMany(Escritura::class, 'libro_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
