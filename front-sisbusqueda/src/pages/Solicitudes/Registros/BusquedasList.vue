@@ -32,7 +32,16 @@
         "
       /> -->
     </div>
-
+    <div class="q-gutter-xs q-pa-sm">
+    <div class="row">
+      <SelectInput dense clearable outlined 
+      class="col-4 q-px-xs" 
+      label="Usuario Registrado"
+      v-model="usarioregistrado"
+      :options="UsuarioService" OptionLabel="name" OptionValue="user.id" 
+      />
+    </div>
+    </div>
     <q-table
       :rows-per-page-options="[7, 10, 15]"
       class="my-sticky-header-table htable q-ma-sm"
@@ -116,7 +125,8 @@ import BusquedaService from "src/services/BusquedaService";
 import { useQuasar } from "quasar";
 import BusquedasForm from "src/pages/Solicitudes/Registros/BusquedasForm.vue";
 import { useRouter } from "vue-router";
-
+import SelectInput from "src/components/SelectInput.vue";
+import UsuarioService from "src/services/UsuarioService";
 const $q = useQuasar();
 const router = useRouter();
 
