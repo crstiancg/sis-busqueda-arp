@@ -14,10 +14,13 @@ class RegistroBusquedaController extends Controller
     {
         return $this->generateViewSetList(
             $request,
-            RegistroBusqueda::query(),
+            RegistroBusqueda::query()
+            ->leftJoin('users','users.id', '=','registro_busquedas.user_id')
+            ->leftJoin('solicituds','solicituds.id', '=','registro_busquedas.solicitud_id')
+            ->select('registro_busquedas.*','users.*','solicituds.*'),
             RegistroBusqueda::getModel()->getFillable(),
-            ['id', 'nombre'],
-            ['id', 'nombre']
+            ['id'],
+            ['id'],
         );
     }
 

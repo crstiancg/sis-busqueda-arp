@@ -101,7 +101,7 @@ class PermisoSeeder extends Seeder
             'name' => 'password',
             'email' => 'password@gmail.com',
             'password' => bcrypt('password'),
-            'area_id' => 5,
+            // 'area_id' => 5,
         ]);
         $operador = User::create([
             'name' => 'area',

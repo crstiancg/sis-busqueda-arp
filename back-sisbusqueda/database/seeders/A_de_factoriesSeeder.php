@@ -34,7 +34,7 @@ class A_de_factoriesSeeder extends Seeder
         // DB::table('precios')->insert(['monto'=> 9.00 ,'vigente'=>1]);
         Solicitante::factory(100)->create();
         Solicitud::factory(50)->create();
-        // RegistroBusqueda::factory(50)->create();
-        // RegistroVerificacion::factory(50)->create();
+        RegistroBusqueda::factory(50)->create();
+        RegistroVerificacion::factory(50)->create();
     }
 }
