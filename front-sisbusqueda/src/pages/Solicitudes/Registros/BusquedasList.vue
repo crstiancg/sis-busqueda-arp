@@ -38,7 +38,7 @@
       class="col-4 q-px-xs" 
       label="Usuario Registrado"
       v-model="usarioregistrado"
-      :options="UsuarioService" OptionLabel="name" OptionValue="user.id" 
+      :options="BusquedaService" OptionLabel="name" OptionValue="id" 
       />
     </div>
     </div>
@@ -202,6 +202,16 @@ const columns = [
   },
 ];
 
+const form = ref({
+  solicitud: {
+        sub_serie: {},
+        notario: {},
+        solicitante: {},
+        user: {},
+    },
+    user: {},
+  });
+const usarioregistrado = ref();
 const tableRef = ref();
 const formPermisos = ref(false);
 const busquedasformRef = ref();
@@ -229,7 +239,7 @@ async function onRequest(props) {
   const { data, total = 0 } = await BusquedaService.getData({
     params: { rowsPerPage: fetchCount, page, search: filter, order_by },
   });
-  console.log(data);
+  // console.log(data);
   // clear out existing data and add new
   rows.value.splice(0, rows.value.length, ...data);
   // don't forget to update local pagination object
@@ -245,11 +255,19 @@ async function onRequest(props) {
 }
 
 // async function data2 () {
-//   const info = await BusquedaService.getData();
-//   console.log(info);
+//   form.value = (await BusquedaService.getData()).data;
+//   console.log(form.value);
 // }
 
 // data2();
+
+// onMounted(async() => {
+//   loading.value = true;
+//   const res =  await(BusquedaService.getData({ params: { rowsPerPage: 0, order_by: 'users.name' } })).data;
+//   form.value = res;
+//   // console.log(form.value);
+//   loading.value = false;
+// });
 
 onMounted(() => {
   tableRef.value.requestServerInteraction();

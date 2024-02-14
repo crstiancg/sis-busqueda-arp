@@ -71,7 +71,7 @@ export const useUserStore = defineStore("user", {
       if (payload.user.area_id) this.area_id = payload.user.area_id;
       if (payload.permisos) this.permisos = payload.permisos;
       if (payload.roles) this.roles = payload.roles;
-      if (payload.user.area.nombre) this.area = payload.user.area.nombre;
+      if (payload.user.area?.nombre) this.area = payload.user.area.nombre;
     },
 
     clearUser() {
